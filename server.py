@@ -4,8 +4,6 @@ from jinja2 import StrictUndefined
 from flask import Flask, render_template, request, flash, redirect, session
 from flask_debugtoolbar import DebugToolbarExtension
 
-from firebase import firebase
-
 import request
 
 app = Flask(__name__)
@@ -23,6 +21,7 @@ app.jinja_env.undefined = StrictUndefined
 @app.route("/")
 def index():
     """Homepage."""
+    
 
     return render_template("homepage.html")
 
