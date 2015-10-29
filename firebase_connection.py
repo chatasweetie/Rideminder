@@ -18,7 +18,10 @@ firebase = firebase.FirebaseApplication("https://publicdata-transit.firebaseio.c
 # 	print "~" * 100 
 
 # gets all the available buses for a line:
-available_buses = firebase.get("sf-muni/routes/", "1")
+
+
+line = "1"
+available_buses = firebase.get("sf-muni/routes/", line)
 
 for bus in available_buses:
 	print bus
@@ -31,27 +34,28 @@ print "actual items", available_buses
 print "~" * 100
 
 
-powell_station = (37.7846810, -122.4073680)
-# gets the vehicle infom for the available buses:
-tuples_lat_lon_vehicle = []
-for bus in available_buses:
-	bus_id = bus
-	bus_lat = firebase.get("sf-muni/vehicles/" + bus_id, "lat")
-	bus_lon = firebase.get("sf-muni/vehicles/" + bus_id, "lon")
-	geolocation = (bus_lat, bus_lon)
-	distance = (vincenty(powell_station, geolocation).miles)
-	print "bus id: ", bus_id
-	print "bus lat: ", bus_lat
-	print "bus lon: ", bus_lon
-	print "geolocation: ", geolocation
-	print "vincenty: ", distance
-	print "~" * 25
-	if bus_lat != None:
-		tuples_lat_lon_vehicle.append(tuple([distance, bus_id]))
+# powell_station = (37.7846810, -122.4073680)
+# # gets the vehicle infom for the available buses:
+# tuples_lat_lon_vehicle = []
+# for bus in available_buses:
+# 	bus_id = bus
+# 	bus_lat = firebase.get("sf-muni/vehicles/" + bus_id, "lat")
+# 	bus_lon = firebase.get("sf-muni/vehicles/" + bus_id, "lon")
+# 	geolocation = (bus_lat, bus_lon)
+# 	distance = (vincenty(powell_station, geolocation).miles)
+# 	print "bus id: ", bus_id
+# 	print "bus lat: ", bus_lat
+# 	print "bus lon: ", bus_lon
+# 	print "geolocation: ", geolocation
+# 	print "vincenty: ", distance
+# 	print "~" * 25
+# 	if bus_lat != None:
+# 		tuples_lat_lon_vehicle.append(tuple([distance, bus_id]))
 
-print "my tuples", tuples_lat_lon_vehicle
-sortedtups = sorted(tuples_lat_lon_vehicle)
-print "sorted", sortedtups
+# print "my tuples", tuples_lat_lon_vehicle
+# print "~" * 80
+# sortedtups = max(tuples_lat_lon_vehicle)
+# print "sorted", sortedtups
 
 
 

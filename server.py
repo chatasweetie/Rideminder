@@ -36,8 +36,9 @@ def process_user_info():
 	user_contact_info = request.form.get("user_contact_info")
 
 	
-
-	gets_vehicle_id(line, user_geolocation,to_geolocation)
+	functions to process N & Geolocation to bus_id
+	
+	
 	
 @app.route("input_user_db")
 def 
