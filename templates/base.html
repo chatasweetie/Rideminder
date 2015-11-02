@@ -3,9 +3,19 @@
 <head>
 	<!-- links to firebase for javascript to do magic! -->	
 	<script src='https://cdn.firebase.com/js/client/2.2.1/firebase.js'></script>
-
+	<script src="https://maps.googleapis.com/maps/api/js"></script>
+	<script src="https://code.jquery.com/jquery.js"></script>
+	<link rel="stylesheet" type="text/css" href="css/styling.css">
 </head>
 <body>
-	
+    <div class="content container">
+        <div class="row">
+            <div class="col-md-12 map" id="map">
+
+           {% block content %} Shmagoo. put your content here {% endblock %}
+            </div>
+        </div>
+    </div>
+
 </body>
 </html>

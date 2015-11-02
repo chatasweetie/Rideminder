@@ -4,6 +4,8 @@ from jinja2 import StrictUndefined
 from flask import Flask, render_template, request, flash, redirect, session
 from flask_debugtoolbar import DebugToolbarExtension
 
+import process_data.py
+from time import sleep
 import request
 
 app = Flask(__name__)
@@ -35,11 +37,15 @@ def process_user_info():
 	message_type = request.form.get("message_type")
 	user_contact_info = request.form.get("user_contact_info")
 
+	dic_vehicles_for_line = gets_a_dic_of_vehicle(line)
+	list_of_vincenty_first = sorts_bus_dic_by_distance(dic_vehicles_for_line)
+	time.sleep(60)
+	list_of_vincenty_second = sorts_bus_dic_by_distance(dic_vehicles_for_line)
+
 	
-	functions to process N & Geolocation to bus_id
+	send to be queue (route?)
+	return render_template("/thank_you.html")
+
 	
 	
-	
-@app.route("input_user_db")
-def 
 

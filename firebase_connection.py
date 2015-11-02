@@ -4,6 +4,7 @@ from firebase import firebase
 
 from geopy.distance import vincenty
 
+import time
 
 
 # sets me up with the transit firebase
@@ -34,31 +35,53 @@ print "actual items", available_buses
 print "~" * 100
 
 
-# powell_station = (37.7846810, -122.4073680)
-# # gets the vehicle infom for the available buses:
-# tuples_lat_lon_vehicle = []
-# for bus in available_buses:
-# 	bus_id = bus
-# 	bus_lat = firebase.get("sf-muni/vehicles/" + bus_id, "lat")
-# 	bus_lon = firebase.get("sf-muni/vehicles/" + bus_id, "lon")
-# 	geolocation = (bus_lat, bus_lon)
-# 	distance = (vincenty(powell_station, geolocation).miles)
-# 	print "bus id: ", bus_id
-# 	print "bus lat: ", bus_lat
-# 	print "bus lon: ", bus_lon
-# 	print "geolocation: ", geolocation
-# 	print "vincenty: ", distance
-# 	print "~" * 25
-# 	if bus_lat != None:
-# 		tuples_lat_lon_vehicle.append(tuple([distance, bus_id]))
+powell_station = (37.7846810, -122.4073680)
+# gets the vehicle infom for the available buses:
+tuples_lat_lon_vehicle = []
+for bus in available_buses:
+	bus_id = bus
+	bus_lat = firebase.get("sf-muni/vehicles/" + bus_id, "lat")
+	bus_lon = firebase.get("sf-muni/vehicles/" + bus_id, "lon")
+	geolocation = (bus_lat, bus_lon)
+	distance = (vincenty(powell_station, geolocation).miles)
+	# print "bus id: ", bus_id
+	# print "bus lat: ", bus_lat
+	# print "bus lon: ", bus_lon
+	# print "geolocation: ", geolocation
+	# print "vincenty: ", distance
+	# print "~" * 25
+	if bus_lat != None:
+		tuples_lat_lon_vehicle.append(tuple([distance, bus_id]))
 
 # print "my tuples", tuples_lat_lon_vehicle
 # print "~" * 80
-# sortedtups = max(tuples_lat_lon_vehicle)
-# print "sorted", sortedtups
+sortedtups = sorted(tuples_lat_lon_vehicle)
+print "sorted", sortedtups
 
 
 
+time.sleep(190)
+
+tuples_lat_lon_vehicle2 = []
+for bus in available_buses:
+	bus_id = bus
+	bus_lat = firebase.get("sf-muni/vehicles/" + bus_id, "lat")
+	bus_lon = firebase.get("sf-muni/vehicles/" + bus_id, "lon")
+	geolocation = (bus_lat, bus_lon)
+	distance = (vincenty(powell_station, geolocation).miles)
+	# print "bus id: ", bus_id
+	# print "bus lat: ", bus_lat
+	# print "bus lon: ", bus_lon
+	# print "geolocation: ", geolocation
+	# print "vincenty: ", distance
+	# print "~" * 25
+	if bus_lat != None:
+		tuples_lat_lon_vehicle2.append(tuple([distance, bus_id]))
+
+# print "my tuples", tuples_lat_lon_vehicle2
+# print "~" * 80
+sortedtups2 = sorted(tuples_lat_lon_vehicle2)
+print "sorted", sortedtups2
 
 
 
@@ -93,4 +116,21 @@ print "~" * 100
 # 	print "~" * 100
 
 # print "Routes Heading Number: ",routes_heading_num
+
+# recieves a list of tuples with vincity distane, bus ids
+
+# ~~~~~~~~~~~~~~~~~~~~~~~to double check the vincity ~~~~
+for num in range(len(sortedtups)):
+	if sortedtups2[0][1] == sortedtups[num][1]:
+		if sortedtups2[0][0] <= sortedtups[num][0]:
+			print "sortedtups2[0] won!", sortedtups2[0]
+		else:
+			print "didn't find it"
+			print "sortedtups[num]", sortedtups[num]
+			print "sortedtups2[0]", sortedtups2[0]
+			for num in range(len(sortedtups)):
+				if sortedtups2[1][1] == sortedtups[num][1]:
+					if sortedtups2[1][0] <= sortedtups[num][0]:
+						print "sortedtups2[1] won!", sortedtups2[1]
+
 
