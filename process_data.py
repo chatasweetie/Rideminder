@@ -3,6 +3,7 @@
 """
 from firebase import firebase
 from geopy.distance import vincenty
+from time import sleep
 
 # Connects to the public transit API
 transit_firebase = firebase.FirebaseApplication("https://publicdata-transit.firebaseio.com/", None)
@@ -18,6 +19,7 @@ def gets_a_dic_of_vehicle(bus_line):
 	line = bus_line
 	available_buses = transit_firebase.get("sf-muni/routes/", line)
 	return available_buses
+
 
 
 def sorts_bus_dic_by_distance(bus_dictionary):
@@ -42,7 +44,7 @@ def sorts_bus_dic_by_distance(bus_dictionary):
 	vehicles_sorted_by_vincenity = sorted(tuples_lat_lon_vehicle)
 	return vehicles_sorted_by_vincenity
 
-def selects_cloest_vehicle(vehicle_list1, vehicle_list2):
+def selects_closest_vehicle(vehicle_list1, vehicle_list2):
 	"""From two dictionaries of distance, vehicle id, returns the closest vehicleid
 	Compares the vincity distance of the first vehicle of the first dictionary to the 
 	second dictionary to validate if its getting smaller (closer), if not then validates 
@@ -58,10 +60,15 @@ def selects_cloest_vehicle(vehicle_list1, vehicle_list2):
 				return vehicle_list2[0][1]
 			else:
 				for num in range(len(sortedtups)):
-				if sortedtups2[1][1] == sortedtups[num][1]:
-					if sortedtups2[1][0] <= sortedtups[num][0]:
-						return sortedtups2[1][1]
+					if sortedtups2[1][1] == sortedtups[num][1]:
+						if sortedtups2[1][0] <= sortedtups[num][0]:
+							return sortedtups2[1][1]
 
-
+def processes_line_selects_closest_vehicle (line):
+	dic_vehicles_for_line = gets_a_dic_of_vehicle(line)
+	list_of_vincenty_first = sorts_bus_dic_by_distance(dic_vehicles_for_line)
+	time.sleep(60)
+	list_of_vincenty_second = sorts_bus_dic_by_distance(dic_vehicles_for_line)
+	return selects_closest_vehicle(list_of_vincenty_first,list_of_vincenty_second)
 
 powell_station = (37.7846810, -122.4073680)

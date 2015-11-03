@@ -4,14 +4,14 @@ from jinja2 import StrictUndefined
 from flask import Flask, render_template, request, flash, redirect, session
 from flask_debugtoolbar import DebugToolbarExtension
 
-import process_data.py
-from time import sleep
-import request
+import process_data
+import model
+
 
 app = Flask(__name__)
 
 # Required to use Flask sessions and the debug toolbar
-app.secret_key = "123"
+app.secret_key = "123456"
 
 # Normally, if you use an undefined variable in Jinja2, it fails silently.
 # This is horrible. Fix this so that, instead, it raises an error.
@@ -27,25 +27,36 @@ def index():
 
     return render_template("homepage.html")
 
-@app.route("user_input", methods=["POST"])
+@app.route("/user_input", methods=["POST"])
 def process_user_info():
 	"""recieves the user data and sends data to appropiate processes"""
-	username = request.form.get("username")
+	user_fname = request.form.get("user_fname")
+	user_lname = request.form.get("user_lname")
+	user_email = request.form.get("user_email")
+	user_phone_num = request.form.get("user_phone_num")
 	line = request.form.get("line")
 	destination_geo_location = request.form.get("destination_geo_location")
 	user_geolocation = request.form.get("user_geolocation")
 	message_type = request.form.get("message_type")
 	user_contact_info = request.form.get("user_contact_info")
 
-	dic_vehicles_for_line = gets_a_dic_of_vehicle(line)
-	list_of_vincenty_first = sorts_bus_dic_by_distance(dic_vehicles_for_line)
-	time.sleep(60)
-	list_of_vincenty_second = sorts_bus_dic_by_distance(dic_vehicles_for_line)
 
-	
-	send to be queue (route?)
+	vehicle_id = processes_line_selects_closest_vehicle (line)
+
+	adds_to_queue(user_fname, user_lname, user_email, user_phone_num,
+		destination_geo_location, message_type, user_contact_info, vehicle_id)
+
 	return render_template("/thank_you.html")
 
-	
-	
 
+if __name__ == "__main__":
+    # We have to set debug=True here, since it has to be True at the point
+    # that we invoke the DebugToolbarExtension
+    app.debug = True
+
+    connect_to_db(app)
+
+    # Use the DebugToolbar
+    DebugToolbarExtension(app)
+
+    app.run()
