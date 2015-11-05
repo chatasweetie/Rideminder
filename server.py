@@ -17,8 +17,6 @@ app.secret_key = "123456"
 # This is horrible. Fix this so that, instead, it raises an error.
 app.jinja_env.undefined = StrictUndefined
 
-# Setting up my firebase connection 
-
 
 @app.route("/")
 def index():
@@ -35,16 +33,16 @@ def process_user_info():
 	user_email = request.form.get("user_email")
 	user_phone_num = request.form.get("user_phone_num")
 	line = request.form.get("line")
+	bound = request.form.get("bound")
 	destination_geo_location = request.form.get("destination_geo_location")
 	user_geolocation = request.form.get("user_geolocation")
 	message_type = request.form.get("message_type")
 	user_contact_info = request.form.get("user_contact_info")
 
 
-	vehicle_id = processes_line_selects_closest_vehicle (line)
+	vehicle_id = processes_line_and_bound_selects_closest_vehicle(line, bound)
 
-	adds_to_queue(user_fname, user_lname, user_email, user_phone_num,
-		destination_geo_location, message_type, user_contact_info, vehicle_id)
+	adds_to_queue(user_fname, user_lname, user_email, user_phone_num, destination_geo_location, message_type, vehicle_id)
 
 	return render_template("/thank_you.html")
 

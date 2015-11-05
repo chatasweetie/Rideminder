@@ -22,6 +22,11 @@ class Transit_Request(db.Model):
 	#Defines the relationship from users to queue
     # user = db.relationship("User", backref=db.backref("transit_request", order_by=user_id))
 
+    def complete(self):
+    	"""When a transit_request has been completed, it is updated in the database
+    	as True"""
+	    db.session.excute(self._UPDATE, {"is_finished" : True})
+	    db.session.commit()
     
 
 	def __repr__(self):
@@ -47,14 +52,22 @@ class User(db.Model):
 
 		return "<User user_id: {} first_name: {} last_name: {} email: {}>".format(self.user_id, self.user_name, self.vehicle_id, self.is_finished)
 
-Transit_Request
+
 def adds_to_queue(user_fname, user_lname, user_email, user_phone_num, destination_geo_location, message_type, vehicle_id):
-	"""Takes the form data and inputs into the queue database"""
+	"""Takes the form data and inputs into the transit_request database"""
 	
 	transit_request = Transit_Request(user_fname=user_fname, user_lname=user_lname, user_email=user_email, user_phone_num=user_phone_num, destination_geo_location=destination_geo_location, message_type=message_type, vehicle_id=vehicle_id)
 
 	db.session.add(transit_request)
 	db.session.commit()
+
+
+def list_of_queue_to_process():
+	"""Gets all the transit_request that need to be processed (ie. is_finished = False)"""
+
+	in_query = Transit_Request.query.filter(Transit_Request.is_finished == "false")
+
+	return in_query
 
 
 def connect_to_db(app):
