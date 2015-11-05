@@ -4,6 +4,8 @@ from jinja2 import StrictUndefined
 from flask import Flask, render_template, request, flash, redirect, session
 from flask_debugtoolbar import DebugToolbarExtension
 
+import twilio.twiml
+
 import process_data
 import model
 
@@ -45,6 +47,22 @@ def process_user_info():
 	adds_to_queue(user_fname, user_lname, user_email, user_phone_num, destination_geo_location, message_type, vehicle_id)
 
 	return render_template("/thank_you.html")
+
+
+@app.route("/send_message", methods=['GET', 'POST'])
+def send_message():
+    """Respond and greet the caller by name."""
+ 
+    from_number = request.values.get('From', None)
+    if from_number in callers:
+        message = callers[from_number] + ", thanks for the message!"
+    else:
+        message = "Monkey, thanks for the message!"
+ 
+    resp = twilio.twiml.Response()
+    resp.message(message)
+ 
+    return str(resp)
 
 
 if __name__ == "__main__":

@@ -9,7 +9,8 @@ transit_firebase = firebase.FirebaseApplication("https://publicdata-transit.fire
 WALK_RADIUS = .20
 # the distance that the average person walks to a transit stop that city developers 
 # & transit use to space out their stops, currently sent to 3 city block
-
+line = "N"
+bound = "O"
 
 def gets_a_dic_of_vehicle(vehicle_line):
 	"""Takes in a vehicle line and returns a dictionary of vehicle ids that are in the line
@@ -18,37 +19,47 @@ def gets_a_dic_of_vehicle(vehicle_line):
 	         	...  
 	         	u'5525': True}
 	    How to test when my list is always going to be different! AHH!
+
+	    >>>print gets_a_dic_of_vehicle("N")
+
 	"""
 	line = vehicle_line
 	available_vehicles = transit_firebase.get("sf-muni/routes/", line)
 	
 	return available_vehicles
 
-def validates_bound_direction_of_vehicles_in_line(dic_vehicles_for_line, bound):
+def validates_bound_direction_of_vehicles_in_line(dic_vehicles_for_line, bound_dir):
 	"""From a dictionary of vehicles in a line, it'll filter for the ones going the 
 	corrent bound direction, 
 	O = Outboud, I = Inboud"""
 
 	available_vehicle_with_direction = []
+	bound = bound_dir
+
 	for vehicle in dic_vehicles_for_line:
 		vehicle_id = vehicle
-		# try:
-		vehicle_dirTag = firebase.get("sf-muni/vehicles/" + vehicle_id, "dirTag")
-		if vehicle_dirTag:
-			if vehicle_dirTag.find(bound) != -1:
-				available_vehicle_with_direction.append(vehicle)
-		# except AttributeError:
-			# pass
+		print "vehicle_id", vehicle_id
+		try:
+			vehicle_dirTag = firebase.get("sf-muni/vehicles/" + vehicle_id, "dirTag")
+			if vehicle_dirTag:
+				if vehicle_dirTag.find(bound) != -1:
+					available_vehicle_with_direction.append(vehicle)
+		except AttributeError:
+			pass
 	return available_vehicle_with_direction
 
+			
 
 def gets_geolocation_of_a_vehicle(vehicle_id):
 	"""With the vehicle id, it gets from firebase the current latitude and longitude
 	of the vehicle and returns it as a geolocation"""
+	print "doing the gets_geolocation_of_a_vehicle, vehicle id is: ", vehicle_id
 	try:
 		vehicle_lat = firebase.get("sf-muni/vehicles/" + vehicle_id, "lat")
 		vehicle_lon = firebase.get("sf-muni/vehicles/" + vehicle_id, "lon")
 		vehicle_geolocation = (vehicle_lat, vehicle_lon)
+	except AttributeError:
+		pass
 
 	return vehicle_geolocation
 
@@ -73,6 +84,9 @@ def sorts_vehicles_dic_by_distance(vehicle_dictionary):
 	
 	return vehicles_sorted_by_vincenity
 
+class BreakIt(Exception): pass
+"""To be able to break out of nested loops"""
+
 
 def selects_closest_vehicle(vehicle_list1, vehicle_list2):
 	"""From two list of distance, vehicle id, returns the closest vehicleid
@@ -84,15 +98,21 @@ def selects_closest_vehicle(vehicle_list1, vehicle_list2):
 		vehicle_list2 = [[(0.016675650192621124, u'1426'), (0.048622709177496184, u'1438'), (0.3983583482037339, u'1484'), (0.5805606158286056, u'1539'), (0.6169215360786691, u'1520')]
 		
 	"""
-	for num in range(len(vehicle_list1)):
-		if vehicle_list2[0][1] == vehicle_list1[num][1]:
-			if vehicle_list2[0][0] <= vehicle_list1[num][0]:
-				return vehicle_list2[0][1]
-			else:
-				for num in range(len(vehicle_list1)):
-					if vehicle_list2[1][1] == vehicle_list1[num][1]:
-						if vehicle_list2[1][0] <= vehicle_list1[num][0]:
-							return vehicle_list2[1][1]
+	vehicle_id = -1
+	try:
+	    for vv2 in range(len(vehicle_list1)):
+			for vv1 in range(len(vehicle_list1)):
+				if vehicle_list1[vv2][1] == vehicle_list1[vv1][1]:
+					if vehicle_list1[vv2][0] <= vehicle_list1[vv1][0]:
+						vehicle_id = vehicle_list1[vv2][1]
+	                	raise BreakIt
+	except BreakIt:
+		pass
+
+	if vehicle_id[0] == -1:
+		vehicle_id = vehicle_list2[0][1]
+
+	return vehicle_id
 
 
 def processes_line_and_bound_selects_closest_vehicle(line, bound):
@@ -123,7 +143,7 @@ def processes_queue():
 			# edit is_finished to True
 			print "All done"
 			request_id.complete
-			
+
 
 
 
