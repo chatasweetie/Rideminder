@@ -23,23 +23,21 @@ app.jinja_env.undefined = StrictUndefined
 @app.route("/")
 def index():
     """Homepage."""
-    
+    list_of_available_lines = gets_a_list_of_available_line()
 
-    return render_template("homepage.html")
+    return render_template("homepage.html", list_of_available_lines=list_of_available_lines)
 
 @app.route("/user_input", methods=["POST"])
 def process_user_info():
 	"""recieves the user data and sends data to appropiate processes"""
-	user_fname = request.form.get("user_fname")
-	user_lname = request.form.get("user_lname")
-	user_email = request.form.get("user_email")
-	user_phone_num = request.form.get("user_phone_num")
+	user_fname = request.form.get("fname")
+	user_lname = request.form.get("lname")
+	user_email = request.form.get("email")
+	user_phone_num = request.form.get("phone")
 	line = request.form.get("line")
 	bound = request.form.get("bound")
 	destination_geo_location = request.form.get("destination_geo_location")
 	user_geolocation = request.form.get("user_geolocation")
-	message_type = request.form.get("message_type")
-	user_contact_info = request.form.get("user_contact_info")
 
 
 	vehicle_id = processes_line_and_bound_selects_closest_vehicle(line, bound)

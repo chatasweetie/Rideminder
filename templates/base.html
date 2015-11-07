@@ -1,21 +1,56 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
 <head>
-	<!-- links to firebase for javascript to do magic! -->	
-	<script src='https://cdn.firebase.com/js/client/2.2.1/firebase.js'></script>
-	<script src="https://maps.googleapis.com/maps/api/js"></script>
-	<script src="https://code.jquery.com/jquery.js"></script>
-	<link rel="stylesheet" type="text/css" href="css/styling.css">
+  <title>Transit Alert</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Transit Alert</title>
+  <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" type="text/css" href="css/styling.css">
 </head>
-<body>
-    <div class="content container">
-        <div class="row">
-            <div class="col-md-12 map" id="map">
 
-           {% block content %} Shmagoo. put your content here {% endblock %}
-            </div>
-        </div>
-    </div>
+<body>
+  <nav class="navbar navbar-default">
+    <div class="container-fluid">
+      <!-- Brand and toggle get grouped for better mobile display -->
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="#">Brand</a>
+      </div>
+
+      <!-- Collect the nav links, forms, and other content for toggling -->
+      <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+        <ul class="nav navbar-nav">
+          <li class="active"><a href="#">Movies <span class="sr-only">(current)</span></a></li>
+          <li><a href="#">Users</a></li>
+        </ul>
+
+        <ul class="nav navbar-nav navbar-right">
+        </ul>
+      </div><!-- /.navbar-collapse -->
+    </div><!-- /.container-fluid -->
+  </nav>
+
+
+
+  {% with messages = get_flashed_messages() %}
+    {% if messages %}
+      <ul class=flashes>
+          {% for message in messages %}
+              <li>{{ message }}</li>
+          {% endfor %}
+      </ul>
+    {% endif %}
+  {% endwith %}
+
+  <hr>
+
+  {% block content %} Shmagoo. put your content here {% endblock %}
 
 </body>
 </html>

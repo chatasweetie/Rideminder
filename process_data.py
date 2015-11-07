@@ -3,6 +3,7 @@ from firebase import firebase
 from geopy.distance import vincenty
 from time import sleep
 
+
 # Connects to the public transit API
 transit_firebase = firebase.FirebaseApplication("https://publicdata-transit.firebaseio.com/", None)
 
@@ -12,7 +13,25 @@ WALK_RADIUS = .20
 line = "N"
 bound = "O"
 
-def gets_a_dic_of_vehicle(vehicle_line):
+def gets_a_list_of_available_line():
+	"""gets all the available lines from firebase into a list
+
+		>>> gets_a_list_of_avialbe_line()
+		[u'56', u'54', u'43', u'60', u'61', u'31BX', u'49', u'66', u'67', u'1AX', u'KT', 
+		...
+		u'37', u'36', u'35', u'52', u'33', u'38R', u'48', u'5R', u'57', u'38BX']
+	"""
+
+	available_lines = []
+	
+	available_lines_raw = transit_firebase.get("sf-muni/", "routes")
+
+	for line in available_lines_raw:
+		available_lines.append(line)
+	
+	return sorted(available_lines)
+
+def gets_a_dic_of_vehicle(line):
 	"""Takes in a vehicle line and returns a dictionary of vehicle ids that are in the line
 	    output:{u'5488': True, 
 	         	u'5604': True, 
@@ -23,7 +42,6 @@ def gets_a_dic_of_vehicle(vehicle_line):
 	    >>>print gets_a_dic_of_vehicle("N")
 
 	"""
-	line = vehicle_line
 	available_vehicles = transit_firebase.get("sf-muni/routes/", line)
 	
 	return available_vehicles
@@ -33,14 +51,15 @@ def validates_bound_direction_of_vehicles_in_line(dic_vehicles_for_line, bound_d
 	corrent bound direction, 
 	O = Outboud, I = Inboud"""
 
+
 	available_vehicle_with_direction = []
 	bound = bound_dir
 
 	for vehicle in dic_vehicles_for_line:
 		vehicle_id = vehicle
-		print "vehicle_id", vehicle_id
 		try:
-			vehicle_dirTag = firebase.get("sf-muni/vehicles/" + vehicle_id, "dirTag")
+			vehicle_dirTag = transit_firebase.get("sf-muni/vehicles/" + 
+				vehicle_id, "dirTag")
 			if vehicle_dirTag:
 				if vehicle_dirTag.find(bound) != -1:
 					available_vehicle_with_direction.append(vehicle)
@@ -53,13 +72,12 @@ def validates_bound_direction_of_vehicles_in_line(dic_vehicles_for_line, bound_d
 def gets_geolocation_of_a_vehicle(vehicle_id):
 	"""With the vehicle id, it gets from firebase the current latitude and longitude
 	of the vehicle and returns it as a geolocation"""
-	print "doing the gets_geolocation_of_a_vehicle, vehicle id is: ", vehicle_id
 	try:
-		vehicle_lat = firebase.get("sf-muni/vehicles/" + vehicle_id, "lat")
-		vehicle_lon = firebase.get("sf-muni/vehicles/" + vehicle_id, "lon")
+		vehicle_lat = transit_firebase.get("sf-muni/vehicles/" + vehicle_id, "lat")
+		vehicle_lon = transit_firebase.get("sf-muni/vehicles/" + vehicle_id, "lon")
 		vehicle_geolocation = (vehicle_lat, vehicle_lon)
 	except AttributeError:
-		pass
+		vehicle_geolocation = None 
 
 	return vehicle_geolocation
 
@@ -77,8 +95,8 @@ def sorts_vehicles_dic_by_distance(vehicle_dictionary):
 	for vehicle in vehicle_dictionary:
 		vehicle_id = vehicle
 		vehicle_geolocation = gets_geolocation_of_a_vehicle(vehicle_id)
-		distance = (vincenty(powell_station, vehicle_geolocation).miles)
-		if vehicle_lat != None:
+		if vehicle_geolocation is not None:
+			distance = (vincenty(powell_station, vehicle_geolocation).miles)
 			tuples_lat_lon_vehicle.append(tuple([distance, vehicle_id]))
 	vehicles_sorted_by_vincenity = sorted(tuples_lat_lon_vehicle)
 	
@@ -109,8 +127,12 @@ def selects_closest_vehicle(vehicle_list1, vehicle_list2):
 	except BreakIt:
 		pass
 
-	if vehicle_id[0] == -1:
-		vehicle_id = vehicle_list2[0][1]
+	try: 
+		if vehicle_id == -1:
+			vehicle_id = vehicle_list2[0][1]
+			vehicle_id2 = vehicle_list2[1][0]
+	except IndexError:
+		pass
 
 	return vehicle_id
 

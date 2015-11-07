@@ -53,10 +53,10 @@ class User(db.Model):
 		return "<User user_id: {} first_name: {} last_name: {} email: {}>".format(self.user_id, self.user_name, self.vehicle_id, self.is_finished)
 
 
-def adds_to_queue(user_fname, user_lname, user_email, user_phone_num, destination_geo_location, message_type, vehicle_id):
+def adds_to_queue(user_fname, user_lname, user_email, user_phone_num, destination_geo_location, vehicle_id):
 	"""Takes the form data and inputs into the transit_request database"""
 	
-	transit_request = Transit_Request(user_fname=user_fname, user_lname=user_lname, user_email=user_email, user_phone_num=user_phone_num, destination_geo_location=destination_geo_location, message_type=message_type, vehicle_id=vehicle_id)
+	transit_request = Transit_Request(user_fname=user_fname, user_lname=user_lname, user_email=user_email, user_phone_num=user_phone_num, destination_geo_location=destination_geo_location, vehicle_id=vehicle_id)
 
 	db.session.add(transit_request)
 	db.session.commit()
