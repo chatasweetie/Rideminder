@@ -4,7 +4,7 @@ from jinja2 import StrictUndefined
 from flask import Flask, render_template, request, flash, redirect, session
 from flask_debugtoolbar import DebugToolbarExtension
 
-import twilio.twiml
+# import twilio.twiml
 
 import process_data
 import model
@@ -18,6 +18,8 @@ app.secret_key = "123456"
 # Normally, if you use an undefined variable in Jinja2, it fails silently.
 # This is horrible. Fix this so that, instead, it raises an error.
 app.jinja_env.undefined = StrictUndefined
+
+destination_geo_locatio = (37.7846810, -122.4073680)
 
 
 @app.route("/")
@@ -69,8 +71,7 @@ if __name__ == "__main__":
     app.debug = True
 
     connect_to_db(app)
-
-    # Use the DebugToolbar
+    
     DebugToolbarExtension(app)
-
+    
     app.run()

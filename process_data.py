@@ -12,6 +12,7 @@ WALK_RADIUS = .20
 # & transit use to space out their stops, currently sent to 3 city block
 line = "N"
 bound = "O"
+destination_geo_location = (37.7846810, -122.4073680)
 
 def gets_a_list_of_available_line():
 	"""gets all the available lines from firebase into a list
@@ -39,8 +40,10 @@ def gets_a_dic_of_vehicle(line):
 	         	u'5525': True}
 	    How to test when my list is always going to be different! AHH!
 
-	    >>>print gets_a_dic_of_vehicle("N")
-
+	    >>> gets_a_dic_of_vehicle("N")
+		{u'1530': True, u'1536': True, u'1483': True, u'1481': True, u'1486': True, 
+		...
+		u'1510': True, u'1513': True, u'1417': True}
 	"""
 	available_vehicles = transit_firebase.get("sf-muni/routes/", line)
 	
@@ -49,9 +52,14 @@ def gets_a_dic_of_vehicle(line):
 def validates_bound_direction_of_vehicles_in_line(dic_vehicles_for_line, bound_dir):
 	"""From a dictionary of vehicles in a line, it'll filter for the ones going the 
 	corrent bound direction, 
-	O = Outboud, I = Inboud"""
+	O = Outboud, I = Inboud
 
-
+		>>> dic = gets_a_dic_of_vehicle("N")
+		>>> validates_bound_direction_of_vehicles_in_line(dic, "O")
+		[u'1481', u'1486', u'1485', u'1520', u'1422', u'1427', u'1548', u'1502', 
+		u'1446', u'1468', u'1440', u'1476', u'1462', u'1491', u'1493', u'1497', u'1498', 
+		u'1537', u'1510', u'1513']
+	"""
 	available_vehicle_with_direction = []
 	bound = bound_dir
 
@@ -82,7 +90,7 @@ def gets_geolocation_of_a_vehicle(vehicle_id):
 	return vehicle_geolocation
 
 
-def sorts_vehicles_dic_by_distance(vehicle_dictionary):
+def sorts_vehicles_dic_by_distance(vehicle_dictionary, destination_geo_location):
 	"""With a list of vehicles from a line, it'll pull out the real time latitude and longitude and 
 	calucates the distance from Powell Station. Returns a sorted list of tuples:
 
@@ -91,12 +99,11 @@ def sorts_vehicles_dic_by_distance(vehicle_dictionary):
 			(vincenty, vehcile_id)	"""
 
 	tuples_lat_lon_vehicle = []
-	powell_station = (37.7846810, -122.4073680)
 	for vehicle in vehicle_dictionary:
 		vehicle_id = vehicle
 		vehicle_geolocation = gets_geolocation_of_a_vehicle(vehicle_id)
 		if vehicle_geolocation is not None:
-			distance = (vincenty(powell_station, vehicle_geolocation).miles)
+			distance = (vincenty(destination_geo_location, vehicle_geolocation).miles)
 			tuples_lat_lon_vehicle.append(tuple([distance, vehicle_id]))
 	vehicles_sorted_by_vincenity = sorted(tuples_lat_lon_vehicle)
 	
@@ -145,9 +152,9 @@ def processes_line_and_bound_selects_closest_vehicle(line, bound):
 
 	dic_vehicles_for_line = gets_a_dic_of_vehicle(line)
 	bounded_vehicles_for_line = validates_bound_direction_of_vehicles_in_line(dic_vehicles_for_line,bound)
-	list_of_vincenty_first = sorts_vehicles_dic_by_distance(bounded_vehicles_for_line)
+	list_of_vincenty_first = sorts_vehicles_dic_by_distance(bounded_vehicles_for_line, destination_geo_location)
 	sleep(60)
-	list_of_vincenty_second = sorts_vehicles_dic_by_distance(bounded_vehicles_for_line)
+	list_of_vincenty_second = sorts_vehicles_dic_by_distance(bounded_vehicles_for_line, destination_geo_location)
 
 	return selects_closest_vehicle(list_of_vincenty_first,list_of_vincenty_second)
 

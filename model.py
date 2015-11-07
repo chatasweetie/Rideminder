@@ -21,12 +21,11 @@ class Transit_Request(db.Model):
 
 	#Defines the relationship from users to queue
     # user = db.relationship("User", backref=db.backref("transit_request", order_by=user_id))
-
-    def complete(self):
-    	"""When a transit_request has been completed, it is updated in the database
-    	as True"""
-	    db.session.excute(self._UPDATE, {"is_finished" : True})
-	    db.session.commit()
+	
+	def complete():
+		"""When a transit_request has been completed, it is updated in the database as True"""
+		db.session.excute(self._UPDATE, {"is_finished":True})
+		db.session.commit()
     
 
 	def __repr__(self):

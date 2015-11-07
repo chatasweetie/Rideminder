@@ -34,14 +34,17 @@ direction = "O"
 for vehicle in available_buses:
 	vehicle_id = vehicle
 	print "vehicle id ", vehicle_id
-	vehicle_dirTag = firebase.get("sf-muni/vehicles/" + vehicle_id, "dirTag")
-	print "vehicle dirtag ", vehicle_dirTag
-	if vehicle_dirTag:
-		vehicle_value_direction = vehicle_dirTag.find(direction)
-		print "vehicle value direction ", vehicle_value_direction
-		if vehicle_dirTag.find(direction) != -1:
-			available_vehicle_with_direction.append(vehicle)
-			print "the list so far ", available_vehicle_with_direction
+	try:
+		vehicle_dirTag = firebase.get("sf-muni/vehicles/" + vehicle_id, "dirTag")
+		print "vehicle dirtag ", vehicle_dirTag
+		if vehicle_dirTag:
+			vehicle_value_direction = vehicle_dirTag.find(direction)
+			print "vehicle value direction ", vehicle_value_direction
+			if vehicle_dirTag.find(direction) != -1:
+				available_vehicle_with_direction.append(vehicle)
+				print "the list so far ", available_vehicle_with_direction
+	except AttributeError:
+			pass
 
 
 # for bus in available_buses:
@@ -163,11 +166,20 @@ print "sorted", sortedtups2
 class BreakIt(Exception): pass
 
 vehicle_id_closest = -1
+print "vehicle id closest before trying: ", vehicle_id_closest
+
+print "this is sortedtups: ", sortedtups
+print "this is sortedtups2: ", sortedtups2
 
 try:
     for vv2 in range(len(sortedtups2)):
-		for vv1 in range(len(sortedtups)):
-			if sortedtups2[vv2][1] == sortedtups[vv1][1]:
+    	print "for loop, vv2: ", vv2
+    	for vv1 in range(len(sortedtups)):
+			print "for loop, vv1: ", vv1
+			print "vehicle in list 2: ", sortedtups2[vv2][1]
+			print "vehicle in list 2, distance: ", sortedtups2[vv2][0]
+			print "vehicle in list 1: ", sortedtups[vv1][1]
+			if sortedtups2[vv1][1] == sortedtups[vv1][1]:
 				if sortedtups2[vv2][0] <= sortedtups[vv1][0]:
 					vehicle_id_closest = sortedtups2[vv2][1]
 					print "This one won!", vehicle_id_closest
@@ -175,10 +187,34 @@ try:
 except BreakIt:
     pass
 
-if vehicle_id_closest == -1:
-	vehicle_id_closest = sortedtups2[0][1]
-	print "this one didn't win, but its the closest", vehicle_id_closest
 
+
+	# vehicle_id_closest_backup = sortedtups2[1][1]
+	# print "this one didn't win, but its the closest", vehicle_id_closest
+print "vehicle id closest aftering trying: ", vehicle_id_closest
+
+try: 
+	if vehicle_id_closest == -1:
+		vehicle_id_closest = sortedtups2[0][1]
+		vehicle_id_closest2 = sortedtups2[1][0]
+		print "didn't win, but went with: ", vehicle_id_closest
+except IndexError:
+	pass
+
+print "this is my vehicle for the trip: ", vehicle_id_closest
+	# bus_lat = firebase.get("sf-muni/vehicles/" + vehicle_id_closest, "lat")
+	# bus_lon = firebase.get("sf-muni/vehicles/" + vehicle_id_closest, "lon")
+	# geolocation = (bus_lat, bus_lon)
+	# distance = (vincenty(powell_station, geolocation).miles)
+
+	# bus_lat_backup = firebase.get("sf-muni/vehicles/" + vehicle_id_closest_backup, "lat")
+	# bus_lon_backup = firebase.get("sf-muni/vehicles/" + vehicle_id_closest_backup, "lon")
+	# geolocation_backup = (bus_lat_backup, bus_lon_backup)
+	# distance_backup = (vincenty(powell_station, geolocation_backup).miles)
+
+	# if distance > distance_backup:
+	# 	vehicle_id_closest = vehicle_id_closest_backup
+	# 	print "vehicle_id", vehicle_id_closest
 
 
 # for num in range(len(sortedtups)):
