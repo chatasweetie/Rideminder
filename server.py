@@ -4,10 +4,11 @@ from jinja2 import StrictUndefined
 from flask import Flask, render_template, request, flash, redirect, session
 from flask_debugtoolbar import DebugToolbarExtension
 
-# import twilio.twiml
+import twilio.twiml
 
 from process_data import gets_a_list_of_available_line, processes_line_and_bound_selects_closest_vehicle
 import model
+import twilio_process
 
 
 app = Flask(__name__)
@@ -35,20 +36,23 @@ def process_user_info():
 	user_fname = request.form.get("fname")
 	user_lname = request.form.get("lname")
 	user_email = request.form.get("email")
-	user_phone_num = request.form.get("phone")
+	raw_user_phone_num = request.form.get("phone")
 	line = str(request.form.get("line"))
 	bound = str(request.form.get("bound"))
-	# destination_geo_location = request.form.get("destination_geo_location")
+	destination_geo_location = request.form.get("destination_geo_location")
 	# user_geolocation = request.form.get("user_geolocation")
 
+	user_geo_location = (37.7846810, -122.4073680)
 	destination_geo_location = (37.7846810, -122.4073680)
 
 	if bound == "Inbound":
 		bound = "I"
-	else:
+	elif bound == "Outbound":
 		bound = "O"
 
-	vehicle_id = processes_line_and_bound_selects_closest_vehicle(line, bound, destination_geo_location)
+	vehicle_id = processes_line_and_bound_selects_closest_vehicle(line, bound, user_geo_location)
+
+	user_phone_num = convert_to_e164(raw_user_phone_num)
 
 	adds_to_queue(user_fname, user_lname, user_email, user_phone_num, destination_geo_location, message_type, vehicle_id)
 
@@ -58,6 +62,7 @@ def process_user_info():
 @app.route("/send_message", methods=['GET', 'POST'])
 def send_message():
     """Respond and greet the caller by name."""
+
  
     from_number = request.values.get('From', None)
     if from_number in callers:
@@ -66,7 +71,7 @@ def send_message():
         message = "Monkey, thanks for the message!"
  
     resp = twilio.twiml.Response()
-    resp.message(message)
+    resp.message(message_with_3_blocks)
  
     return str(resp)
 

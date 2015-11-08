@@ -2,6 +2,7 @@
 from firebase import firebase
 from geopy.distance import vincenty
 from time import sleep
+import phonenumbers
 
 
 # Connects to the public transit API
@@ -13,6 +14,25 @@ WALK_RADIUS = .20
 # line = "N"
 # bound = "O"
 destination_geo_location = (37.7846810, -122.4073680)
+
+
+def convert_to_e164(raw_phone):
+	"""formats phone numbers to twilio format"""
+    if not raw_phone:
+        return
+
+    if raw_phone[0] == '+':
+        # Phone number may already be in E.164 format.
+        parse_type = None
+    else:
+        # If no country code information present, assume it's a US number
+        parse_type = "US"
+
+    phone_representation = phonenumbers.parse(raw_phone, parse_type)
+    
+    return phonenumbers.format_number(phone_representation,
+        phonenumbers.PhoneNumberFormat.E164)
+
 
 def gets_a_list_of_available_line():
 	"""gets all the available lines from firebase into a list
@@ -90,9 +110,9 @@ def gets_geolocation_of_a_vehicle(vehicle_id):
 	return vehicle_geolocation
 
 
-def sorts_vehicles_dic_by_distance(vehicle_dictionary, destination_geo_location):
+def sorts_vehicles_dic_by_distance(vehicle_dictionary, user_geo_location):
 	"""With a list of vehicles from a line, it'll pull out the real time latitude and longitude and 
-	calucates the distance from Powell Station. Returns a sorted list of tuples:
+	calucates the distance from the user_geolocation. Returns a sorted list of tuples:
 
 		return example:
 		[(0.48780088356531986, u'5525'), (0.6690889326592107, u'5615'), ... (4.708043949446551, u'5507')]
@@ -103,7 +123,7 @@ def sorts_vehicles_dic_by_distance(vehicle_dictionary, destination_geo_location)
 		vehicle_id = vehicle
 		vehicle_geolocation = gets_geolocation_of_a_vehicle(vehicle_id)
 		if vehicle_geolocation is not None:
-			distance = (vincenty(destination_geo_location, vehicle_geolocation).miles)
+			distance = (vincenty(user_geo_location, vehicle_geolocation).miles)
 			tuples_lat_lon_vehicle.append(tuple([distance, vehicle_id]))
 	vehicles_sorted_by_vincenity = sorted(tuples_lat_lon_vehicle)
 	
@@ -124,21 +144,20 @@ def selects_closest_vehicle(vehicle_list1, vehicle_list2):
 		
 	"""
 	vehicle_id = -1
-	try:
-		# vv = (Vincenty, Vehicle_id)
-	    for vv2 in range(len(vehicle_list1)):
-			for vv1 in range(len(vehicle_list1)):
-				if vehicle_list1[vv2][1] == vehicle_list1[vv1][1]:
-					if vehicle_list1[vv2][0] <= vehicle_list1[vv1][0]:
-						vehicle_id = vehicle_list1[vv2][1]
-	                	raise BreakIt
-	except BreakIt:
-		pass
-
+	# vv = (Vincenty, Vehicle_id)
+	for vv2 in range(5):
+		for vv1 in range(5):
+			if vehicle_list1[vv2][1] == vehicle_list1[vv1][1]:
+				if vehicle_list1[vv2][0] <= vehicle_list1[vv1][0]:
+					vehicle_id = vehicle_list1[vv2][1]
+					return vehicle_id
 	try: 
 		if vehicle_id == -1:
 			vehicle_id = vehicle_list2[0][1]
 			vehicle_id2 = vehicle_list2[1][0]
+# TODO: if it doesn't satifiy my reqiurments of being the same or shorter distance,
+# have it track 2 - 3 vehicles and to check them during the queue processsing
+# TODO: add the google map extimated time as well to be processed during queue processsing
 	except IndexError:
 		pass
 
@@ -152,9 +171,9 @@ def processes_line_and_bound_selects_closest_vehicle(line, bound, destination_ge
 
 	dic_vehicles_for_line = gets_a_dic_of_vehicle(line)
 	bounded_vehicles_for_line = validates_bound_direction_of_vehicles_in_line(dic_vehicles_for_line,bound)
-	list_of_vincenty_first = sorts_vehicles_dic_by_distance(bounded_vehicles_for_line, destination_geo_location)
+	list_of_vincenty_first = sorts_vehicles_dic_by_distance(bounded_vehicles_for_line, user_geo_location)
 	sleep(60)
-	list_of_vincenty_second = sorts_vehicles_dic_by_distance(bounded_vehicles_for_line, destination_geo_location)
+	list_of_vincenty_second = sorts_vehicles_dic_by_distance(bounded_vehicles_for_line, user_geo_location)
 	vehicle_id = selects_closest_vehicle(list_of_vincenty_first,list_of_vincenty_second)
 
 	return vehicle_id

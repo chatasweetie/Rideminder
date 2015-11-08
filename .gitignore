@@ -2,3 +2,4 @@ llaves.sh
 env
 *.pyc
 vincentyformula
+templates/css/styling.css
