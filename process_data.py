@@ -10,8 +10,8 @@ transit_firebase = firebase.FirebaseApplication("https://publicdata-transit.fire
 WALK_RADIUS = .20
 # the distance that the average person walks to a transit stop that city developers 
 # & transit use to space out their stops, currently sent to 3 city block
-line = "N"
-bound = "O"
+# line = "N"
+# bound = "O"
 destination_geo_location = (37.7846810, -122.4073680)
 
 def gets_a_list_of_available_line():
@@ -75,7 +75,7 @@ def validates_bound_direction_of_vehicles_in_line(dic_vehicles_for_line, bound_d
 			pass
 	return available_vehicle_with_direction
 
-			
+
 
 def gets_geolocation_of_a_vehicle(vehicle_id):
 	"""With the vehicle id, it gets from firebase the current latitude and longitude
@@ -125,6 +125,7 @@ def selects_closest_vehicle(vehicle_list1, vehicle_list2):
 	"""
 	vehicle_id = -1
 	try:
+		# vv = (Vincenty, Vehicle_id)
 	    for vv2 in range(len(vehicle_list1)):
 			for vv1 in range(len(vehicle_list1)):
 				if vehicle_list1[vv2][1] == vehicle_list1[vv1][1]:
@@ -143,8 +144,7 @@ def selects_closest_vehicle(vehicle_list1, vehicle_list2):
 
 	return vehicle_id
 
-
-def processes_line_and_bound_selects_closest_vehicle(line, bound):
+def processes_line_and_bound_selects_closest_vehicle(line, bound, destination_geo_location):
 	""""With a line and bound direction(O = Outbound, I=Inbound), it'll get the 
 	list of vehicles on the line and gets the vehicle's geolocation twice (a 
 	minute a part) and compares the distance to make sure that the vehicle is 
@@ -155,8 +155,9 @@ def processes_line_and_bound_selects_closest_vehicle(line, bound):
 	list_of_vincenty_first = sorts_vehicles_dic_by_distance(bounded_vehicles_for_line, destination_geo_location)
 	sleep(60)
 	list_of_vincenty_second = sorts_vehicles_dic_by_distance(bounded_vehicles_for_line, destination_geo_location)
+	vehicle_id = selects_closest_vehicle(list_of_vincenty_first,list_of_vincenty_second)
 
-	return selects_closest_vehicle(list_of_vincenty_first,list_of_vincenty_second)
+	return vehicle_id
 
 
 def processes_queue():

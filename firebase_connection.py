@@ -172,18 +172,22 @@ print "this is sortedtups: ", sortedtups
 print "this is sortedtups2: ", sortedtups2
 
 try:
-    for vv2 in range(len(sortedtups2)):
+    for vv2 in range(5):
     	print "for loop, vv2: ", vv2
-    	for vv1 in range(len(sortedtups)):
+    	for vv1 in range(5):
 			print "for loop, vv1: ", vv1
 			print "vehicle in list 2: ", sortedtups2[vv2][1]
 			print "vehicle in list 2, distance: ", sortedtups2[vv2][0]
 			print "vehicle in list 1: ", sortedtups[vv1][1]
-			if sortedtups2[vv1][1] == sortedtups[vv1][1]:
+			
+			if sortedtups2[vv2][1] == sortedtups[vv1][1]:
 				if sortedtups2[vv2][0] <= sortedtups[vv1][0]:
 					vehicle_id_closest = sortedtups2[vv2][1]
 					print "This one won!", vehicle_id_closest
-                	raise BreakIt
+   #              	# raise BreakIt
+			# else: 
+   #          	pass
+
 except BreakIt:
     pass
 

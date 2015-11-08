@@ -6,7 +6,7 @@ from flask_debugtoolbar import DebugToolbarExtension
 
 # import twilio.twiml
 
-import process_data
+from process_data import gets_a_list_of_available_line, processes_line_and_bound_selects_closest_vehicle
 import model
 
 
@@ -36,13 +36,19 @@ def process_user_info():
 	user_lname = request.form.get("lname")
 	user_email = request.form.get("email")
 	user_phone_num = request.form.get("phone")
-	line = request.form.get("line")
-	bound = request.form.get("bound")
-	destination_geo_location = request.form.get("destination_geo_location")
-	user_geolocation = request.form.get("user_geolocation")
+	line = str(request.form.get("line"))
+	bound = str(request.form.get("bound"))
+	# destination_geo_location = request.form.get("destination_geo_location")
+	# user_geolocation = request.form.get("user_geolocation")
 
+	destination_geo_location = (37.7846810, -122.4073680)
 
-	vehicle_id = processes_line_and_bound_selects_closest_vehicle(line, bound)
+	if bound == "Inbound":
+		bound = "I"
+	else:
+		bound = "O"
+
+	vehicle_id = processes_line_and_bound_selects_closest_vehicle(line, bound, destination_geo_location)
 
 	adds_to_queue(user_fname, user_lname, user_email, user_phone_num, destination_geo_location, message_type, vehicle_id)
 
@@ -70,7 +76,7 @@ if __name__ == "__main__":
     # that we invoke the DebugToolbarExtension
     app.debug = True
 
-    connect_to_db(app)
+    # connect_to_db(app)
     
     DebugToolbarExtension(app)
     

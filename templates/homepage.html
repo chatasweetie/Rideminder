@@ -25,8 +25,8 @@
       <div class="form-group">
         <label for="line">Transit Line*</label>
           <select class="form-control">
-            {% for line in lines %}
-            <option>{line}</option>
+            {% for line in list_of_available_lines %}
+            <option>{{ line }}</option>
             {% endfor %}
           </select>
       </div>
