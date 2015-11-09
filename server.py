@@ -39,7 +39,7 @@ def process_user_info():
 	raw_user_phone_num = request.form.get("phone")
 	line = str(request.form.get("line"))
 	bound = str(request.form.get("bound"))
-	destination_geo_location = request.form.get("destination_geo_location")
+	destination = request.form.get("destination")
 	# user_geolocation = request.form.get("user_geolocation")
 
 	user_geo_location = (37.7846810, -122.4073680)
@@ -50,8 +50,9 @@ def process_user_info():
 	elif bound == "Outbound":
 		bound = "O"
 
-	vehicle_id = processes_line_and_bound_selects_closest_vehicle(line, bound, user_geo_location)
-
+	vehicle_id = processes_line_and_bound_selects_closest_vehicle(line, bound, destination_geo_location, user_geo_location)
+	print vehicle_id
+	
 	user_phone_num = convert_to_e164(raw_user_phone_num)
 
 	adds_to_queue(user_fname, user_lname, user_email, user_phone_num, destination_geo_location, message_type, vehicle_id)
@@ -59,21 +60,21 @@ def process_user_info():
 	return render_template("/thank_you.html")
 
 
-@app.route("/send_message", methods=['GET', 'POST'])
-def send_message():
-    """Respond and greet the caller by name."""
+# @app.route("/send_message", methods=['GET', 'POST'])
+# def send_message():
+#     """Respond and greet the caller by name."""
 
  
-    from_number = request.values.get('From', None)
-    if from_number in callers:
-        message = callers[from_number] + ", thanks for the message!"
-    else:
-        message = "Monkey, thanks for the message!"
+#     from_number = request.values.get('From', None)
+#     if from_number in callers:
+#         message = callers[from_number] + ", thanks for the message!"
+#     else:
+#         message = "Monkey, thanks for the message!"
  
-    resp = twilio.twiml.Response()
-    resp.message(message_with_3_blocks)
+#     resp = twilio.twiml.Response()
+#     resp.message(message_with_3_blocks)
  
-    return str(resp)
+#     return str(resp)
 
 
 if __name__ == "__main__":

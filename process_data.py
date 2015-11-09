@@ -18,19 +18,18 @@ destination_geo_location = (37.7846810, -122.4073680)
 
 def convert_to_e164(raw_phone):
 	"""formats phone numbers to twilio format"""
-    if not raw_phone:
-        return
+	if not raw_phone:
+		return
+	if raw_phone[0] == '+':
+		# Phone number may already be in E.164 format.
+		parse_type = None
+	else:
+		# If no country code information present, assume it's a US number
+		parse_type = "US"
 
-    if raw_phone[0] == '+':
-        # Phone number may already be in E.164 format.
-        parse_type = None
-    else:
-        # If no country code information present, assume it's a US number
-        parse_type = "US"
+	phone_representation = phonenumbers.parse(raw_phone, parse_type)
 
-    phone_representation = phonenumbers.parse(raw_phone, parse_type)
-    
-    return phonenumbers.format_number(phone_representation,
+	return phonenumbers.format_number(phone_representation,
         phonenumbers.PhoneNumberFormat.E164)
 
 
@@ -163,7 +162,7 @@ def selects_closest_vehicle(vehicle_list1, vehicle_list2):
 
 	return vehicle_id
 
-def processes_line_and_bound_selects_closest_vehicle(line, bound, destination_geo_location):
+def processes_line_and_bound_selects_closest_vehicle(line, bound, destination_geo_location, user_geolocation):
 	""""With a line and bound direction(O = Outbound, I=Inbound), it'll get the 
 	list of vehicles on the line and gets the vehicle's geolocation twice (a 
 	minute a part) and compares the distance to make sure that the vehicle is 
@@ -171,9 +170,9 @@ def processes_line_and_bound_selects_closest_vehicle(line, bound, destination_ge
 
 	dic_vehicles_for_line = gets_a_dic_of_vehicle(line)
 	bounded_vehicles_for_line = validates_bound_direction_of_vehicles_in_line(dic_vehicles_for_line,bound)
-	list_of_vincenty_first = sorts_vehicles_dic_by_distance(bounded_vehicles_for_line, user_geo_location)
+	list_of_vincenty_first = sorts_vehicles_dic_by_distance(bounded_vehicles_for_line, user_geolocation)
 	sleep(60)
-	list_of_vincenty_second = sorts_vehicles_dic_by_distance(bounded_vehicles_for_line, user_geo_location)
+	list_of_vincenty_second = sorts_vehicles_dic_by_distance(bounded_vehicles_for_line, user_geolocation)
 	vehicle_id = selects_closest_vehicle(list_of_vincenty_first,list_of_vincenty_second)
 
 	return vehicle_id
@@ -187,10 +186,11 @@ def processes_queue():
 	for request_id, vehicle_id, destination_geo_location in in_query:
 		vehicle_geolocation = gets_geolocation_of_a_vehicle(vehicle_id)
 		distance = (vincenty(destination_geo_location, vehicle_geolocation).miles)
+
 		if distance <= WALK_RADIUS:
 			# send alert!
-			# edit is_finished to True
 			print "All done"
+			#is_finished to True
 			request_id.complete
 
 

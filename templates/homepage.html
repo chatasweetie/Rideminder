@@ -7,24 +7,24 @@
     <form class="col-sm-2 control-label" id="transit_request" action="/user_input" method="POST">
       <div class="form-group">
         <label for="fname">First Name</label>
-        <input type="text" class="form-control" id="fname" placeholder="optional">
+        <input type="text" class="form-control" name="fname" placeholder="optional">
       </div>
       <div class="form-group">
         <label for="lname">Last Name</label>
-        <input type="text" class="form-control" id="lname" placeholder="optional">
+        <input type="text" class="form-control" name="lname" placeholder="optional">
       </div>
       <div class="form-group">
         <label for="email">Email</label>
-        <input type="email" class="form-control" id="email" placeholder="optional">
+        <input type="email" class="form-control" name="email" placeholder="optional">
       </div>
       <div class="form-group">
         <label for="phone">Phone Number*</label>
         <!-- http://bootstrapformhelpers.com/phone/ -->
-        <input type="text" class="form-control bfh-phone" value="(555)555-5555" data-format="+1 (ddd) ddd-dddd" id="phone">
+        <input type="text" class="form-control bfh-phone" value="(555)555-5555" data-format="+1 (ddd) ddd-dddd" name="phone">
       </div>
       <div class="form-group">
         <label for="line">Transit Line*</label>
-          <select class="form-control">
+          <select class="form-control" name="line">
             {% for line in list_of_available_lines %}
             <option>{{ line }}</option>
             {% endfor %}
@@ -32,14 +32,14 @@
       </div>
       <div class="form-group">
         <label for="bound">Direction*</label>
-          <select class="form-control">
+          <select class="form-control" name="bound">
             <option>Inbound</option>
             <option>Outbound</option>
           </select>
       </div>
       <div class="form-group">
-        <label for="destination_geo_location">Avaialbe Stops*</label>
-          <select class="form-control">
+        <label for="destination">Avaialbe Stops*</label>
+          <select class="form-control" name="destination">
             
             <option>stop</option>
             
