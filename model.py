@@ -13,9 +13,10 @@ class Transit_Request(db.Model):
 	user_fname = db.Column(db.String(100), nullable=True)
 	user_lname = db.Column(db.String(100), nullable=True)
 	user_email = db.Column(db.String(100), nullable=True)
-	user_phone_num = db.Column(db.Integer, nullable=False)
+	user_phone = db.Column(db.Integer, nullable=False)
 	vehicle_id = db.Column(db.Integer, nullable=False)
-	destination_geo_location = db.Column(db.Integer, nullable=False)
+	destination_lat = db.Column(db.Integer, nullable=False)
+	destination_lon = db.Column(db.Integer, nullable=False)
 	user_id = db.Column(db.String(100), db.ForeignKey('transit_request.user_id'), nullable = True)
 	is_finished = db.Column(db.Boolean, default=False)
 
@@ -52,13 +53,15 @@ class User(db.Model):
 		return "<User user_id: {} first_name: {} last_name: {} email: {}>".format(self.user_id, self.user_name, self.vehicle_id, self.is_finished)
 
 
-def adds_to_queue(user_fname, user_lname, user_email, user_phone_num, destination_geo_location, vehicle_id):
+def adds_to_queue(user_fname, user_lname, user_email, user_phone, destination_lat, destination_lon, vehicle_id):
 	"""Takes the form data and inputs into the transit_request database"""
-	
-	transit_request = Transit_Request(user_fname=user_fname, user_lname=user_lname, user_email=user_email, user_phone_num=user_phone_num, destination_geo_location=destination_geo_location, vehicle_id=vehicle_id)
-
+	print "Im in the adds_to_queue, but havne't done anything yet, userphone: ", user_phone
+	transit_request = Transit_Request(user_fname=user_fname, user_lname=user_lname, user_email=user_email, user_phone=user_phone, destination_lat=destination_lat, destination_lon=destination_lon, vehicle_id=vehicle_id)
+	print "this is after doing the obectiness", transit_request
 	db.session.add(transit_request)
+	print "this is after we add to db"
 	db.session.commit()
+	print "this is after we commit"
 
 
 def list_of_queue_to_process():

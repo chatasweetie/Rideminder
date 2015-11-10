@@ -13,7 +13,15 @@ WALK_RADIUS = .20
 # & transit use to space out their stops, currently sent to 3 city block
 # line = "N"
 # bound = "O"
-destination_geo_location = (37.7846810, -122.4073680)
+# destination_geolocation = (37.7846810, -122.4073680)
+
+user_lat= 37.7846810
+user_lon = -122.4073680
+destination_lat = 37.7846810
+destination_lon = -122.4073680
+bound = "O"
+line = "N"
+
 
 
 def convert_to_e164(raw_phone):
@@ -109,7 +117,7 @@ def gets_geolocation_of_a_vehicle(vehicle_id):
 	return vehicle_geolocation
 
 
-def sorts_vehicles_dic_by_distance(vehicle_dictionary, user_geo_location):
+def sorts_vehicles_dic_by_distance(vehicle_dictionary, user_lat, user_lon):
 	"""With a list of vehicles from a line, it'll pull out the real time latitude and longitude and 
 	calucates the distance from the user_geolocation. Returns a sorted list of tuples:
 
@@ -117,12 +125,13 @@ def sorts_vehicles_dic_by_distance(vehicle_dictionary, user_geo_location):
 		[(0.48780088356531986, u'5525'), (0.6690889326592107, u'5615'), ... (4.708043949446551, u'5507')]
 			(vincenty, vehcile_id)	"""
 
+	user_geolocation = (user_lat,user_lon)
 	tuples_lat_lon_vehicle = []
 	for vehicle in vehicle_dictionary:
 		vehicle_id = vehicle
 		vehicle_geolocation = gets_geolocation_of_a_vehicle(vehicle_id)
 		if vehicle_geolocation is not None:
-			distance = (vincenty(user_geo_location, vehicle_geolocation).miles)
+			distance = (vincenty(user_geolocation, vehicle_geolocation).miles)
 			tuples_lat_lon_vehicle.append(tuple([distance, vehicle_id]))
 	vehicles_sorted_by_vincenity = sorted(tuples_lat_lon_vehicle)
 	
@@ -162,7 +171,8 @@ def selects_closest_vehicle(vehicle_list1, vehicle_list2):
 
 	return vehicle_id
 
-def processes_line_and_bound_selects_closest_vehicle(line, bound, destination_geo_location, user_geolocation):
+	
+def processes_line_and_bound_selects_closest_vehicle(line, bound, destination_lat, destination_lon, user_lat, user_lon):
 	""""With a line and bound direction(O = Outbound, I=Inbound), it'll get the 
 	list of vehicles on the line and gets the vehicle's geolocation twice (a 
 	minute a part) and compares the distance to make sure that the vehicle is 
@@ -170,9 +180,9 @@ def processes_line_and_bound_selects_closest_vehicle(line, bound, destination_ge
 
 	dic_vehicles_for_line = gets_a_dic_of_vehicle(line)
 	bounded_vehicles_for_line = validates_bound_direction_of_vehicles_in_line(dic_vehicles_for_line,bound)
-	list_of_vincenty_first = sorts_vehicles_dic_by_distance(bounded_vehicles_for_line, user_geolocation)
-	sleep(60)
-	list_of_vincenty_second = sorts_vehicles_dic_by_distance(bounded_vehicles_for_line, user_geolocation)
+	list_of_vincenty_first = sorts_vehicles_dic_by_distance(bounded_vehicles_for_line, user_lat, user_lon)
+	sleep(30)
+	list_of_vincenty_second = sorts_vehicles_dic_by_distance(bounded_vehicles_for_line, user_lat, user_lon)
 	vehicle_id = selects_closest_vehicle(list_of_vincenty_first,list_of_vincenty_second)
 
 	return vehicle_id
@@ -180,12 +190,13 @@ def processes_line_and_bound_selects_closest_vehicle(line, bound, destination_ge
 
 def processes_queue():
 	"""Checks the transit_request database to check if vehicle geolocation is within 
-	thresold of users destination_geo_location"""
+	thresold of users destination_geolocation"""
 	in_query = list_of_queue_to_process()
 
-	for request_id, vehicle_id, destination_geo_location in in_query:
+	for request_id, vehicle_id, destination_lat, destination_lon in in_query:
 		vehicle_geolocation = gets_geolocation_of_a_vehicle(vehicle_id)
-		distance = (vincenty(destination_geo_location, vehicle_geolocation).miles)
+		destination_geolocation = (destination_lat, destination_lon)
+		distance = (vincenty(destination_geolocation, vehicle_geolocation).miles)
 
 		if distance <= WALK_RADIUS:
 			# send alert!
