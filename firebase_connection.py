@@ -166,31 +166,34 @@ print "sorted", sortedtups2
 class BreakIt(Exception): pass
 
 vehicle_id_closest = -1
+vehicle_id_closest2 = -1 
 print "vehicle id closest before trying: ", vehicle_id_closest
 
 print "this is sortedtups: ", sortedtups
 print "this is sortedtups2: ", sortedtups2
 
-try:
-    for vv2 in range(5):
-    	print "for loop, vv2: ", vv2
-    	for vv1 in range(5):
-			print "for loop, vv1: ", vv1
-			print "vehicle in list 2: ", sortedtups2[vv2][1]
-			print "vehicle in list 2, distance: ", sortedtups2[vv2][0]
-			print "vehicle in list 1: ", sortedtups[vv1][1]
-			
-			if sortedtups2[vv2][1] == sortedtups[vv1][1]:
-				if sortedtups2[vv2][0] <= sortedtups[vv1][0]:
-					vehicle_id_closest = sortedtups2[vv2][1]
-					print "This one won!", vehicle_id_closest
-   #              	# raise BreakIt
-			# else: 
-   #          	pass
+complete = 0
 
-except BreakIt:
-    pass
-
+while (complete < 3):
+	try:
+	    for vv2 in range(3):
+	    	complete += 1
+	    	print "current complete", complete
+	    	print "for loop, vv2: ", vv2
+	    	for vv1 in range(4):
+				print "for loop, vv1: ", vv1
+				print "vehicle in list 2: ", sortedtups2[vv2][1]
+				print "vehicle in list 2, distance: ", sortedtups2[vv2][0]
+				print "vehicle in list 1: ", sortedtups[vv1][1]
+				print "vehicle in list 1, distance: ", sortedtups[vv1][0]
+				
+				if sortedtups2[vv2][1] == sortedtups[vv1][1]:
+					if sortedtups2[vv2][0] <= sortedtups[vv1][0]:
+						vehicle_id_closest = sortedtups2[vv2][1]
+						print "This one won!", vehicle_id_closest
+						complete = 5
+	except AttributeError:
+			pass 
 
 
 	# vehicle_id_closest_backup = sortedtups2[1][1]
@@ -200,7 +203,7 @@ print "vehicle id closest aftering trying: ", vehicle_id_closest
 try: 
 	if vehicle_id_closest == -1:
 		vehicle_id_closest = sortedtups2[0][1]
-		vehicle_id_closest2 = sortedtups2[1][0]
+		vehicle_id_closest2 = sortedtups2[1][1]
 		print "didn't win, but went with: ", vehicle_id_closest
 except IndexError:
 	pass
@@ -279,9 +282,25 @@ while (x < 20):
 		print "my vehicle is ", distance
 		print "my vehicle geolocation: ", vehicle_geolocation
 		print "my vehicle is near my home"
+		x = 100
 		break
 	print "my vehicle is ", distance
 	print "my vehicle geolocation: ", vehicle_geolocation
+	if vehicle_id_closest2 != -1:
+		vehicle_lat = firebase.get("sf-muni/vehicles/" + vehicle_id_closest2, "lat")
+		vehicle_lon = firebase.get("sf-muni/vehicles/" + vehicle_id_closest2, "lon")
+		vehicle_geolocation = (vehicle_lat, vehicle_lon)
+		distance = (vincenty(whole_foods, vehicle_geolocation).miles)
+		if vehicle_geolocation == None:
+			print "What should I do? I'm not keeping track of where the last one was at, hmm"
+		if distance <= WALK_RADIUS:
+			print "my vehicle is ", distance
+			print "my vehicle geolocation: ", vehicle_geolocation
+			print "my vehicle is near my home"
+			x = 100
+			break
+		print "my vehicle is ", distance
+		print "my vehicle geolocation: ", vehicle_geolocation
 	x += 1
 	time.sleep(30)
 

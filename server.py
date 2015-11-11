@@ -6,7 +6,9 @@ from flask_debugtoolbar import DebugToolbarExtension
 
 import twilio.twiml
 
-from process_data import gets_a_list_of_available_line, processes_line_and_bound_selects_closest_vehicle, convert_to_e164
+from time import sleep
+
+from process_data import gets_a_list_of_available_line, processes_line_and_bound_selects_closest_vehicle, convert_to_e164, processes_queue
 from model import adds_to_queue, connect_to_db
 import twilio_process
 
@@ -77,6 +79,10 @@ def process_user_info():
 #     resp.message(message_with_3_blocks)
  
 #     return str(resp)
+
+while ():
+	processes_queue()
+	sleep(30)
 
 
 if __name__ == "__main__":

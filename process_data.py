@@ -3,6 +3,7 @@ from firebase import firebase
 from geopy.distance import vincenty
 from time import sleep
 import phonenumbers
+from model import list_of_queue_to_process
 
 
 # Connects to the public transit API
@@ -48,6 +49,7 @@ def gets_a_list_of_available_line():
 		[u'56', u'54', u'43', u'60', u'61', u'31BX', u'49', u'66', u'67', u'1AX', u'KT', 
 		...
 		u'37', u'36', u'35', u'52', u'33', u'38R', u'48', u'5R', u'57', u'38BX']
+		runtime = O(n)
 	"""
 
 	available_lines = []
@@ -71,6 +73,7 @@ def gets_a_dic_of_vehicle(line):
 		{u'1530': True, u'1536': True, u'1483': True, u'1481': True, u'1486': True, 
 		...
 		u'1510': True, u'1513': True, u'1417': True}
+		runtime = O(n)
 	"""
 	available_vehicles = transit_firebase.get("sf-muni/routes/", line)
 	
