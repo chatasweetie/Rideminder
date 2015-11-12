@@ -3,13 +3,13 @@ from firebase import firebase
 from geopy.distance import vincenty
 from time import sleep
 import phonenumbers
-from model import list_of_queue_to_process
+
 
 
 # Connects to the public transit API
 transit_firebase = firebase.FirebaseApplication("https://publicdata-transit.firebaseio.com/", None)
 
-WALK_RADIUS = .20
+# WALK_RADIUS = .20
 # the distance that the average person walks to a transit stop that city developers 
 # & transit use to space out their stops, currently sent to 3 city block
 # line = "N"
@@ -191,21 +191,21 @@ def processes_line_and_bound_selects_closest_vehicle(line, bound, destination_la
 	return vehicle_id
 
 
-def processes_queue():
-	"""Checks the transit_request database to check if vehicle geolocation is within 
-	thresold of users destination_geolocation"""
-	in_query = list_of_queue_to_process()
+# def processes_queue():
+	# """Checks the transit_request database to check if vehicle geolocation is within 
+	# thresold of users destination_geolocation"""
+	# in_query = list_of_queue_to_process()
 
-	for request_id, vehicle_id, destination_lat, destination_lon in in_query:
-		vehicle_geolocation = gets_geolocation_of_a_vehicle(vehicle_id)
-		destination_geolocation = (destination_lat, destination_lon)
-		distance = (vincenty(destination_geolocation, vehicle_geolocation).miles)
+	# for request_id, vehicle_id, destination_lat, destination_lon in in_query:
+	# 	vehicle_geolocation = gets_geolocation_of_a_vehicle(vehicle_id)
+	# 	destination_geolocation = (destination_lat, destination_lon)
+	# 	distance = (vincenty(destination_geolocation, vehicle_geolocation).miles)
 
-		if distance <= WALK_RADIUS:
-			# send alert!
-			print "All done"
-			#is_finished to True
-			request_id.complete
+	# 	if distance <= WALK_RADIUS:
+	# 		# send alert!
+	# 		print "All done"
+	# 		#is_finished to True
+	# 		request_id.complete
 
 
 

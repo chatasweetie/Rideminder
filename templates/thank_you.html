@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+
+<div> 
+  <p> Thank you{% if user_fname %} {{ user_fname }}{% endif %}! </p>
+  <p> we will text you at {{ user_phone }} when you are within 3 blocks of your destination </p>
+</div>
+
+{% endblock %}
