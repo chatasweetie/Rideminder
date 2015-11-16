@@ -110,6 +110,7 @@ def validates_bound_direction_of_vehicles_in_line(dic_vehicles_for_line, bound_d
 def gets_geolocation_of_a_vehicle(vehicle_id):
 	"""With the vehicle id, it gets from firebase the current latitude and longitude
 	of the vehicle and returns it as a geolocation"""
+	vehicle_id = str(vehicle_id)
 	try:
 		vehicle_lat = transit_firebase.get("sf-muni/vehicles/" + vehicle_id, "lat")
 		vehicle_lon = transit_firebase.get("sf-muni/vehicles/" + vehicle_id, "lon")
@@ -154,6 +155,7 @@ def selects_closest_vehicle(vehicle_list1, vehicle_list2):
 		vehicle_list2 = [[(0.016675650192621124, u'1426'), (0.048622709177496184, u'1438'), (0.3983583482037339, u'1484'), (0.5805606158286056, u'1539'), (0.6169215360786691, u'1520')]
 		
 	"""
+	# if the sorting vehicles cannot determine the closest bus, it'll be catch in the "try"
 	vehicle_id = -1
 	# vv = (Vincenty, Vehicle_id)
 	for vv2 in range(5):
@@ -191,21 +193,7 @@ def processes_line_and_bound_selects_closest_vehicle(line, bound, destination_la
 	return vehicle_id
 
 
-# def processes_queue():
-	# """Checks the transit_request database to check if vehicle geolocation is within 
-	# thresold of users destination_geolocation"""
-	# in_query = list_of_queue_to_process()
 
-	# for request_id, vehicle_id, destination_lat, destination_lon in in_query:
-	# 	vehicle_geolocation = gets_geolocation_of_a_vehicle(vehicle_id)
-	# 	destination_geolocation = (destination_lat, destination_lon)
-	# 	distance = (vincenty(destination_geolocation, vehicle_geolocation).miles)
-
-	# 	if distance <= WALK_RADIUS:
-	# 		# send alert!
-	# 		print "All done"
-	# 		#is_finished to True
-	# 		request_id.complete
 
 
 
