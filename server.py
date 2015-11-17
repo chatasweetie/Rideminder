@@ -20,8 +20,7 @@ app = Flask(__name__)
 # Required to use Flask sessions and the debug toolbar
 app.secret_key = "123456"
 
-# Normally, if you use an undefined variable in Jinja2, it fails silently.
-# This is horrible. Fix this so that, instead, it raises an error.
+# Make Jinja2 to raise an error instead of failing sliently 
 app.jinja_env.undefined = StrictUndefined
 
 
@@ -61,7 +60,7 @@ def process_user_info():
 	user_phone = convert_to_e164(raw_user_phone_num)
 	print "this is the phone number after twilioness", user_phone
 
-	adds_to_queue(user_fname, user_lname, user_email, user_phone, destination_lat, destination_lon, vehicle_id)
+	adds_to_queue(user_fname, user_lname, user_email, user_phone, vehicle_id, destination_lat, destination_lon)
 
 	return render_template("/thank_you.html", user_fname=user_fname, user_phone=user_phone)
 

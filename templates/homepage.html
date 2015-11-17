@@ -24,7 +24,7 @@
       </div>
       <div class="form-group">
         <label for="line">Transit Line*</label>
-          <select class="form-control" name="line">
+          <select class="form-control" id="line" name="line">
             {% for line in list_of_available_lines %}
             <option>{{ line }}</option>
             {% endfor %}
@@ -32,16 +32,16 @@
       </div>
       <div class="form-group">
         <label for="bound">Direction*</label>
-          <select class="form-control" name="bound">
+          <select class="form-control" id="bound" name="bound">
             <option>Inbound</option>
             <option>Outbound</option>
           </select>
       </div>
       <div class="form-group">
         <label for="destination">Avaialbe Stops*</label>
-          <select class="form-control" name="destination">
+          <select class="form-control"name="destination">
             
-            <option>stop</option>
+            <option id="stops"> </option>
             
           </select>
       </div>
@@ -64,6 +64,7 @@
 
 
 <script src="http://code.jquery.com/jquery.js"></script>
+<script src="/static/javascript/scripts.js"></script>
 <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
 
 {% endblock %}
