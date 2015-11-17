@@ -3,3 +3,10 @@ env
 *.pyc
 vincentyformula
 templates/css/styling.css
+*.DCL
+*.ets
+*.dets
+*.DCD
+*.rdq
+rabbitmq_server*
+*.db

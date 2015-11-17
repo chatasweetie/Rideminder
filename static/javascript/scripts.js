@@ -16,15 +16,14 @@ $("#line").bind("change paste keyup", function() {
         success: function(xml) {
             console.log("success", xml);
             var optionsHtml = "";
+            $("#stops").empty()
             $(xml).find("direction[tag*="+bound+"]>stop").each(function(){                
                 var tag = $(this).attr("tag");
                 var stopName =$(xml).find("route>stop[tag*="+tag+"]").attr("title");
                 var stopLAT = $(xml).find("route>stop[tag*="+tag+"]").attr("lat");
                 var stopLON = $(xml).find("route>stop[tag*="+tag+"]").attr("lon");
-                console.log(stopName);
-                console.log(stopLAT);
-                console.log(stopLON);
-            $("#stops").text(stopname);
+                var geolocation = stopLAT+","+stopLON;
+                $("#stops").append("<option id=\""+stopName+"\" value=\""+geolocation+"\">"+stopName+"</option>");
                 
             });
         }
@@ -49,15 +48,14 @@ $("#bound").bind("change paste keyup", function() {
         success: function(xml) {
             console.log("success", xml);
             var optionsHtml = "";
+            $("#stops").empty()
             $(xml).find("direction[tag*="+bound+"]>stop").each(function(){               
                 var tag = $(this).attr("tag");
-                var stopname =$(xml).find("route>stop[tag*="+tag+"]").attr("title");
                 var stopName =$(xml).find("route>stop[tag*="+tag+"]").attr("title");
                 var stopLAT = $(xml).find("route>stop[tag*="+tag+"]").attr("lat");
                 var stopLON = $(xml).find("route>stop[tag*="+tag+"]").attr("lon");
-                console.log(stopName);
-                console.log(stopLAT);
-                console.log(stopLON);
+                var geolocation = stopLAT+","+stopLON;
+                $("#stops").append("<option id=\""+stopName+"\" value=\""+geolocation+"\">"+stopName+"</option>");
             });
         }
     });
