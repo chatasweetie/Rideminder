@@ -34,17 +34,12 @@ $("#line").bind("change lines", function() {
                 var geolocation = stopLAT+","+stopLON;
                 $("#stops").append("<option id=\""+stopName+"\" value=\""+geolocation+"\">"+stopName+"</option>");
                 locations.push({name: stopName, lat: stopLAT, lng: stopLON});
-                console.log(locations.lat);
             });
-            console.log(locations);
+            
             for (var i=0;i<locations.length;i++){
-
-                console.log(locations[i].lat);
                 var lat = parseFloat(locations[i].lat);
                 var lng = parseFloat(locations[i].lng);
-                console.log(lat);
                 var myLatLng = {lat, lng};
-                console.log(myLatLng);
                 var marker = new google.maps.Marker({
                     position: myLatLng,
                     map: map, 
@@ -64,7 +59,6 @@ $("#bound").bind("change paste keyup", function() {
     }else {
         bound = "I";
     }
-    console.log(bound)
    $(function(){
     $.ajax({
         type:"GET",
@@ -81,7 +75,18 @@ $("#bound").bind("change paste keyup", function() {
                 var stopLON = $(xml).find("route>stop[tag*="+tag+"]").attr("lon");
                 var geolocation = stopLAT+","+stopLON;
                 $("#stops").append("<option id=\""+stopName+"\" value=\""+geolocation+"\">"+stopName+"</option>");
+                locations.push({name: stopName, lat: stopLAT, lng: stopLON});
             });
+            for (var i=0;i<locations.length;i++){
+                var lat = parseFloat(locations[i].lat);
+                var lng = parseFloat(locations[i].lng);
+                var myLatLng = {lat, lng};
+                var marker = new google.maps.Marker({
+                    position: myLatLng,
+                    map: map, 
+                    title:locations[i].name});
+            }
+            locations = [];
         }
     });
 });
