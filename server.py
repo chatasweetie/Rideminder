@@ -43,15 +43,11 @@ def process_user_info():
 	bound = str(request.form.get("bound"))
 	destination = request.form.get("destination")
 	# user_geolocation = request.form.get("user_geolocation")
-	print "this is the destination from the form", destination
+
 	destination_lat, destination_lon = destination.split(",")
-	print "this is the lat after split", destination_lat
-	print "this is the lon after split", destination_lon
 
 	user_lat= 37.7846810
 	user_lon = -122.4073680
-	# destination_lat = 37.7846810
-	# destination_lon = -122.4073680
 
 	if bound == "Inbound":
 		bound = "I"

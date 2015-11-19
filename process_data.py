@@ -9,12 +9,6 @@ import phonenumbers
 # Connects to the public transit API
 transit_firebase = firebase.FirebaseApplication("https://publicdata-transit.firebaseio.com/", None)
 
-# WALK_RADIUS = .20
-# the distance that the average person walks to a transit stop that city developers 
-# & transit use to space out their stops, currently sent to 3 city block
-# line = "N"
-# bound = "O"
-# destination_geolocation = (37.7846810, -122.4073680)
 
 user_lat= 37.7846810
 user_lon = -122.4073680
@@ -26,7 +20,15 @@ line = "N"
 
 
 def convert_to_e164(raw_phone):
-	"""formats phone numbers to twilio format"""
+	"""formats phone numbers to twilio format
+
+		>>> convert_to_e164("383.239.2280")
+		u'+13832392280'
+
+		>>> convert_to_e164("(934)234-2384")
+		u'+19342342384'
+
+	"""
 	if not raw_phone:
 		return
 	if raw_phone[0] == '+':
@@ -49,7 +51,8 @@ def gets_a_list_of_available_line():
 		[u'56', u'54', u'43', u'60', u'61', u'31BX', u'49', u'66', u'67', u'1AX', u'KT', 
 		...
 		u'37', u'36', u'35', u'52', u'33', u'38R', u'48', u'5R', u'57', u'38BX']
-		runtime = O(n)
+
+	runtime = O(n)
 	"""
 
 	available_lines = []
@@ -73,7 +76,8 @@ def gets_a_dic_of_vehicle(line):
 		{u'1530': True, u'1536': True, u'1483': True, u'1481': True, u'1486': True, 
 		...
 		u'1510': True, u'1513': True, u'1417': True}
-		runtime = O(n)
+
+	runtime = O(n)
 	"""
 	available_vehicles = transit_firebase.get("sf-muni/routes/", line)
 	
@@ -89,6 +93,8 @@ def validates_bound_direction_of_vehicles_in_line(dic_vehicles_for_line, bound_d
 		[u'1481', u'1486', u'1485', u'1520', u'1422', u'1427', u'1548', u'1502', 
 		u'1446', u'1468', u'1440', u'1476', u'1462', u'1491', u'1493', u'1497', u'1498', 
 		u'1537', u'1510', u'1513']
+
+	runtime = O(n)
 	"""
 	available_vehicle_with_direction = []
 	bound = bound_dir
@@ -109,7 +115,13 @@ def validates_bound_direction_of_vehicles_in_line(dic_vehicles_for_line, bound_d
 
 def gets_geolocation_of_a_vehicle(vehicle_id):
 	"""With the vehicle id, it gets from firebase the current latitude and longitude
-	of the vehicle and returns it as a geolocation"""
+	of the vehicle and returns it as a geolocation
+
+		>>> print gets_geolocation_of_a_vehicle(1440)
+		(37.73831, -122.46859)
+
+	O(1)
+	"""
 	vehicle_id = str(vehicle_id)
 	try:
 		vehicle_lat = transit_firebase.get("sf-muni/vehicles/" + vehicle_id, "lat")
@@ -125,9 +137,13 @@ def sorts_vehicles_dic_by_distance(vehicle_dictionary, user_lat, user_lon):
 	"""With a list of vehicles from a line, it'll pull out the real time latitude and longitude and 
 	calucates the distance from the user_geolocation. Returns a sorted list of tuples:
 
-		return example:
-		[(0.48780088356531986, u'5525'), (0.6690889326592107, u'5615'), ... (4.708043949446551, u'5507')]
-			(vincenty, vehcile_id)	"""
+		>>> user_lat= 37.7846810
+		>>> user_lon = -122.4073680
+		>>> vehicles = [u'1481', u'1486', u'1485', u'1520', u'1422', u'1427', u'1548', u'1502', u'1446', u'1468', u'1440', u'1476', u'1462', u'1491', u'1493', u'1497', u'1498', u'1537', u'1510', u'1513']
+		>>> sorts_vehicles_dic_by_distance(vehicles, user_lat, user_lon)
+		[(0.4675029273179666, u'1491'), (0.9429363612471457, u'1486'), (1.5363822573248578, u'1427'), (3.4286738183795635, u'1513'), (3.589869930551506, u'1502'), (3.7546085179672253, u'1537'), (4.189935927399749, u'1510'), (4.296159420562188, u'1497'), (4.413953718837516, u'1422'), (4.583456269401759, u'1468'), (4.723279191530982, u'1481'), (4.795304992798109, u'1462'), (4.835914008979579, u'1493'), (4.86068912355308, u'1485'), (4.8904833960219385, u'1498'), (4.8949167376427, u'1476'), (5.567373476121882, u'1440'), (5.582678497970494, u'1520'), (6.304914053712481, u'1548'), (7956.1553552570285, u'1446')]
+
+		"""
 
 	user_geolocation = (user_lat,user_lon)
 	tuples_lat_lon_vehicle = []
@@ -141,19 +157,19 @@ def sorts_vehicles_dic_by_distance(vehicle_dictionary, user_lat, user_lon):
 	
 	return vehicles_sorted_by_vincenity
 
-class BreakIt(Exception): pass
-"""To be able to break out of nested loops"""
-
 
 def selects_closest_vehicle(vehicle_list1, vehicle_list2):
 	"""From two list of distance, vehicle id, returns the closest vehicleid
 	Compares the vincity distance of the first vehicle of the first dictionary to the 
 	second dictionary to validate if its getting smaller (closer), if not then validates 
 	the second vehicle distance.
-	example:
-		vehicle_list1 = [(0.12315312469250524, u'1426'), (0.12315312469250524, u'1438'), (0.4675029273179666, u'1520'), (0.4675029273179666, u'1539'), (0.4926871038219716, u'1484')]
-		vehicle_list2 = [[(0.016675650192621124, u'1426'), (0.048622709177496184, u'1438'), (0.3983583482037339, u'1484'), (0.5805606158286056, u'1539'), (0.6169215360786691, u'1520')]
-		
+
+		>>> vehicle_list1 = [(0.12315312469250524, u'1426'), (0.12315312469250524, u'1438'), (0.4675029273179666, u'1520'), (0.4675029273179666, u'1539'), (0.4926871038219716, u'1484')]
+		>>> vehicle_list2 = [(0.016675650192621124, u'1426'), (0.048622709177496184, u'1438'), (0.3983583482037339, u'1484'), (0.5805606158286056, u'1539'), (0.6169215360786691, u'1520')]
+		>>> print selects_closest_vehicle(vehicle_list1, vehicle_list2)
+		1426
+
+	O(n^2)
 	"""
 	# if the sorting vehicles cannot determine the closest bus, it'll be catch in the "try"
 	vehicle_id = -1

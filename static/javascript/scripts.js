@@ -1,12 +1,21 @@
 
-// finds all the stop ids for N route that is going Inbound
-// http://webservices.nextbus.com/service/publicXMLFeed?command=routeConfig&a=sf-muni&r=1
-
+// default setting for my routes
 var bound = "I";
 var line = "1";
+var locations = [];
+
+    function init(){
+        var mapDiv = document.getElementById("transitmap");
+        var mapOptions= {
+            center: new google.maps.LatLng(37.7846810, -122.4073680),
+            zoom: 15,
+            mapTypeId: google.maps.MapTypeId.ROADMAP
+        };
+        var map = new google.maps.Map(mapDiv, mapOptions);
+
 
 // Takes in the line/route and returns the stop title/name, lat & lon
-$("#line").bind("change paste keyup", function() {
+$("#line").bind("change lines", function() { 
    line = ($(this).val()); 
    $(function(){
     $.ajax({
@@ -24,8 +33,24 @@ $("#line").bind("change paste keyup", function() {
                 var stopLON = $(xml).find("route>stop[tag*="+tag+"]").attr("lon");
                 var geolocation = stopLAT+","+stopLON;
                 $("#stops").append("<option id=\""+stopName+"\" value=\""+geolocation+"\">"+stopName+"</option>");
-                
+                locations.push({name: stopName, lat: stopLAT, lng: stopLON});
+                console.log(locations.lat);
             });
+            console.log(locations);
+            for (var i=0;i<locations.length;i++){
+
+                console.log(locations[i].lat);
+                var lat = parseFloat(locations[i].lat);
+                var lng = parseFloat(locations[i].lng);
+                console.log(lat);
+                var myLatLng = {lat, lng};
+                console.log(myLatLng);
+                var marker = new google.maps.Marker({
+                    position: myLatLng,
+                    map: map, 
+                    title:locations[i].name});
+            }
+            locations = [];
         }
     });
 });
@@ -63,10 +88,9 @@ $("#bound").bind("change paste keyup", function() {
 });
 
 
+}
+    window.onload = init;
 
-
-// click event in JavaScript using JQuery
-// $('stop').on('click', alertMe);
 
 
 
