@@ -3,15 +3,25 @@
 var bound = "I";
 var line = "1";
 var locations = [];
+var markers= [];
 
-    function init(){
-        var mapDiv = document.getElementById("transitmap");
-        var mapOptions= {
-            center: new google.maps.LatLng(37.7846810, -122.4073680),
-            zoom: 15,
-            mapTypeId: google.maps.MapTypeId.ROADMAP
-        };
-        var map = new google.maps.Map(mapDiv, mapOptions);
+function clearMapMarkers() {
+  for (var i = 0; i < markers.length; i++) {
+    markers[i].setMap(null);
+  }
+}
+
+
+
+
+function init(){
+    var mapDiv = document.getElementById("transitmap");
+    var mapOptions= {
+        center: new google.maps.LatLng(37.7846810, -122.4073680),
+        zoom: 15,
+        mapTypeId: google.maps.MapTypeId.ROADMAP
+    };
+    var map = new google.maps.Map(mapDiv, mapOptions);
 
 
 // Takes in the line/route and returns the stop title/name, lat & lon
@@ -25,7 +35,8 @@ $("#line").bind("change lines", function() {
         success: function(xml) {
             console.log("success", xml);
             var optionsHtml = "";
-            $("#stops").empty()
+            $("#stops").empty();
+            clearMapMarkers();
             $(xml).find("direction[tag*="+bound+"]>stop").each(function(){                
                 var tag = $(this).attr("tag");
                 var stopName =$(xml).find("route>stop[tag*="+tag+"]").attr("title");
@@ -35,7 +46,7 @@ $("#line").bind("change lines", function() {
                 $("#stops").append("<option id=\""+stopName+"\" value=\""+geolocation+"\">"+stopName+"</option>");
                 locations.push({name: stopName, lat: stopLAT, lng: stopLON});
             });
-            
+
             for (var i=0;i<locations.length;i++){
                 var lat = parseFloat(locations[i].lat);
                 var lng = parseFloat(locations[i].lng);
@@ -44,6 +55,8 @@ $("#line").bind("change lines", function() {
                     position: myLatLng,
                     map: map, 
                     title:locations[i].name});
+                    markers.push(marker);
+                addInfoWindow(marker, locations[i].name)
             }
             locations = [];
         }
@@ -68,6 +81,7 @@ $("#bound").bind("change paste keyup", function() {
             console.log("success", xml);
             var optionsHtml = "";
             $("#stops").empty()
+            clearMapMarkers();
             $(xml).find("direction[tag*="+bound+"]>stop").each(function(){               
                 var tag = $(this).attr("tag");
                 var stopName =$(xml).find("route>stop[tag*="+tag+"]").attr("title");
@@ -85,6 +99,7 @@ $("#bound").bind("change paste keyup", function() {
                     position: myLatLng,
                     map: map, 
                     title:locations[i].name});
+                    markers.push(marker);
             }
             locations = [];
         }
@@ -93,7 +108,21 @@ $("#bound").bind("change paste keyup", function() {
 });
 
 
+
+
 }
+
+function addInfoWindow(marker, message) {
+
+    var infoWindow = new google.maps.InfoWindow({
+        content: message
+    });
+
+    google.maps.event.addListener(marker, 'click', function () {
+        infoWindow.open(map, marker);
+    });
+}
+
     window.onload = init;
 
 

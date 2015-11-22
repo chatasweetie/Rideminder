@@ -5,7 +5,7 @@ from flask_sqlalchemy import SQLAlchemy
 db = SQLAlchemy()
 
 class Transit_Request(db.Model):
-	"""This is the individual request for notification, aka queue"""
+	"""This is the individual request for notification"""
 
 	__tablename__ = "transit_request"
 	
@@ -19,11 +19,11 @@ class Transit_Request(db.Model):
 	destination_lon = db.Column(db.Integer, nullable=False)
 	is_finished = db.Column(db.Boolean, default=False)
     
-
 	def __repr__(self):
 		"""Provides useful represenation when printed"""
 
 		return "<Transit Request request_id: {} user_fname: {} vehicle id: {} is_finished: {}>".format(self.request_id, self.user_fname, self.vehicle_id, self.is_finished)
+
 
 def adds_to_queue(user_fname, user_lname, user_email, user_phone, vehicle_id, destination_lat, destination_lon):
 	"""Takes the form data and inputs into the transit_request database"""
@@ -34,7 +34,6 @@ def adds_to_queue(user_fname, user_lname, user_email, user_phone, vehicle_id, de
 
 def list_of_is_finished_to_process():
 	"""Gets all the transit_request that need to be processed (ie. is_finished = False)"""
-
 	request_to_process = Transit_Request.query.filter(Transit_Request.is_finished == False).all()
 
 	return request_to_process

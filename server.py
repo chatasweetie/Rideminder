@@ -49,10 +49,6 @@ def process_user_info():
 	user_lat= 37.7846810
 	user_lon = -122.4073680
 
-	if bound == "Inbound":
-		bound = "I"
-	elif bound == "Outbound":
-		bound = "O"
 
 	vehicle_id = processes_line_and_bound_selects_closest_vehicle(line, bound, destination_lat, destination_lon, user_lat, user_lon)
 	print "vehicle_id is: ", vehicle_id

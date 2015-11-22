@@ -1,4 +1,4 @@
-"""Functions to process the data from Firebase """
+"""Functions to process the data, mainly for Firebase data"""
 from firebase import firebase
 from geopy.distance import vincenty
 from time import sleep
@@ -9,14 +9,13 @@ import phonenumbers
 # Connects to the public transit API
 transit_firebase = firebase.FirebaseApplication("https://publicdata-transit.firebaseio.com/", None)
 
-
+# these are for I am working in python -i to play with my functions
 user_lat= 37.7846810
 user_lon = -122.4073680
 destination_lat = 37.7846810
 destination_lon = -122.4073680
 bound = "O"
 line = "N"
-
 
 
 def convert_to_e164(raw_phone):
@@ -47,10 +46,8 @@ def convert_to_e164(raw_phone):
 def gets_a_list_of_available_line():
 	"""gets all the available lines from firebase into a list
 
-		>>> gets_a_list_of_avialbe_line()
-		[u'56', u'54', u'43', u'60', u'61', u'31BX', u'49', u'66', u'67', u'1AX', u'KT', 
-		...
-		u'37', u'36', u'35', u'52', u'33', u'38R', u'48', u'5R', u'57', u'38BX']
+		>>> gets_a_list_of_available_line()
+		[u'1', u'10', u'12', u'14', u'14R', u'14X', u'18', u'19', u'1AX', u'1BX', u'2', u'21', u'22', u'23', u'24', u'25', u'27', u'28', u'28R', u'29', u'3', u'30', u'30X', u'31', u'31AX', u'31BX', u'33', u'35', u'36', u'37', u'38', u'38AX', u'38BX', u'38R', u'39', u'41', u'43', u'44', u'45', u'47', u'48', u'49', u'5', u'52', u'54', u'55', u'56', u'57', u'59', u'5R', u'6', u'60', u'61', u'66', u'67', u'7', u'7R', u'7X', u'8', u'81X', u'82X', u'88', u'89', u'8AX', u'8BX', u'9', u'9R', u'F', u'J', u'KT', u'K_OWL', u'L', u'L_OWL', u'M', u'M_OWL', u'N', u'NX', u'N_OWL', u'T', u'T_OWL']
 
 	runtime = O(n)
 	"""
@@ -66,16 +63,11 @@ def gets_a_list_of_available_line():
 
 def gets_a_dic_of_vehicle(line):
 	"""Takes in a vehicle line and returns a dictionary of vehicle ids that are in the line
-	    output:{u'5488': True, 
-	         	u'5604': True, 
-	         	...  
-	         	u'5525': True}
-	    How to test when my list is always going to be different! AHH!
+	    
+	output example: {u'5488': True, u'5604': True, ... u'5525': True}
 
-	    >>> gets_a_dic_of_vehicle("N")
-		{u'1530': True, u'1536': True, u'1483': True, u'1481': True, u'1486': True, 
-		...
-		u'1510': True, u'1513': True, u'1417': True}
+	    >>> gets_a_dic_of_vehicle("N") # doctest: +ELLIPSIS
+		{u'...': True, ... u'...': True}
 
 	runtime = O(n)
 	"""
@@ -85,14 +77,13 @@ def gets_a_dic_of_vehicle(line):
 
 def validates_bound_direction_of_vehicles_in_line(dic_vehicles_for_line, bound_dir):
 	"""From a dictionary of vehicles in a line, it'll filter for the ones going the 
-	corrent bound direction, 
-	O = Outboud, I = Inboud
+	correct bound direction: "O" = Outboud, "I" = Inboud
+
+	output example: [u'1481', u'1486', ... u'1513']
 
 		>>> dic = gets_a_dic_of_vehicle("N")
-		>>> validates_bound_direction_of_vehicles_in_line(dic, "O")
-		[u'1481', u'1486', u'1485', u'1520', u'1422', u'1427', u'1548', u'1502', 
-		u'1446', u'1468', u'1440', u'1476', u'1462', u'1491', u'1493', u'1497', u'1498', 
-		u'1537', u'1510', u'1513']
+		>>> validates_bound_direction_of_vehicles_in_line(dic, bound)
+		[u'...', u'...', ... u'...']
 
 	runtime = O(n)
 	"""
@@ -117,8 +108,10 @@ def gets_geolocation_of_a_vehicle(vehicle_id):
 	"""With the vehicle id, it gets from firebase the current latitude and longitude
 	of the vehicle and returns it as a geolocation
 
-		>>> print gets_geolocation_of_a_vehicle(1440)
-		(37.73831, -122.46859)
+	example output: (37.73831, -122.46859)
+
+		>>> print gets_geolocation_of_a_vehicle(1403)# doctest: +ELLIPSIS
+		(..., ...)
 
 	O(1)
 	"""
@@ -137,11 +130,13 @@ def sorts_vehicles_dic_by_distance(vehicle_dictionary, user_lat, user_lon):
 	"""With a list of vehicles from a line, it'll pull out the real time latitude and longitude and 
 	calucates the distance from the user_geolocation. Returns a sorted list of tuples:
 
+	example output: [(0.4675029273179666, u'1491'), (0.9429363612471457, u'1486'), ... (7956.1553552570285, u'1446')]
+
 		>>> user_lat= 37.7846810
 		>>> user_lon = -122.4073680
 		>>> vehicles = [u'1481', u'1486', u'1485', u'1520', u'1422', u'1427', u'1548', u'1502', u'1446', u'1468', u'1440', u'1476', u'1462', u'1491', u'1493', u'1497', u'1498', u'1537', u'1510', u'1513']
 		>>> sorts_vehicles_dic_by_distance(vehicles, user_lat, user_lon)
-		[(0.4675029273179666, u'1491'), (0.9429363612471457, u'1486'), (1.5363822573248578, u'1427'), (3.4286738183795635, u'1513'), (3.589869930551506, u'1502'), (3.7546085179672253, u'1537'), (4.189935927399749, u'1510'), (4.296159420562188, u'1497'), (4.413953718837516, u'1422'), (4.583456269401759, u'1468'), (4.723279191530982, u'1481'), (4.795304992798109, u'1462'), (4.835914008979579, u'1493'), (4.86068912355308, u'1485'), (4.8904833960219385, u'1498'), (4.8949167376427, u'1476'), (5.567373476121882, u'1440'), (5.582678497970494, u'1520'), (6.304914053712481, u'1548'), (7956.1553552570285, u'1446')]
+		[(..., u'...'), (..., u'...'), ... (..., u'...')]
 
 		"""
 
@@ -151,6 +146,8 @@ def sorts_vehicles_dic_by_distance(vehicle_dictionary, user_lat, user_lon):
 		vehicle_id = vehicle
 		vehicle_geolocation = gets_geolocation_of_a_vehicle(vehicle_id)
 		if vehicle_geolocation is not None:
+						# vincenity is the distance between two geolocations that 
+						# takes into account the sphereness of the world
 			distance = (vincenty(user_geolocation, vehicle_geolocation).miles)
 			tuples_lat_lon_vehicle.append(tuple([distance, vehicle_id]))
 	vehicles_sorted_by_vincenity = sorted(tuples_lat_lon_vehicle)
@@ -159,7 +156,8 @@ def sorts_vehicles_dic_by_distance(vehicle_dictionary, user_lat, user_lon):
 
 
 def selects_closest_vehicle(vehicle_list1, vehicle_list2):
-	"""From two list of distance, vehicle id, returns the closest vehicleid
+	"""From two list of (distance, vehicle id), returns the closest vehicleid.
+
 	Compares the vincity distance of the first vehicle of the first dictionary to the 
 	second dictionary to validate if its getting smaller (closer), if not then validates 
 	the second vehicle distance.
@@ -197,7 +195,15 @@ def processes_line_and_bound_selects_closest_vehicle(line, bound, destination_la
 	""""With a line and bound direction(O = Outbound, I=Inbound), it'll get the 
 	list of vehicles on the line and gets the vehicle's geolocation twice (a 
 	minute a part) and compares the distance to make sure that the vehicle is 
-	actually coming to my user"""
+	actually coming to my user
+
+	example output: u'1529'
+
+
+		>>> processes_line_and_bound_selects_closest_vehicle(line, bound, destination_lat, destination_lon, user_lat, user_lon) # doctest: +ELLIPSIS
+		u'...'
+
+	"""
 
 	dic_vehicles_for_line = gets_a_dic_of_vehicle(line)
 	bounded_vehicles_for_line = validates_bound_direction_of_vehicles_in_line(dic_vehicles_for_line,bound)
