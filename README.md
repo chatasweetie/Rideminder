@@ -19,10 +19,10 @@ Awesome_Name is a messaging system that will notify user when their transit vehi
 ### Technology Stack
 
 **Application:** Python, Flask, Jinja, SQLAlchemy, Celery, RabbitMQ    
-**APIs:** Firebase, Google Map, Twilio
+**APIs:** Firebase, Google Map, Twilio 
 **Front-End**: HTML/CSS, Bootstrap, JQuery, JavaScript, AJAX,    
 
-### How to run https://cldup.com/-CCK9vvr9h.png locally
+### How to run Awesome_Name locally
 
 Create a virtual environment 
 
