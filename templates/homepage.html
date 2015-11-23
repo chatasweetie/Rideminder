@@ -1,50 +1,37 @@
 {% extends 'base.html' %}
 {% block head %}
   <script src="http://maps.google.com/maps/api/js"></script>
-  <script>
-//   navigator.geolocation.getCurrentPosition(GetLocation);
-//     function GetLocation(location) {
-//     alert(location.coords.latitude);
-//     alert(location.coords.longitude);
-//     alert(location.coords.accuracy);
-// }
-//     function init(){
-//         var mapDiv = document.getElementById("transitmap");
-//         var mapOptions= {
-//             center: new google.maps.LatLng(37.7846810, -122.4073680),
-//             zoom: 15,
-//             mapTypeId: google.maps.MapTypeId.ROADMAP
-//         };
-//         var map = new google.maps.Map(mapDiv, mapOptions);
-// }
-//     window.onload = init;
-  </script>
+
 {% endblock %}
 
 {% block content %}
 
 <div class="row">
+  <div clase="row">
+  <div class="container">
+    <p> Awesome_Name is a messaging system that will notify user when their transit vehicle is within three blocks of their destination via text message.<b><em> * Required for processsing </b></em> </p>
+  </div>
   <div class="container">
     <form class="col-sm-2 control-label" id="transit_request" action="/user_input" method="POST">
       <div class="form-group">
-        <label for="fname">First Name</label>
+        <label for="fname"> Name</label>
         <input type="text" class="form-control" name="fname" placeholder="optional">
       </div>
-      <div class="form-group">
+<!--       <div class="form-group">
         <label for="lname">Last Name</label>
         <input type="text" class="form-control" name="lname" placeholder="optional">
-      </div>
+      </div> -->
       <div class="form-group">
         <label for="email">Email</label>
         <input type="email" class="form-control" name="email" placeholder="optional">
       </div>
       <div class="form-group">
-        <label for="phone">Phone Number*</label>
+        <label for="phone"><em>Phone Number*</em></label>
         <!-- http://bootstrapformhelpers.com/phone/ -->
         <input type="text" class="form-control bfh-phone" value="(555)555-5555" data-format="+1 (ddd) ddd-dddd" name="phone">
       </div>
       <div class="form-group">
-        <label for="line">Transit Line*</label>
+        <label for="line"><em>Transit Line*</em></label>
           <select class="form-control" id="line" name="line">
             {% for line in list_of_available_lines %}
             <option>{{ line }}</option>
@@ -52,14 +39,14 @@
           </select>
       </div>
       <div class="form-group">
-        <label for="bound">Direction*</label>
+        <label for="bound"><em>Direction*</em></label>
           <select class="form-control" id="bound" name="bound">
             <option value="I">Inbound</option>
             <option value="O">Outbound</option>
           </select>
       </div>
       <div class="form-group">
-        <label for="destination">Available Stops*</label>
+        <label for="destination"><em>Available Stops*</em></label>
           <select class="form-control"name="destination" id="stops">
             <!-- this is where $ and Ajax adds the stop options             -->
           </select>
@@ -77,11 +64,6 @@
   </div> <!-- closes container -->
 </div> <!-- closes row -->
 
-
-<div clase="row">
-  <div class="container">
-    <h1> * Required for processsing </h1>
-  </div>
 </div>
 
 

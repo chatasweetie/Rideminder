@@ -4,7 +4,7 @@ Awesome Name
 
 **Description**
 
-Awesome_Name is a messaging system that will notify user when their transit vehicle is within three blocks of their destination via text message. 
+Awesome_Name is a messaging system that will notify user when their transit vehicle is within three blocks of their destination via text message in San Fransico. 
 
 
 ### Screenshots
@@ -42,15 +42,18 @@ Run the app
 ```
 > cd cd rabbitmq_server-3.5.6/
 > sbin/rabbitmq-server 
+```
 
 New terminal 
+```
 > celery worker -l info --beat
+```
 
 New Terminal 
-> python app.py
-
-
 ```
+> python app.py
+```
+
 
 Open your browser and navigate to 
 
@@ -65,3 +68,7 @@ TWILIO_ACCOUNT_SID
 TWILIO_AUTH_TOKEN
 TWILIO_NUMBER
 ```
+
+Note: Can be modified to provide service for many large cities that Firebase support. For the complete list go to:
+
+FIREBASE link

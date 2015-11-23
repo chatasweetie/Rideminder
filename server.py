@@ -50,13 +50,13 @@ def process_user_info():
 	user_lon = -122.4073680
 
 
-	vehicle_id = processes_line_and_bound_selects_closest_vehicle(line, bound, destination_lat, destination_lon, user_lat, user_lon)
-	print "vehicle_id is: ", vehicle_id
+	# vehicle_id = processes_line_and_bound_selects_closest_vehicle(line, bound, destination_lat, destination_lon, user_lat, user_lon)
+	# print "vehicle_id is: ", vehicle_id
 
 	user_phone = convert_to_e164(raw_user_phone_num)
 	print "this is the phone number after twilioness", user_phone
 
-	adds_to_queue(user_fname, user_lname, user_email, user_phone, vehicle_id, destination_lat, destination_lon)
+	# adds_to_queue(user_fname, user_lname, user_email, user_phone, vehicle_id, destination_lat, destination_lon)
 
 	return render_template("/thank_you.html", user_fname=user_fname, user_phone=user_phone)
 

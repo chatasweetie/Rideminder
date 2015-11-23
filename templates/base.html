@@ -10,25 +10,12 @@
     </head>
 
 <body>
-  <nav class="navbar navbar-default">
     <div class="container-fluid">
-      <div class="navbar-header">
         <p class="navbar-brand">Transit Alert</p>
       </div>
     </div><!-- /.container-fluid -->
-  </nav>
 
 
-
-  {% with messages = get_flashed_messages() %}
-    {% if messages %}
-      <ul class=flashes>
-          {% for message in messages %}
-              <li>{{ message }}</li>
-          {% endfor %}
-      </ul>
-    {% endif %}
-  {% endwith %}
 
   <hr>
 

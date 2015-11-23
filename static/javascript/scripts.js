@@ -18,7 +18,7 @@ function init(){
     var mapDiv = document.getElementById("transitmap");
     var mapOptions= {
         center: new google.maps.LatLng(37.7846810, -122.4073680),
-        zoom: 15,
+        zoom: 13,
         mapTypeId: google.maps.MapTypeId.ROADMAP
     };
     var map = new google.maps.Map(mapDiv, mapOptions);
@@ -54,9 +54,10 @@ $("#line").bind("change lines", function() {
                 var marker = new google.maps.Marker({
                     position: myLatLng,
                     map: map, 
-                    title:locations[i].name});
+                    title:locations[i].name,
+                    clickable: true}
+                );
                     markers.push(marker);
-                addInfoWindow(marker, locations[i].name)
             }
             locations = [];
         }
