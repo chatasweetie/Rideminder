@@ -1,10 +1,10 @@
-Awesome Name
+Rideminder
 --------
 
 
 **Description**
 
-Awesome_Name is a messaging system that will notify user when their transit vehicle is within three blocks of their destination via text message in San Fransico. 
+Rideminder is a messaging system that will notify user when their transit vehicle is within three blocks of their destination via text message in San Fransico. 
 
 
 ### Screenshots
@@ -19,8 +19,8 @@ Awesome_Name is a messaging system that will notify user when their transit vehi
 ### Technology Stack
 
 **Application:** Python, Flask, Jinja, SQLAlchemy, Celery, RabbitMQ    
-**APIs:** Firebase, Google Map, Twilio 
-**Front-End**: HTML/CSS, Bootstrap, JQuery, JavaScript, AJAX,    
+**APIs:** Firebase, Google Map, Twilio  
+**Front-End**: HTML/CSS, Bootstrap, JQuery, JavaScript, AJAX    
 
 ### How to run Awesome_Name locally
 
