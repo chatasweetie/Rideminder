@@ -7,15 +7,12 @@ from server import app
 from firebase import firebase
 
 
-
-
 transit_firebase = firebase.FirebaseApplication("https://publicdata-transit.firebaseio.com/", None)
 
 WALK_RADIUS = .20
 
 app.debug = True
 connect_to_db(app)
-
 
 
 @task()

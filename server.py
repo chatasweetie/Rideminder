@@ -17,7 +17,7 @@ from celery import Celery
 
 app = Flask(__name__)
 
-# Required to use Flask sessions and the debug toolbar
+# Required t,l.o use Flask sessions and the debug toolbar
 app.secret_key = "123456"
 
 # Make Jinja2 to raise an error instead of failing sliently 
@@ -73,7 +73,7 @@ celery.config_from_object('celeryconfig')
 if __name__ == "__main__":
     # We have to set debug=True here, since it has to be True at the point
     # that we invoke the DebugToolbarExtension
-    app.debug = True
+    app.debug = False
 
     connect_to_db(app)
     

@@ -15,7 +15,7 @@ def send_text_message(phone):
 	    client = twilio.rest.TwilioRestClient(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN)
 	 
 	    message = client.messages.create(
-	        body="You are within 3 blocks of your destination, thank you for using Transit Alert",
+	        body="You are within 3 blocks of your destination, thank you for using Rideminder",
 	        to=phone,
 	        from_=TWILIO_NUMBER
 	    )
