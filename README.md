@@ -10,7 +10,9 @@ Rideminder is a messaging system that will notify user when their transit vehicl
 ### Screenshots
 
 **Submit Request**
-![alt text](https:// https://github.com/chatasweetie/Transit-Alert/blob/master/static/Rideminder.jpg)
+(https:// https://github.com/chatasweetie/Transit-Alert/blob/master/static/Rideminder.jpg)
+
+<img src="static/Rideminder.jpg">
 
 
 ### Technology Stack
@@ -68,5 +70,5 @@ TWILIO_NUMBER
 
 Note: Rideminder can be modified to provide service for many large cities that Firebase support. For the complete list go to:
 
-`Firebase Data Sets: Transit <https://publicdata-transit.firebaseio.com/>`
+Firebase Data Sets: Transit https://publicdata-transit.firebaseio.com/
 
