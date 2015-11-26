@@ -10,7 +10,6 @@ Rideminder is a messaging system that will notify user when their transit vehicl
 ### Screenshots
 
 **Submit Request**
-(https:// https://github.com/chatasweetie/Transit-Alert/blob/master/static/Rideminder.jpg)
 
 <img src="static/Rideminder.jpg">
 
