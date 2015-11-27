@@ -7,7 +7,7 @@ Rideminder
 Rideminder is a messaging system that will notify user when their transit vehicle is within three blocks of their destination via text message in San Fransisco. 
 
 
-### Screenshots
+### Screenshot
 
 **Submit Request**
 
