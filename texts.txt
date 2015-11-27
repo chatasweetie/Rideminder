@@ -1,5 +1,0 @@
-got into mock data class
-got into mock data class for celery
-complete gets a list of aviable lines test 
-testing the selects_closest_vehicle
-complete phone number convertion test
