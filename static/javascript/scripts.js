@@ -113,7 +113,8 @@ if (navigator.geolocation) {
         lat: position.coords.latitude,
         lng: position.coords.longitude,
       };
-
+      $("#lat").append("<option id=\"lat\" value=\""+pos.lat+"\">"+pos.lat+"</option>");
+      $("#lng").append("<option id=\"lng\" value=\""+pos.lng+"\">"+pos.lng+"</option>");
       infoWindow.setPosition(pos);
       infoWindow.setContent('You are here');
       map.setCenter(pos);

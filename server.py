@@ -43,14 +43,13 @@ def process_user_info():
 	line = str(request.form.get("line"))
 	bound = str(request.form.get("bound"))
 	destination = request.form.get("destination")
-	user_geolocation = request.form.get("user_geolocation")
+	user_lat = request.form.get("lat")
+	user_lon = request.form.get("lng")
 
 	destination_lat, destination_lon = destination.split(",")
-	# user_lat, user_lon = user_geolocation.split(",")
 
-	user_lat= 37.7846810
-	user_lon = -122.4073680
-
+	print user_lat
+	print user_lon
 
 	vehicle_id = processes_line_and_bound_selects_closest_vehicle(line, bound, destination_lat, destination_lon, user_lat, user_lon)
 	print "vehicle_id is: ", vehicle_id
@@ -58,12 +57,9 @@ def process_user_info():
 	user_phone = convert_to_e164(raw_user_phone_num)
 	print "this is the phone number after twilioness", user_phone
 
-
-	# For demoing:
 	adds_to_queue(user_fname, user_lname, user_email, user_phone, vehicle_id, destination_lat, destination_lon)
-	# demo_adds_to_queue(user_fname, user_email, user_phone)
 
-	send_text_message(user_phone)
+	# send_text_message(user_phone)
 
 	return render_template("/thank_you.html", user_fname=user_fname, user_phone=user_phone)
 
