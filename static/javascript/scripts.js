@@ -1,4 +1,3 @@
-
 // default setting for my routes
 var bound = "I";
 var line = "1";
@@ -11,7 +10,16 @@ function clearMapMarkers() {
   }
 }
 
+// ask for geolocation of user when they come to my site
+// navigator.geolocation.getCurrentPosition(GetLocation, );
+// function GetLocation(location) {
 
+//     alert(location.coords.latitude);
+//     alert(location.coords.longitude);
+//     alert(location.coords.accuracy);
+// }
+
+var user_geolocation = (37.7846810, -122.4073680)
 
 
 function init(){
@@ -22,6 +30,8 @@ function init(){
         mapTypeId: google.maps.MapTypeId.ROADMAP
     };
     var map = new google.maps.Map(mapDiv, mapOptions);
+
+    var infoWindow = new google.maps.InfoWindow({map: map});
 
 
 // Takes in the line/route and returns the stop title/name, lat & lon
@@ -110,8 +120,33 @@ $("#bound").bind("change paste keyup", function() {
 
 
 
-
+if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(function(position) {
+      var pos = {
+        lat: position.coords.latitude,
+        lng: position.coords.longitude,
+      };
+      
+      infoWindow.setPosition(pos);
+      infoWindow.setContent('You are here');
+      map.setCenter(pos);
+    }, function() {
+      handleLocationError(true, infoWindow, map.getCenter());
+    });
+  } else {
+    // Browser doesn't support Geolocation
+    handleLocationError(false, infoWindow, map.getCenter());
+  }
 }
+
+function handleLocationError(browserHasGeolocation, infoWindow, pos) {
+  infoWindow.setPosition(pos);
+  infoWindow.setContent(browserHasGeolocation ?
+                        'Error: The Geolocation service failed.' :
+                        'Error: Your browser doesn\'t support geolocation.');
+}
+
+
 
 function addInfoWindow(marker, message) {
 
@@ -126,13 +161,3 @@ function addInfoWindow(marker, message) {
 
     window.onload = init;
 
-
-
-
-// ask for geolocation of user when they come to my site
-// navigator.geolocation.getCurrentPosition(GetLocation);
-// function GetLocation(location) {
-//     alert(location.coords.latitude);
-//     alert(location.coords.longitude);
-//     alert(location.coords.accuracy);
-// }

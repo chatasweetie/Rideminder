@@ -13,6 +13,7 @@ from model import Transit_Request
 import model
 from flask_sqlalchemy import SQLAlchemy
 from twilio_process import send_text_message
+from nose.tools import eq_ #to test Celery
 
 # to test:
 # python test.py
@@ -135,8 +136,11 @@ class UnitTestMockDataForCelery(unittest.TestCase):
 		model.db = self.old_db
 
 	def test_process_transit_request(self):
-		results = "<@task: tasks.process_transit_request of <Flask 'server'>:0x10497a490 (v2 compatible)>"
-		self.assertTrue(process_transit_request, results)
+		# results = "<@task: tasks.process_transit_request of <Flask 'server'>:0x10497a490 (v2 compatible)>"
+		# self.assertTrue(process_transit_request, results)
+		rst = task.apply().get()
+		eq_(rst, 8)
+
 
 
 
