@@ -32,6 +32,12 @@ def adds_to_queue(user_fname, user_lname, user_email, user_phone, vehicle_id, de
 	db.session.commit()
 
 
+def demo_adds_to_queue(user_fname, user_email, user_phone):
+	"""For demo day, it takes in the business contacts info"""
+	transit_request = Transit_Request(user_fname=user_fname, user_lname=user_lname, user_email=user_email, user_phone=user_phone, vehicle_id=12345, destination_lat=23, destination_lon=-122)
+	db.session.add(transit_request)
+	db.session.commit()
+
 def list_of_is_finished_to_process():
 	"""Gets all the transit_request that need to be processed (ie. is_finished = False)"""
 	request_to_process = Transit_Request.query.filter(Transit_Request.is_finished == False).all()

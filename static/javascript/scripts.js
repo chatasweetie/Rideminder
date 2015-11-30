@@ -10,14 +10,6 @@ function clearMapMarkers() {
   }
 }
 
-// ask for geolocation of user when they come to my site
-// navigator.geolocation.getCurrentPosition(GetLocation, );
-// function GetLocation(location) {
-
-//     alert(location.coords.latitude);
-//     alert(location.coords.longitude);
-//     alert(location.coords.accuracy);
-// }
 
 var user_geolocation = (37.7846810, -122.4073680)
 
@@ -78,11 +70,6 @@ $("#line").bind("change lines", function() {
 // Takes in the bound/direction and returns the stop title/name, lat & lon
 $("#bound").bind("change paste keyup", function() {
     bound = ($(this).val()); 
-    // if (bound == "Outbound"){
-    //     bound = "O";
-    // }else {
-    //     bound = "I";
-    // }
    $(function(){
     $.ajax({
         type:"GET",
@@ -126,7 +113,7 @@ if (navigator.geolocation) {
         lat: position.coords.latitude,
         lng: position.coords.longitude,
       };
-      
+
       infoWindow.setPosition(pos);
       infoWindow.setContent('You are here');
       map.setCenter(pos);
