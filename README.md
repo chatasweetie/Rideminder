@@ -28,6 +28,10 @@ Rideminder is a messaging system that will notify user when their transit vehicl
 
 ### How to run Rideminder locally
 
+Download RabbitMQ server    
+https://www.rabbitmq.com/
+
+
 Create a virtual environment 
 
 ```
@@ -41,21 +45,21 @@ Install the dependencies
 > pip install -r requirements.txt
 ```
 
-Run the app 
+Run RabbitMQ sever
 
 ```
-> cd cd rabbitmq_server-3.5.6/
+> cd rabbitmq_server-3.5.6/
 > sbin/rabbitmq-server 
 ```
 
-New terminal 
+In a new terminal run Celery worker
 ```
 > celery worker -l info --beat
 ```
 
-New Terminal 
+In a new Terminal run App
 ```
-> python app.py
+> python sever.py
 ```
 
 
