@@ -20,7 +20,13 @@ Rideminder is a messaging system that will notify user when their transit vehicl
 **APIs:** Firebase, Google Map, Twilio  
 **Front-End**: HTML/CSS, Bootstrap, JQuery, JavaScript, AJAX    
 
-### How to run Awesome_Name locally
+### UX Design
+**Color:** Choosen to make accessable to persons with colorblindness
+**Font Sizw**: Large for persons with visual challenges
+**Font Type**: Dyslexia Typeface http://opendyslexic.org/
+
+
+### How to run Rideminder locally
 
 Create a virtual environment 
 
