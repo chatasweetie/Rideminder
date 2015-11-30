@@ -21,9 +21,9 @@ Rideminder is a messaging system that will notify user when their transit vehicl
 **Front-End**: HTML/CSS, Bootstrap, JQuery, JavaScript, AJAX    
 
 ### UX Design
-**Color:** Choosen to make accessable to persons with colorblindness
-**Font Sizw**: Large for persons with visual challenges
-**Font Type**: Dyslexia Typeface http://opendyslexic.org/
+**Color:** Choosen to make accessable to persons with colorblindness 
+**Font Sizw**: Large for persons with visual challenges 
+**Font Type**: Dyslexia Typeface http://opendyslexic.org/g 
 
 
 ### How to run Rideminder locally
