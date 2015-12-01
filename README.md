@@ -42,7 +42,7 @@ Create a virtual environment
 Install the dependencies
 
 ```
-> pip install -r requirements.txt
+> pip install -r requriments.txt
 ```
 
 Run RabbitMQ sever
@@ -81,3 +81,5 @@ Note: Rideminder can be modified to provide service for many large cities that F
 
 Firebase Data Sets: Transit https://publicdata-transit.firebaseio.com/
 
+
+### Technology Stack
