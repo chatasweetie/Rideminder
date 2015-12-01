@@ -82,4 +82,7 @@ Note: Rideminder can be modified to provide service for many large cities that F
 Firebase Data Sets: Transit https://publicdata-transit.firebaseio.com/
 
 
-### Technology Stack
+### About the Developer    
+Jessica Dene Earley    
+https://www.linkedin.com/in/jessicaearley    
+https://chatasweetie.wordpress.com/    
