@@ -45,7 +45,7 @@ Install the dependencies
 > pip install -r requriments.txt
 ```
 
-Run RabbitMQ sever
+Run RabbitMQ server
 
 ```
 > cd rabbitmq_server-3.5.6/
@@ -59,7 +59,7 @@ In a new terminal run Celery worker
 
 In a new Terminal run App
 ```
-> python sever.py
+> python server.py
 ```
 
 
