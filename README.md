@@ -42,7 +42,7 @@ Create a virtual environment
 Install the dependencies
 
 ```
-> pip install -r requriments.txt
+> pip install -r requirements.txt
 ```
 
 Run RabbitMQ server
