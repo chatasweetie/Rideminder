@@ -3,6 +3,7 @@ from firebase import firebase
 from geopy.distance import vincenty
 from time import sleep
 import phonenumbers
+from geopy.geocoders import Nominatim
 
 
 
@@ -17,6 +18,14 @@ destination_lon = -122.4073680
 bound = "O"
 line = "N"
 
+
+def convert_geoloc_to_address(lat, lon):
+	"""changes geolocation to an address for google transit time """
+
+	geolocator = Nominatim()
+	geo = (lat, lon)
+	location = geolocator.reverse(geo)
+	return (location.address)
 
 def convert_to_e164(raw_phone):
 	"""formats phone numbers to twilio format
@@ -208,7 +217,7 @@ def processes_line_and_bound_selects_closest_vehicle(line, bound, destination_la
 	dic_vehicles_for_line = gets_a_dic_of_vehicle(line)
 	bounded_vehicles_for_line = validates_bound_direction_of_vehicles_in_line(dic_vehicles_for_line,bound)
 	list_of_vincenty_first = sorts_vehicles_dic_by_distance(bounded_vehicles_for_line, user_lat, user_lon)
-	sleep(30)
+	sleep(5)
 	list_of_vincenty_second = sorts_vehicles_dic_by_distance(bounded_vehicles_for_line, user_lat, user_lon)
 	vehicle_id = selects_closest_vehicle(list_of_vincenty_first,list_of_vincenty_second)
 
