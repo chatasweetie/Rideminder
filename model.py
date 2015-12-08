@@ -10,13 +10,15 @@ class Transit_Request(db.Model):
 	__tablename__ = "transit_request"
 	
 	request_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
-	user_fname = db.Column(db.String(100), nullable=True)
-	user_lname = db.Column(db.String(100), nullable=True)
-	user_email = db.Column(db.String(100), nullable=True)
+	user_fname = db.Column(db.Text, nullable=True)
+	user_lname = db.Column(db.Text, nullable=True)
+	user_email = db.Column(db.Text, nullable=True)
 	user_phone = db.Column(db.Integer, nullable=False)
 	vehicle_id = db.Column(db.Integer, nullable=False)
 	destination_lat = db.Column(db.Integer, nullable=False)
 	destination_lon = db.Column(db.Integer, nullable=False)
+	# start_time = db.Column(db.Time, nullable=False)
+	# end_time = db.Column(db.Time, nullable=False)
 	is_finished = db.Column(db.Boolean, default=False)
     
 	def __repr__(self):
@@ -24,6 +26,8 @@ class Transit_Request(db.Model):
 
 		return "<Transit Request request_id: {} user_fname: {} vehicle id: {} is_finished: {}>".format(self.request_id, self.user_fname, self.vehicle_id, self.is_finished)
 
+##########################################################################
+# Helper Functions 
 
 def adds_to_queue(user_fname, user_lname, user_email, user_phone, vehicle_id, destination_lat, destination_lon):
 	"""Takes the form data and inputs into the transit_request database"""
@@ -48,8 +52,8 @@ def records_request_complete_db(request):
 def connect_to_db(app):
     """Connect the database to our Flask app."""
 
-    # Configure to use our SQLite database
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///transit.db'
+    app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get("DATABASE_URL", "postgresql:///rideminder")
+    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
     db.app = app
     db.init_app(app)
 
@@ -58,6 +62,6 @@ if __name__ == "__main__":
 	"""will connect to the db"""
 
 	from server import app
-	connect_to_db(app)
-	db.create_all()
+	connect_to_db(app, os.environ.get("DATABASE_URL", "postgresql:///rideminder"))
+	# db.create_all()
 	print "Connected to DB."

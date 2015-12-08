@@ -14,6 +14,7 @@ Jinja2==2.8
 kombu==3.0.29
 MarkupSafe==0.23
 phonenumbers==7.1.1
+psycopg2==2.6.1
 python-firebase==1.2
 pytz==2015.7
 request==0.0.2
