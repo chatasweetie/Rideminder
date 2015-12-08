@@ -1,4 +1,5 @@
 """Transit Alert"""
+import os
 from jinja2 import StrictUndefined
 
 from flask import Flask, render_template, request, flash, redirect, session
@@ -19,7 +20,7 @@ from twilio_process import send_text_message
 app = Flask(__name__)
 
 # Required t,l.o use Flask sessions and the debug toolbar
-app.secret_key = "123456"
+app.config['SECRET_KEY'] = os.environ.get("FLASK_SECRET_KEY", "abcdef")
 
 # Make Jinja2 to raise an error instead of failing sliently 
 app.jinja_env.undefined = StrictUndefined
@@ -63,6 +64,11 @@ def process_user_info():
 
 	return render_template("/thank_you.html", user_fname=user_fname, user_phone=user_phone)
 
+@app.route("/error")
+def error():
+	"""error page"""
+	raise Exception("Error!")
+
 
 # Celery is an open source asynchronous task queue/job queue based on distributed message passing. 
 # It is focused on real-time operation, but supports scheduling as well.
@@ -77,10 +83,15 @@ if __name__ == "__main__":
     # that we invoke the DebugToolbarExtension
     app.debug = False
 
-	PORT = int(os.environ.get("PORT", 5000))
 
-	app.run(debug=True, host="0.0.0.0", port=PORT)
-    
+    connect_to_db(app)
+
+    # Use the DebugToolbar
     DebugToolbarExtension(app)
-    
-    app.run()
+
+    app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
+
+    DEBUG = "NO_DEBUG" not in os.environ
+    PORT = int(os.environ.get("PORT", 5000))
+
+    app.run(host="0.0.0.0", port=PORT, debug=DEBUG)

@@ -1,5 +1,5 @@
 """Class for my database to store user request"""
-
+import os
 from flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy()
@@ -10,9 +10,9 @@ class Transit_Request(db.Model):
 	__tablename__ = "transit_request"
 	
 	request_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
-	user_fname = db.Column(db.Text, nullable=True)
-	user_lname = db.Column(db.Text, nullable=True)
-	user_email = db.Column(db.Text, nullable=True)
+	user_fname = db.Column(db.String(100), nullable=True)
+	user_lname = db.Column(db.String(100), nullable=True)
+	user_email = db.Column(db.String(100), nullable=True)
 	user_phone = db.Column(db.Integer, nullable=False)
 	vehicle_id = db.Column(db.Integer, nullable=False)
 	destination_lat = db.Column(db.Integer, nullable=False)
@@ -63,5 +63,5 @@ if __name__ == "__main__":
 
 	from server import app
 	connect_to_db(app, os.environ.get("DATABASE_URL", "postgresql:///rideminder"))
-	# db.create_all()
+	db.create_all()
 	print "Connected to DB."

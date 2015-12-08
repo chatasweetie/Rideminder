@@ -1,8 +1,6 @@
 llaves.sh
 env
 *.pyc
-vincentyformula
-templates/css/styling.css
 *.DCL
 *.ets
 *.dets
