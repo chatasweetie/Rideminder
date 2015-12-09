@@ -12,7 +12,7 @@ from time import sleep
 from process_data import gets_a_list_of_available_line, processes_line_and_bound_selects_closest_vehicle, convert_to_e164
 from model import adds_to_queue, connect_to_db
 
-from celery import Celery
+# from celery import Celery
 
 from twilio_process import send_text_message
 
