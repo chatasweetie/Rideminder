@@ -71,9 +71,9 @@ def error():
 
 # Celery is an open source asynchronous task queue/job queue based on distributed message passing. 
 # It is focused on real-time operation, but supports scheduling as well.
-celery = Celery(app)
+# celery = Celery(app)
 
-celery.config_from_object('celeryconfig')
+# celery.config_from_object('celeryconfig')
 
 
 
