@@ -26,7 +26,6 @@ app.config['SECRET_KEY'] = os.environ.get("FLASK_SECRET_KEY", "abcdef")
 app.jinja_env.undefined = StrictUndefined
 
 
-
 @app.route("/")
 def index():
     """Homepage."""
