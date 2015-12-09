@@ -13,7 +13,7 @@ class Transit_Request(db.Model):
 	user_fname = db.Column(db.String(100), nullable=True)
 	user_lname = db.Column(db.String(100), nullable=True)
 	user_email = db.Column(db.String(100), nullable=True)
-	user_phone = db.Column(db.Integer, nullable=False)
+	user_phone = db.Column(db.String(100), nullable=False)
 	vehicle_id = db.Column(db.Integer, nullable=False)
 	destination_lat = db.Column(db.Integer, nullable=False)
 	destination_lon = db.Column(db.Integer, nullable=False)
@@ -62,6 +62,6 @@ if __name__ == "__main__":
 	"""will connect to the db"""
 
 	from server import app
-	connect_to_db(app, os.environ.get("DATABASE_URL", "postgresql:///rideminder"))
+	connect_to_db(app)
 	db.create_all()
 	print "Connected to DB."
