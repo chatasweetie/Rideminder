@@ -1,4 +1,5 @@
 # Configuration for Celery
+import os
 
 CELERY_IMPORTS = ('tasks')
 CELERY_IGNORE_RESULT = False
@@ -16,3 +17,5 @@ CELERYBEAT_SCHEDULE = {
         'schedule': crontab(minute='*/1'),
     },
 }
+
+app.BROKER_POOL_LIMIT = 1
