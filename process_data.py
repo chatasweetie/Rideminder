@@ -220,7 +220,7 @@ def processes_line_and_bound_selects_closest_vehicle(line, bound, destination_la
 	print "step 2"
 	list_of_vincenty_first = sorts_vehicles_dic_by_distance(bounded_vehicles_for_line, user_lat, user_lon)
 	print "step 3"
-	# sleep(5)
+	sleep(5)
 	print "step 4"
 	list_of_vincenty_second = sorts_vehicles_dic_by_distance(bounded_vehicles_for_line, user_lat, user_lon)
 	print "step 5"
