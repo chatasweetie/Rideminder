@@ -3,9 +3,9 @@ from twilio.rest import TwilioRestClient
 import os 
 
 # Find these values at https://twilio.com/user/account
-TWILIO_ACCOUNT_SID=os.environ['TWILIO_ACCOUNT_SID']
-TWILIO_AUTH_TOKEN=os.environ['TWILIO_AUTH_TOKEN']
-TWILIO_NUMBER=os.environ['TWILIO_NUMBER']
+TWILIO_ACCOUNT_SID=os.environ.get("TWILIO_ACCOUNT_SID", ['TWILIO_ACCOUNT_SID'])
+TWILIO_AUTH_TOKEN=os.environ.get("TWILIO_AUTH_TOKEN", ['TWILIO_AUTH_TOKEN'])
+TWILIO_NUMBER=os.environ.get("TWILIO_NUMBER",['TWILIO_NUMBER'])
 
 
 def send_text_message(phone):

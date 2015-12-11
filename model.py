@@ -9,7 +9,7 @@ class Transit_Request(db.Model):
 
 	__tablename__ = "transit_request"
 	
-	request_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
+	request_id = db.Column(db.Integer, serial=True, primary_key=True)
 	user_fname = db.Column(db.String(100), nullable=True)
 	user_lname = db.Column(db.String(100), nullable=True)
 	user_email = db.Column(db.String(100), nullable=True)
@@ -52,10 +52,12 @@ def records_request_complete_db(request):
 def connect_to_db(app):
     """Connect the database to our Flask app."""
 
-    app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get("DATABASE_URL", "postgresql:///rideminder")
+    # app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get("DATABASE_URL", "postgresql:///rideminder")
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///transit.db'
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
     db.app = app
     db.init_app(app)
+    db.create_all()
 
 
 if __name__ == "__main__":
