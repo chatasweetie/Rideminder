@@ -7,7 +7,6 @@ db = SQLAlchemy()
 class Transit_Request(db.Model):
 	"""This is the individual request for notification"""
 
-
 	__tablename__ = "transit_request"
 
 	request_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
