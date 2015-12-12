@@ -3,7 +3,7 @@ from geopy.distance import vincenty
 from process_data import gets_geolocation_of_a_vehicle
 from twilio_process import send_text_message
 from model import connect_to_db, list_of_is_finished_to_process, list_of_is_finished_to_process, records_request_complete_db
-from server import app
+from server import app, celery
 from firebase import firebase
 
 
@@ -15,7 +15,7 @@ app.debug = True
 connect_to_db(app)
 
 
-@task()
+@celery.task()
 def process_transit_request():
 	"""Checks the transit_request database for request to be process and checks if vehicle geolocation 
 	is within WALK_RADIUS thresold of users destination_geolocation"""
