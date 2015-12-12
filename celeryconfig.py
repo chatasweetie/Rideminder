@@ -17,5 +17,3 @@ CELERYBEAT_SCHEDULE = {
         'schedule': crontab(minute='*/1'),
     },
 }
-
-app.BROKER_POOL_LIMIT = 1
