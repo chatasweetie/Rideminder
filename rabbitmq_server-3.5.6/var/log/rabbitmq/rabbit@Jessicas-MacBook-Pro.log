@@ -6148,3 +6148,279 @@ Stopped RabbitMQ application
 
 =INFO REPORT==== 4-Dec-2015::23:13:22 ===
 Halting Erlang VM
+
+=INFO REPORT==== 9-Dec-2015::14:32:39 ===
+Starting RabbitMQ 3.5.6 on Erlang 17.5
+Copyright (C) 2007-2015 Pivotal Software, Inc.
+Licensed under the MPL.  See http://www.rabbitmq.com/
+
+=INFO REPORT==== 9-Dec-2015::14:32:39 ===
+node           : rabbit@Jessicas-MacBook-Pro
+home dir       : /Users/chatasweetie
+config file(s) : /Users/chatasweetie/projects/transit-notifier/rabbitmq_server-3.5.6/sbin/../etc/rabbitmq/rabbitmq.config (not found)
+cookie hash    : ELe8UeFGtNblZfMTwTJzyw==
+log            : sbin/../var/log/rabbitmq/rabbit@Jessicas-MacBook-Pro.log
+sasl log       : sbin/../var/log/rabbitmq/rabbit@Jessicas-MacBook-Pro-sasl.log
+database dir   : /Users/chatasweetie/projects/transit-notifier/rabbitmq_server-3.5.6/sbin/../var/lib/rabbitmq/mnesia/rabbit@Jessicas-MacBook-Pro
+
+=INFO REPORT==== 9-Dec-2015::14:32:40 ===
+Memory limit set to 3007MB of 7518MB total.
+
+=INFO REPORT==== 9-Dec-2015::14:32:40 ===
+Disk free limit set to 50MB
+
+=INFO REPORT==== 9-Dec-2015::14:32:40 ===
+Limiting to approx 2460 file handles (2212 sockets)
+
+=INFO REPORT==== 9-Dec-2015::14:32:40 ===
+FHC read buffering:  ON
+FHC write buffering: ON
+
+=INFO REPORT==== 9-Dec-2015::14:32:40 ===
+Priority queues enabled, real BQ is rabbit_variable_queue
+
+=INFO REPORT==== 9-Dec-2015::14:32:40 ===
+msg_store_transient: using rabbit_msg_store_ets_index to provide index
+
+=INFO REPORT==== 9-Dec-2015::14:32:40 ===
+msg_store_persistent: using rabbit_msg_store_ets_index to provide index
+
+=WARNING REPORT==== 9-Dec-2015::14:32:40 ===
+Mnesia('rabbit@Jessicas-MacBook-Pro'): ** WARNING ** Mnesia is overloaded: {dump_log,write_threshold}
+
+=WARNING REPORT==== 9-Dec-2015::14:32:40 ===
+Mnesia('rabbit@Jessicas-MacBook-Pro'): ** WARNING ** Mnesia is overloaded: {dump_log,write_threshold}
+
+=INFO REPORT==== 9-Dec-2015::14:32:41 ===
+started TCP Listener on [::]:5672
+
+=INFO REPORT==== 9-Dec-2015::14:32:41 ===
+Server startup complete; 0 plugins started.
+
+=INFO REPORT==== 9-Dec-2015::14:32:46 ===
+accepting AMQP connection <0.5188.0> (127.0.0.1:62041 -> 127.0.0.1:5672)
+
+=INFO REPORT==== 9-Dec-2015::14:32:46 ===
+accepting AMQP connection <0.5194.0> (127.0.0.1:62042 -> 127.0.0.1:5672)
+
+=INFO REPORT==== 9-Dec-2015::14:32:46 ===
+accepting AMQP connection <0.5215.0> (127.0.0.1:62043 -> 127.0.0.1:5672)
+
+=INFO REPORT==== 9-Dec-2015::14:32:47 ===
+accepting AMQP connection <0.5245.0> (127.0.0.1:62046 -> 127.0.0.1:5672)
+
+=INFO REPORT==== 9-Dec-2015::14:33:00 ===
+accepting AMQP connection <0.5261.0> (127.0.0.1:62049 -> 127.0.0.1:5672)
+
+=INFO REPORT==== 9-Dec-2015::14:34:00 ===
+accepting AMQP connection <0.5281.0> (127.0.0.1:62143 -> 127.0.0.1:5672)
+
+=INFO REPORT==== 9-Dec-2015::14:35:00 ===
+accepting AMQP connection <0.5301.0> (127.0.0.1:62246 -> 127.0.0.1:5672)
+
+=WARNING REPORT==== 9-Dec-2015::14:41:20 ===
+closing AMQP connection <0.5215.0> (127.0.0.1:62043 -> 127.0.0.1:5672):
+connection_closed_abruptly
+
+=WARNING REPORT==== 9-Dec-2015::14:41:21 ===
+closing AMQP connection <0.5281.0> (127.0.0.1:62143 -> 127.0.0.1:5672):
+connection_closed_abruptly
+
+=WARNING REPORT==== 9-Dec-2015::14:41:21 ===
+closing AMQP connection <0.5301.0> (127.0.0.1:62246 -> 127.0.0.1:5672):
+connection_closed_abruptly
+
+=WARNING REPORT==== 9-Dec-2015::14:41:21 ===
+closing AMQP connection <0.5245.0> (127.0.0.1:62046 -> 127.0.0.1:5672):
+connection_closed_abruptly
+
+=WARNING REPORT==== 9-Dec-2015::14:41:21 ===
+closing AMQP connection <0.5261.0> (127.0.0.1:62049 -> 127.0.0.1:5672):
+connection_closed_abruptly
+
+=INFO REPORT==== 9-Dec-2015::14:41:21 ===
+closing AMQP connection <0.5194.0> (127.0.0.1:62042 -> 127.0.0.1:5672)
+
+=INFO REPORT==== 9-Dec-2015::14:41:21 ===
+closing AMQP connection <0.5188.0> (127.0.0.1:62041 -> 127.0.0.1:5672)
+
+=INFO REPORT==== 9-Dec-2015::14:41:22 ===
+Stopping RabbitMQ
+
+=INFO REPORT==== 9-Dec-2015::14:41:22 ===
+stopped TCP Listener on [::]:5672
+
+=INFO REPORT==== 9-Dec-2015::14:41:22 ===
+Stopped RabbitMQ application
+
+=INFO REPORT==== 9-Dec-2015::14:41:22 ===
+Halting Erlang VM
+
+=INFO REPORT==== 11-Dec-2015::14:20:40 ===
+Starting RabbitMQ 3.5.6 on Erlang 17.5
+Copyright (C) 2007-2015 Pivotal Software, Inc.
+Licensed under the MPL.  See http://www.rabbitmq.com/
+
+=INFO REPORT==== 11-Dec-2015::14:20:40 ===
+node           : rabbit@Jessicas-MacBook-Pro
+home dir       : /Users/chatasweetie
+config file(s) : /Users/chatasweetie/projects/transit-notifier/rabbitmq_server-3.5.6/sbin/../etc/rabbitmq/rabbitmq.config (not found)
+cookie hash    : ELe8UeFGtNblZfMTwTJzyw==
+log            : sbin/../var/log/rabbitmq/rabbit@Jessicas-MacBook-Pro.log
+sasl log       : sbin/../var/log/rabbitmq/rabbit@Jessicas-MacBook-Pro-sasl.log
+database dir   : /Users/chatasweetie/projects/transit-notifier/rabbitmq_server-3.5.6/sbin/../var/lib/rabbitmq/mnesia/rabbit@Jessicas-MacBook-Pro
+
+=INFO REPORT==== 11-Dec-2015::14:20:41 ===
+Memory limit set to 3064MB of 7660MB total.
+
+=INFO REPORT==== 11-Dec-2015::14:20:41 ===
+Disk free limit set to 50MB
+
+=INFO REPORT==== 11-Dec-2015::14:20:41 ===
+Limiting to approx 2460 file handles (2212 sockets)
+
+=INFO REPORT==== 11-Dec-2015::14:20:41 ===
+FHC read buffering:  ON
+FHC write buffering: ON
+
+=INFO REPORT==== 11-Dec-2015::14:20:41 ===
+Priority queues enabled, real BQ is rabbit_variable_queue
+
+=INFO REPORT==== 11-Dec-2015::14:20:41 ===
+msg_store_transient: using rabbit_msg_store_ets_index to provide index
+
+=INFO REPORT==== 11-Dec-2015::14:20:41 ===
+msg_store_persistent: using rabbit_msg_store_ets_index to provide index
+
+=INFO REPORT==== 11-Dec-2015::14:20:42 ===
+started TCP Listener on [::]:5672
+
+=INFO REPORT==== 11-Dec-2015::14:20:42 ===
+Server startup complete; 0 plugins started.
+
+=INFO REPORT==== 11-Dec-2015::14:20:48 ===
+accepting AMQP connection <0.5234.0> (127.0.0.1:62456 -> 127.0.0.1:5672)
+
+=INFO REPORT==== 11-Dec-2015::14:20:48 ===
+accepting AMQP connection <0.5240.0> (127.0.0.1:62457 -> 127.0.0.1:5672)
+
+=INFO REPORT==== 11-Dec-2015::14:20:48 ===
+accepting AMQP connection <0.5261.0> (127.0.0.1:62458 -> 127.0.0.1:5672)
+
+=INFO REPORT==== 11-Dec-2015::14:20:51 ===
+accepting AMQP connection <0.5292.0> (127.0.0.1:62467 -> 127.0.0.1:5672)
+
+=INFO REPORT==== 11-Dec-2015::14:21:02 ===
+accepting AMQP connection <0.5307.0> (127.0.0.1:62532 -> 127.0.0.1:5672)
+
+=INFO REPORT==== 11-Dec-2015::14:22:02 ===
+accepting AMQP connection <0.5327.0> (127.0.0.1:62632 -> 127.0.0.1:5672)
+
+=INFO REPORT==== 11-Dec-2015::14:23:02 ===
+accepting AMQP connection <0.5347.0> (127.0.0.1:62704 -> 127.0.0.1:5672)
+
+=WARNING REPORT==== 11-Dec-2015::15:25:24 ===
+closing AMQP connection <0.5261.0> (127.0.0.1:62458 -> 127.0.0.1:5672):
+connection_closed_abruptly
+
+=WARNING REPORT==== 11-Dec-2015::15:25:25 ===
+closing AMQP connection <0.5347.0> (127.0.0.1:62704 -> 127.0.0.1:5672):
+connection_closed_abruptly
+
+=WARNING REPORT==== 11-Dec-2015::15:25:25 ===
+closing AMQP connection <0.5327.0> (127.0.0.1:62632 -> 127.0.0.1:5672):
+connection_closed_abruptly
+
+=WARNING REPORT==== 11-Dec-2015::15:25:25 ===
+closing AMQP connection <0.5307.0> (127.0.0.1:62532 -> 127.0.0.1:5672):
+connection_closed_abruptly
+
+=WARNING REPORT==== 11-Dec-2015::15:25:25 ===
+closing AMQP connection <0.5292.0> (127.0.0.1:62467 -> 127.0.0.1:5672):
+connection_closed_abruptly
+
+=INFO REPORT==== 11-Dec-2015::15:25:25 ===
+closing AMQP connection <0.5240.0> (127.0.0.1:62457 -> 127.0.0.1:5672)
+
+=INFO REPORT==== 11-Dec-2015::15:25:25 ===
+closing AMQP connection <0.5234.0> (127.0.0.1:62456 -> 127.0.0.1:5672)
+
+=INFO REPORT==== 11-Dec-2015::15:25:26 ===
+Stopping RabbitMQ
+
+=INFO REPORT==== 11-Dec-2015::15:25:26 ===
+stopped TCP Listener on [::]:5672
+
+=INFO REPORT==== 11-Dec-2015::15:25:26 ===
+Stopped RabbitMQ application
+
+=INFO REPORT==== 11-Dec-2015::15:25:26 ===
+Halting Erlang VM
+
+=INFO REPORT==== 11-Dec-2015::18:18:59 ===
+Starting RabbitMQ 3.5.6 on Erlang 17.5
+Copyright (C) 2007-2015 Pivotal Software, Inc.
+Licensed under the MPL.  See http://www.rabbitmq.com/
+
+=INFO REPORT==== 11-Dec-2015::18:18:59 ===
+node           : rabbit@Jessicas-MacBook-Pro
+home dir       : /Users/chatasweetie
+config file(s) : /Users/chatasweetie/projects/transit-notifier/rabbitmq_server-3.5.6/sbin/../etc/rabbitmq/rabbitmq.config (not found)
+cookie hash    : ELe8UeFGtNblZfMTwTJzyw==
+log            : sbin/../var/log/rabbitmq/rabbit@Jessicas-MacBook-Pro.log
+sasl log       : sbin/../var/log/rabbitmq/rabbit@Jessicas-MacBook-Pro-sasl.log
+database dir   : /Users/chatasweetie/projects/transit-notifier/rabbitmq_server-3.5.6/sbin/../var/lib/rabbitmq/mnesia/rabbit@Jessicas-MacBook-Pro
+
+=INFO REPORT==== 11-Dec-2015::18:18:59 ===
+Memory limit set to 3046MB of 7617MB total.
+
+=INFO REPORT==== 11-Dec-2015::18:18:59 ===
+Disk free limit set to 50MB
+
+=INFO REPORT==== 11-Dec-2015::18:18:59 ===
+Limiting to approx 2460 file handles (2212 sockets)
+
+=INFO REPORT==== 11-Dec-2015::18:18:59 ===
+FHC read buffering:  ON
+FHC write buffering: ON
+
+=INFO REPORT==== 11-Dec-2015::18:18:59 ===
+Priority queues enabled, real BQ is rabbit_variable_queue
+
+=INFO REPORT==== 11-Dec-2015::18:18:59 ===
+msg_store_transient: using rabbit_msg_store_ets_index to provide index
+
+=INFO REPORT==== 11-Dec-2015::18:18:59 ===
+msg_store_persistent: using rabbit_msg_store_ets_index to provide index
+
+=INFO REPORT==== 11-Dec-2015::18:19:00 ===
+started TCP Listener on [::]:5672
+
+=INFO REPORT==== 11-Dec-2015::18:19:00 ===
+Server startup complete; 0 plugins started.
+
+=INFO REPORT==== 11-Dec-2015::18:20:08 ===
+accepting AMQP connection <0.5636.0> (127.0.0.1:56871 -> 127.0.0.1:5672)
+
+=INFO REPORT==== 11-Dec-2015::18:20:08 ===
+accepting AMQP connection <0.5642.0> (127.0.0.1:56872 -> 127.0.0.1:5672)
+
+=INFO REPORT==== 11-Dec-2015::18:20:08 ===
+accepting AMQP connection <0.5663.0> (127.0.0.1:56873 -> 127.0.0.1:5672)
+
+=INFO REPORT==== 11-Dec-2015::18:20:12 ===
+accepting AMQP connection <0.5694.0> (127.0.0.1:56885 -> 127.0.0.1:5672)
+
+=WARNING REPORT==== 11-Dec-2015::18:20:16 ===
+closing AMQP connection <0.5663.0> (127.0.0.1:56873 -> 127.0.0.1:5672):
+connection_closed_abruptly
+
+=WARNING REPORT==== 11-Dec-2015::18:20:17 ===
+closing AMQP connection <0.5694.0> (127.0.0.1:56885 -> 127.0.0.1:5672):
+connection_closed_abruptly
+
+=INFO REPORT==== 11-Dec-2015::18:20:17 ===
+closing AMQP connection <0.5642.0> (127.0.0.1:56872 -> 127.0.0.1:5672)
+
+=INFO REPORT==== 11-Dec-2015::18:20:17 ===
+closing AMQP connection <0.5636.0> (127.0.0.1:56871 -> 127.0.0.1:5672)
