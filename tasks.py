@@ -12,7 +12,7 @@ transit_firebase = firebase.FirebaseApplication("https://publicdata-transit.fire
 
 WALK_RADIUS = .20
 
-app.debug = True
+app.debug = False
 connect_to_db(app)
 
 
