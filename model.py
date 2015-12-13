@@ -9,7 +9,7 @@ class Transit_Request(db.Model):
 
 	__tablename__ = "transit_request"
 
-	request_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
+	request_id = db.Column(db.Integer, serial=True, primary_key=True)
 	user_fname = db.Column(db.String(100), nullable=True)
 	user_lname = db.Column(db.String(100), nullable=True)
 	user_email = db.Column(db.String(100), nullable=True)
