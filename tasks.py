@@ -5,6 +5,7 @@ from twilio_process import send_text_message
 from model import connect_to_db, list_of_is_finished_to_process, list_of_is_finished_to_process, records_request_complete_db
 from server import app, celery
 from firebase import firebase
+import os
 
 
 transit_firebase = firebase.FirebaseApplication("https://publicdata-transit.firebaseio.com/", None)
@@ -13,15 +14,6 @@ WALK_RADIUS = .20
 
 app.debug = True
 connect_to_db(app)
-
-# Use the DebugToolbar
-DebugToolbarExtension(app)
-
-app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
-
-DEBUG = "NO_DEBUG" not in os.environ
-PORT = int(os.environ.get("PORT", 5000))
-app.run(host="0.0.0.0", port=PORT, debug=DEBUG)
 
 
 

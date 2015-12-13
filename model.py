@@ -31,8 +31,8 @@ class Transit_Request(db.Model):
 
 def adds_to_queue(user_fname, user_lname, user_email, user_phone, vehicle_id, destination_lat, destination_lon):
 	"""Takes the form data and inputs into the transit_request database"""
-	transit_request = Transit_Request(user_fname=user_fname, user_lname=user_lname, user_email=user_email, user_phone=user_phone, vehicle_id=vehicle_id, destination_lat=destination_lat, destination_lon=destination_lon)
-	db.session.add(transit_request)
+	new_transit_request = Transit_Request(user_fname=user_fname, user_lname=user_lname, user_email=user_email, user_phone=user_phone, vehicle_id=vehicle_id, destination_lat=destination_lat, destination_lon=destination_lon)
+	db.session.add(new_transit_request)
 	db.session.commit()
 
 
@@ -52,12 +52,10 @@ def records_request_complete_db(request):
 def connect_to_db(app):
     """Connect the database to our Flask app."""
 
-    # app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get("DATABASE_URL", "postgresql:///rideminder")
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///transit.db'
+    app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get("CLOUDAMQP_URL", "postgresql://localhost/rideminder")
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
     db.app = app
     db.init_app(app)
-    db.create_all()
 
 
 if __name__ == "__main__":
