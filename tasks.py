@@ -14,6 +14,16 @@ WALK_RADIUS = .20
 app.debug = True
 connect_to_db(app)
 
+# Use the DebugToolbar
+DebugToolbarExtension(app)
+
+app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
+
+DEBUG = "NO_DEBUG" not in os.environ
+PORT = int(os.environ.get("PORT", 5000))
+app.run(host="0.0.0.0", port=PORT, debug=DEBUG)
+
+
 
 @celery.task()
 def process_transit_request():
