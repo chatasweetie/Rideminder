@@ -6,13 +6,14 @@ from model import connect_to_db, list_of_is_finished_to_process, list_of_is_fini
 from server import app, celery
 from firebase import firebase
 import os
+from server import app
 
 
 transit_firebase = firebase.FirebaseApplication("https://publicdata-transit.firebaseio.com/", None)
 
 WALK_RADIUS = .20
 
-app.debug = False
+app.debug = True
 connect_to_db(app)
 
 
