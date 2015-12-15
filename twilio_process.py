@@ -10,7 +10,7 @@ TWILIO_NUMBER=os.environ.get("TWILIO_NUMBER",['TWILIO_NUMBER'])
 
 def send_text_message(phone):
 	"""sends the text message to the user once the destination is within WALK_RADIUS"""
-	
+
 	try:
 	    client = twilio.rest.TwilioRestClient(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN)
 	 

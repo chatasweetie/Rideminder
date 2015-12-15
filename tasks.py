@@ -33,6 +33,7 @@ def process_transit_request():
 		print "the distance ", distance
 		if distance <= WALK_RADIUS:
 			# send alert!
+			print "within walking radius"
 			send_text_message(request.user_phone)
 			#is_finished to True
 			records_request_complete_db(request)
