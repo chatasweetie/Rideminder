@@ -9,6 +9,7 @@ BROKER_PORT = 5672
 BROKER_URL=os.environ.get('CLOUDAMQP_URL', 'amqp://')
 CELERY_RESULT_BACKEND = "amqp"
 CELERY_IMPORTS=("tasks",)
+CELERY_RESULT_BACKEND = None
 
 from celery.schedules import crontab
  
