@@ -12,7 +12,8 @@ def send_text_message(phone):
 	"""sends the text message to the user once the destination is within WALK_RADIUS"""
 
 	try:
-	    client = twilio.rest.TwilioRestClient(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN)
+		# twilio.rest.TwilioRestClient
+	    client = TwilioRestClient(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN)
 	 
 	    message = client.messages.create(
 	        body="You are within 3 blocks of your destination, thank you for using Rideminder",
