@@ -4,17 +4,23 @@ from geopy.distance import vincenty
 from time import sleep
 import phonenumbers
 from geopy.geocoders import Nominatim
+import simplejson, urllib
+import urllib, json
+import pprint
+import os 
+import time
 
-
+GOOGLE_MAP_API_KEY= os.environ.get("GOOGLE_MAP_API_KEY")
 
 # Connects to the public transit API
 transit_firebase = firebase.FirebaseApplication("https://publicdata-transit.firebaseio.com/", None)
 
 # these are for I am working in python -i to play with my functions
-user_lat= 37.7846810
-user_lon = -122.4073680
-destination_lat = 37.7846810
-destination_lon = -122.4073680
+
+user_lat= 37.785152
+user_lon = -122.406581
+destination_lat = 37.762028
+destination_lon = -122.470790
 bound = "O"
 line = "N"
 
@@ -228,7 +234,53 @@ def processes_line_and_bound_selects_closest_vehicle(line, bound, destination_la
 	print "step 6"
 	return vehicle_id
 
+def gets_rawjson_with_lat_lon(origin_lat, origin_lng, destination_lat, destination_lng):
+	"""makes a call to gogole map to get the json data of two geolocations"""
+	orig_coord = origin_lat, origin_lng
+	dest_coord = destination_lat, destination_lng
 
+	url = "https://maps.googleapis.com/maps/api/directions/json?origin={0}&destination={1}&departure_time=now&traffic_model=best_guess&mode=transit&key={2}".format(str(orig_coord),str(dest_coord),str(GOOGLE_MAP_API_KEY))
+	result= simplejson.load(urllib.urlopen(url))
+
+	googleResponse = urllib.urlopen(url)
+	jsonResponse = json.loads(googleResponse.read())
+	return jsonResponse
+
+
+
+def rawjson_into_miliseconds(rawjson):
+	"""parses out json to get the duration time in miliseconds"""
+
+	duration_time_raw =rawjson['routes'][0]['legs'][0]['duration']['text']
+	duration_time_raw_split = duration_time_raw.split()
+
+	if len(duration_time_raw_split) == 2:
+		duration_time_hour = 0
+		duration_time_min = duration_time_raw_split[0]
+	if len(duration_time_raw_split) == 4:
+		duration_time_hour = duration_time_raw_split[0]
+		duration_time_min = duration_time_raw_split[2]
+
+	hours = int(duration_time_hour)
+	minutes = int(duration_time_min)
+	miliseconds = int((3600000 * hours) + (60000 * minutes))
+
+	return miliseconds
+
+def transit_request_complete_milisecond_time(miliseconds):
+	time_now = int(round(time.time() * 1000))
+	future_time = time_now + int(miliseconds)
+	return future_time
+
+def process_lat_lng_get_milisecond_time(user_lat, user_lon, destination_lat, destination_lon):
+	"""takes in geolocations and returns the time (in miliseconds) when the transit is completed"""
+
+	rawjson = gets_rawjson_with_lat_lon(user_lat, user_lon, destination_lat, destination_lon)
+	print rawjson
+	miliseconds = rawjson_into_miliseconds(rawjson)
+	print miliseconds
+	future_time_miliseconds = transit_request_complete_milisecond_time(miliseconds)
+	return future_time_miliseconds
 
 
 
