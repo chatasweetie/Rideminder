@@ -234,6 +234,7 @@ def processes_line_and_bound_selects_closest_vehicle(line, bound, destination_la
 	print "step 6"
 	return vehicle_id
 
+
 def gets_rawjson_with_lat_lon(origin_lat, origin_lng, destination_lat, destination_lng):
 	"""makes a call to gogole map to get the json data of two geolocations"""
 	orig_coord = origin_lat, origin_lng
@@ -247,11 +248,9 @@ def gets_rawjson_with_lat_lon(origin_lat, origin_lng, destination_lat, destinati
 	return jsonResponse
 
 
-
 def rawjson_into_miliseconds(rawjson):
 	"""parses out json to get the duration time in miliseconds"""
-
-	duration_time_raw =rawjson['routes'][0]['legs'][0]['duration']['text']
+	duration_time_raw =jsonResponse['routes'][0]['legs'][0]['duration']['text']
 	duration_time_raw_split = duration_time_raw.split()
 
 	if len(duration_time_raw_split) == 2:
