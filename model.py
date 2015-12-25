@@ -17,7 +17,7 @@ class Transit_Request(db.Model):
 	vehicle_id = db.Column(db.Integer, nullable=False)
 	destination_lat = db.Column(db.Integer, nullable=False)
 	destination_lon = db.Column(db.Integer, nullable=False)
-	# end_time = db.Column(db.Integer, nullable=False)
+	end_time = db.Column(db.Integer, nullable=False)
 	is_finished = db.Column(db.Boolean, default=False)
     
 	def __repr__(self):
@@ -28,11 +28,9 @@ class Transit_Request(db.Model):
 ##########################################################################
 # Helper Functions 
 
-# def adds_to_queue(user_fname, user_lname, user_email, user_phone, vehicle_id, destination_lat, destination_lon, end_time):
-def adds_to_queue(user_fname, user_lname, user_email, user_phone, vehicle_id, destination_lat, destination_lon):
+def adds_to_queue(user_fname, user_lname, user_email, user_phone, vehicle_id, destination_lat, destination_lon, arrival_time_datetime):
 	"""Takes the form data and inputs into the transit_request database"""
-	# new_transit_request = Transit_Request(user_fname=user_fname, user_lname=user_lname, user_email=user_email, user_phone=user_phone, vehicle_id=vehicle_id, destination_lat=destination_lat, destination_lon=destination_lon, end_time=end_time)
-	new_transit_request = Transit_Request(user_fname=user_fname, user_lname=user_lname, user_email=user_email, user_phone=user_phone, vehicle_id=vehicle_id, destination_lat=destination_lat, destination_lon=destination_lon)
+	new_transit_request = Transit_Request(user_fname=user_fname, user_lname=user_lname, user_email=user_email, user_phone=user_phone, vehicle_id=vehicle_id, destination_lat=destination_lat, destination_lon=destination_lon, end_time=arrival_time_datetime)
 	db.session.add(new_transit_request)
 	db.session.commit()
 

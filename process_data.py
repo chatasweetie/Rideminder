@@ -5,10 +5,12 @@ from time import sleep
 import phonenumbers
 from geopy.geocoders import Nominatim
 import simplejson, urllib
-import urllib, json
+import json
 import pprint
 import os 
 import time
+import datetime
+
 
 GOOGLE_MAP_API_KEY= os.environ.get("GOOGLE_MAP_API_KEY")
 
@@ -248,38 +250,35 @@ def gets_rawjson_with_lat_lon(origin_lat, origin_lng, destination_lat, destinati
 	return jsonResponse
 
 
-def rawjson_into_miliseconds(rawjson):
-	"""parses out json to get the duration time in miliseconds"""
-	duration_time_raw =jsonResponse['routes'][0]['legs'][0]['duration']['text']
-	duration_time_raw_split = duration_time_raw.split()
 
-	if len(duration_time_raw_split) == 2:
-		duration_time_hour = 0
-		duration_time_min = duration_time_raw_split[0]
-	if len(duration_time_raw_split) == 4:
-		duration_time_hour = duration_time_raw_split[0]
-		duration_time_min = duration_time_raw_split[2]
+def rawjson_into_datetime(rawjson):
+	"""parses out json to get the datetime of arrival time"""
+
+	duration_time_raw =rawjson['routes'][0]['legs'][0]['arrival_time']['text']
+	duration_time_raw_split = duration_time_raw.split(":")
+
+	if duration_time_raw[-2:] == "pm":
+		duration_time_hour = 12
+		
+	duration_time_hour += int(duration_time_raw_split[0])
+	duration_time_min = duration_time_raw_split[1][:-2]
 
 	hours = int(duration_time_hour)
 	minutes = int(duration_time_min)
-	miliseconds = int((3600000 * hours) + (60000 * minutes))
 
-	return miliseconds
+	now = datetime.datetime.now()
 
-def transit_request_complete_milisecond_time(miliseconds):
-	time_now = int(round(time.time() * 1000))
-	future_time = time_now + int(miliseconds)
-	return future_time
+	arrival_time = now.replace(hour=hours, minute=minutes)
 
-def process_lat_lng_get_milisecond_time(user_lat, user_lon, destination_lat, destination_lon):
-	"""takes in geolocations and returns the time (in miliseconds) when the transit is completed"""
+	return arrival_time
+
+def process_lat_lng_get_arrival_datetime(user_lat, user_lon, destination_lat, destination_lon):
+	"""takes in geolocations and returns the time (in milliseconds) when the transit is completed"""
 
 	rawjson = gets_rawjson_with_lat_lon(user_lat, user_lon, destination_lat, destination_lon)
 	print rawjson
-	miliseconds = rawjson_into_miliseconds(rawjson)
-	print miliseconds
-	future_time_miliseconds = transit_request_complete_milisecond_time(miliseconds)
-	return future_time_miliseconds
+	arrival_time = rawjson_into_datetime(rawjson)
+	return arrival_time
 
 
 

@@ -9,12 +9,12 @@ import twilio.twiml
 
 from time import sleep
 
-from process_data import gets_a_list_of_available_line, processes_line_and_bound_selects_closest_vehicle, convert_to_e164, process_lat_lng_get_milisecond_time
+from process_data import gets_a_list_of_available_line, processes_line_and_bound_selects_closest_vehicle, convert_to_e164, process_lat_lng_get_arrival_datetime
 from model import adds_to_queue, connect_to_db
 
 from celery import Celery
 
-from twilio_process import send_text_message
+from twilio_process import send_text_message_walk
 
 
 app = Flask(__name__)
@@ -52,17 +52,20 @@ def process_user_info():
 	print user_lat
 	print user_lon
 
-	vehicle_id = processes_line_and_bound_selects_closest_vehicle(line, bound, destination_lat, destination_lon, user_lat, user_lon)
+	user_lat = 37.785152
+	user_lon = -122.406581
+
+	vehicle_id = 1223
+	# vehicle_id = processes_line_and_bound_selects_closest_vehicle(line, bound, destination_lat, destination_lon, user_lat, user_lon)
 	print "vehicle_id is: ", vehicle_id
 
 	user_phone = convert_to_e164(raw_user_phone_num)
 	print "this is the phone number after twilioness", user_phone
 
-	# future_time_miliseconds = process_lat_lng_get_milisecond_time(user_lat, user_lon, destination_lat, destination_lon)
+	arrival_time_datetime = process_lat_lng_get_arrival_datetime(user_lat, user_lon, destination_lat, destination_lon)
 
-	# adds_to_queue(user_fname, user_lname, user_email, user_phone, vehicle_id, destination_lat, destination_lon, future_time_miliseconds)
-	adds_to_queue(user_fname, user_lname, user_email, user_phone, vehicle_id, destination_lat, destination_lon)
-	# send_text_message(user_phone)
+	adds_to_queue(user_fname, user_lname, user_email, user_phone, vehicle_id, destination_lat, destination_lon, arrival_time_datetime)
+	# send_text_message_walk(user_phone)
 
 	return render_template("/thank_you.html", user_fname=user_fname, user_phone=user_phone)
 
