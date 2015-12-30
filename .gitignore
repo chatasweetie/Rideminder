@@ -7,4 +7,6 @@ env
 *.DCD
 *.rdq
 rabbitmq*
+*.log
 *.db
+*.idx
