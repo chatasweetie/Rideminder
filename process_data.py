@@ -3,7 +3,6 @@ from firebase import firebase
 from geopy.distance import vincenty
 from time import sleep
 import phonenumbers
-from geopy.geocoders import Nominatim
 import simplejson, urllib
 import json
 import pprint
@@ -18,7 +17,6 @@ GOOGLE_MAP_API_KEY= os.environ.get("GOOGLE_MAP_API_KEY")
 transit_firebase = firebase.FirebaseApplication("https://publicdata-transit.firebaseio.com/", None)
 
 # these are for I am working in python -i to play with my functions
-
 user_lat= 37.785152
 user_lon = -122.406581
 destination_lat = 37.762028
@@ -26,14 +24,6 @@ destination_lon = -122.470790
 bound = "O"
 line = "N"
 
-
-def convert_geoloc_to_address(lat, lon):
-	"""changes geolocation to an address for google transit time """
-
-	geolocator = Nominatim()
-	geo = (lat, lon)
-	location = geolocator.reverse(geo)
-	return (location.address)
 
 def convert_to_e164(raw_phone):
 	"""formats phone numbers to twilio format
@@ -78,6 +68,7 @@ def gets_a_list_of_available_line():
 	
 	return sorted(available_lines)
 
+
 def gets_a_dic_of_vehicle(line):
 	"""Takes in a vehicle line and returns a dictionary of vehicle ids that are in the line
 	    
@@ -91,6 +82,7 @@ def gets_a_dic_of_vehicle(line):
 	available_vehicles = transit_firebase.get("sf-muni/routes/", line)
 	
 	return available_vehicles
+
 
 def validates_bound_direction_of_vehicles_in_line(dic_vehicles_for_line, bound_dir):
 	"""From a dictionary of vehicles in a line, it'll filter for the ones going the 
@@ -199,9 +191,7 @@ def selects_closest_vehicle(vehicle_list1, vehicle_list2):
 		if vehicle_id == -1:
 			vehicle_id = vehicle_list2[0][1]
 			vehicle_id2 = vehicle_list2[1][0]
-# TODO: if it doesn't satifiy my reqiurments of being the same or shorter distance,
-# have it track 2 - 3 vehicles and to check them during the queue processsing
-# TODO: add the google map extimated time as well to be processed during queue processsing
+
 	except IndexError:
 		pass
 
@@ -215,7 +205,6 @@ def processes_line_and_bound_selects_closest_vehicle(line, bound, destination_la
 	actually coming to my user
 
 	example output: u'1529'
-
 
 		>>> processes_line_and_bound_selects_closest_vehicle(line, bound, destination_lat, destination_lon, user_lat, user_lon) # doctest: +ELLIPSIS
 		u'...'
@@ -237,10 +226,10 @@ def processes_line_and_bound_selects_closest_vehicle(line, bound, destination_la
 	return vehicle_id
 
 
-def gets_rawjson_with_lat_lon(origin_lat, origin_lng, destination_lat, destination_lng):
+def gets_rawjson_with_lat_lon(user_lat, user_lon, destination_lat, destination_lon):
 	"""makes a call to gogole map to get the json data of two geolocations"""
-	orig_coord = origin_lat, origin_lng
-	dest_coord = destination_lat, destination_lng
+	orig_coord = user_lat, user_lon
+	dest_coord = destination_lat, destination_lon
 
 	url = "https://maps.googleapis.com/maps/api/directions/json?origin={0}&destination={1}&departure_time=now&traffic_model=best_guess&mode=transit&key={2}".format(str(orig_coord),str(dest_coord),str(GOOGLE_MAP_API_KEY))
 	result= simplejson.load(urllib.urlopen(url))
@@ -252,19 +241,19 @@ def gets_rawjson_with_lat_lon(origin_lat, origin_lng, destination_lat, destinati
 
 
 def rawjson_into_datetime(rawjson):
-	"""parses out json to get the datetime of arrival time"""
+	"""parses out json to get of arrival time and turn it into datetime"""
 
-	duration_time_raw =rawjson['routes'][0]['legs'][0]['arrival_time']['text']
-	duration_time_raw_split = duration_time_raw.split(":")
+	arrival_time_raw =rawjson['routes'][0]['legs'][0]['arrival_time']['text']
+	arrival_time_raw_split = duration_time_raw.split(":")
 
-	if duration_time_raw[-2:] == "pm":
-		duration_time_hour = 12
+	if arrival_time_raw[-2:] == "pm":
+		arrival_time_hour = 12
 		
-	duration_time_hour += int(duration_time_raw_split[0])
-	duration_time_min = duration_time_raw_split[1][:-2]
+	arrival_time_hour += int(arrival_time_raw_split[0])
+	arrival_time_min = arrival_time_raw_split[1][:-2]
 
-	hours = int(duration_time_hour)
-	minutes = int(duration_time_min)
+	hours = int(arrival_time_hour)
+	minutes = int(arrival_time_min)
 
 	now = datetime.datetime.now()
 
@@ -273,8 +262,8 @@ def rawjson_into_datetime(rawjson):
 	return arrival_time
 
 def process_lat_lng_get_arrival_datetime(user_lat, user_lon, destination_lat, destination_lon):
-	"""takes in geolocations and returns the time (in milliseconds) when the transit is completed"""
-
+	"""takes in geolocations and returns the arrival time in datatime when the transit is completed"""
+	
 	rawjson = gets_rawjson_with_lat_lon(user_lat, user_lon, destination_lat, destination_lon)
 	print rawjson
 	arrival_time = rawjson_into_datetime(rawjson)

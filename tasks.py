@@ -11,8 +11,8 @@ from server import app
 
 transit_firebase = firebase.FirebaseApplication("https://publicdata-transit.firebaseio.com/", None)
 
-WALK_RADIUS = .20
-TIME_RADIUS = False
+WALK_RADIUS = .25
+TIME_RADIUS = 3
 
 app.debug = True
 connect_to_db(app)

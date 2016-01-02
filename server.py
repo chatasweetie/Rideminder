@@ -5,18 +5,16 @@ from jinja2 import StrictUndefined
 from flask import Flask, render_template, request, flash, redirect, session
 from flask_debugtoolbar import DebugToolbarExtension
 
-import twilio.twiml
-
-from time import sleep
+# import twilio.twiml
 
 from process_data import gets_a_list_of_available_line, processes_line_and_bound_selects_closest_vehicle, convert_to_e164, process_lat_lng_get_arrival_datetime
 from model import adds_to_queue, connect_to_db
 
 from celery import Celery
 
-from twilio_process import send_text_message_walk
+from twilio_process import send_text_message_walk, send_text_message_time
 
-import datetime
+# import datetime
 
 
 app = Flask(__name__)
@@ -54,6 +52,7 @@ def process_user_info():
 	print user_lat
 	print user_lon
 
+	# vehicle_id = 1234
 	vehicle_id = processes_line_and_bound_selects_closest_vehicle(line, bound, destination_lat, destination_lon, user_lat, user_lon)
 	print "vehicle_id is: ", vehicle_id
 
@@ -61,7 +60,7 @@ def process_user_info():
 	print "this is the phone number after twilioness", user_phone
 
 	# arrival_time_datetime = process_lat_lng_get_arrival_datetime(user_lat, user_lon, destination_lat, destination_lon)
-
+	# Working on getting json, below is temp
 	arrival_time_datetime = datetime.datetime(2015, 12, 26, 17, 38, 30, 813508)
 
 	adds_to_queue(user_fname, user_lname, user_email, user_phone, vehicle_id, destination_lat, destination_lon, arrival_time_datetime)
