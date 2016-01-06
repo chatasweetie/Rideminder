@@ -244,7 +244,7 @@ def rawjson_into_datetime(rawjson):
 	"""parses out json to get of arrival time and turn it into datetime"""
 
 	arrival_time_raw =rawjson['routes'][0]['legs'][0]['arrival_time']['text']
-	arrival_time_raw_split = duration_time_raw.split(":")
+	arrival_time_raw_split = arrival_time_raw.split(":")
 
 	if arrival_time_raw[-2:] == "pm":
 		arrival_time_hour = 12
@@ -263,7 +263,7 @@ def rawjson_into_datetime(rawjson):
 
 def process_lat_lng_get_arrival_datetime(user_lat, user_lon, destination_lat, destination_lon):
 	"""takes in geolocations and returns the arrival time in datatime when the transit is completed"""
-	
+
 	rawjson = gets_rawjson_with_lat_lon(user_lat, user_lon, destination_lat, destination_lon)
 	print rawjson
 	arrival_time = rawjson_into_datetime(rawjson)
