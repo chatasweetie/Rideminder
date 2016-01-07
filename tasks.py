@@ -3,10 +3,11 @@ from geopy.distance import vincenty
 from process_data import gets_geolocation_of_a_vehicle
 from twilio_process import send_text_message_walk, send_text_message_time
 from model import connect_to_db, list_of_is_finished_to_process, list_of_is_finished_to_process, records_request_complete_db
-from server import app, celery
+from server import app, celery, sms
 from firebase import firebase
 import os
 from server import app
+import datetime
 
 
 transit_firebase = firebase.FirebaseApplication("https://publicdata-transit.firebaseio.com/", None)
@@ -41,6 +42,7 @@ def process_transit_request():
 
 		now = datetime.datetime.now()
 		min_difference = now.minute - request.end_time.minute
+		print "this is the saved datetime", request.end_time.min
 		if request.end_time.hour == now.hour & min_difference <= TIME_RADIUS:
 			# send alert!
 			print "within time radius"
