@@ -246,6 +246,9 @@ def rawjson_into_datetime(rawjson):
 	arrival_time_raw =rawjson['routes'][0]['legs'][0]['arrival_time']['text']
 	arrival_time_raw_split = arrival_time_raw.split(":")
 
+	# This is so line 255 has sometime to reference to
+	arrival_time_hour = 0 
+
 	if arrival_time_raw[-2:] == "pm":
 		arrival_time_hour = 12
 		

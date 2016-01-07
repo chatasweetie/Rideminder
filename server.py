@@ -52,6 +52,11 @@ def process_user_info():
 	print user_lat
 	print user_lon
 
+	user_lat= 37.785152
+	user_lon = -122.406581
+	destination_lat = 37.762028
+	destination_lon = -122.470790
+
 	# vehicle_id = 1234
 	vehicle_id = processes_line_and_bound_selects_closest_vehicle(line, bound, destination_lat, destination_lon, user_lat, user_lon)
 	print "vehicle_id is: ", vehicle_id
@@ -59,14 +64,25 @@ def process_user_info():
 	user_phone = convert_to_e164(raw_user_phone_num)
 	print "this is the phone number after twilioness", user_phone
 
-	# arrival_time_datetime = process_lat_lng_get_arrival_datetime(user_lat, user_lon, destination_lat, destination_lon)
+	arrival_time_datetime = process_lat_lng_get_arrival_datetime(user_lat, user_lon, destination_lat, destination_lon)
+	print arrival_time_datetime
 	# Working on getting json, below is temp
-	arrival_time_datetime = datetime.datetime(2015, 12, 26, 17, 38, 30, 813508)
+	# arrival_time_datetime = datetime.datetime(2015, 12, 26, 17, 38, 30, 813508)
 
 	adds_to_queue(user_fname, user_lname, user_email, user_phone, vehicle_id, destination_lat, destination_lon, arrival_time_datetime)
 	# send_text_message_walk(user_phone)
 
 	return render_template("/thank_you.html", user_fname=user_fname, user_phone=user_phone)
+
+
+# Twilio routes
+@app.route('/sms', methods=['GET', 'POST'])
+def sms():
+    response = twiml.Response()
+    response.sms("You are within 3 blocks of your destination, thank you for using Rideminder")
+    return str(response)
+
+
 
 @app.route("/error")
 def error():
