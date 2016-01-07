@@ -13,7 +13,7 @@ import datetime
 transit_firebase = firebase.FirebaseApplication("https://publicdata-transit.firebaseio.com/", None)
 
 WALK_RADIUS = .25
-TIME_RADIUS = 3
+TIME_RADIUS = 4
 
 app.debug = True
 connect_to_db(app)
@@ -22,8 +22,7 @@ connect_to_db(app)
 
 @celery.task()
 def process_transit_request():
-	"""Checks the transit_request database for request to be process and checks if vehicle geolocation 
-	is within WALK_RADIUS thresold of users destination_geolocation"""
+	"""Gets requests from database to be process and checks if Walk Radius or Time Radius are satified  """
 
 	request_to_process = list_of_is_finished_to_process()
 
@@ -51,4 +50,8 @@ def process_transit_request():
 			send_text_message_time(request.user_phone)
 			#is_finished to True
 			records_request_complete_db(request)
-
+		if request.end_time < now:
+			print "the time passed without sending the text message"
+			send_text_message_time_passed(request.user_phone)
+			#is_finished to True
+			records_request_complete_db(request)
