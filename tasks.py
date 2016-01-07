@@ -42,7 +42,9 @@ def process_transit_request():
 
 		now = datetime.datetime.now()
 		min_difference = now.minute - request.end_time.minute
-		print "this is the saved datetime", request.end_time.min
+		print "this is the saved datetime: ", request.end_time
+		print "this is the now: ",now
+		print "this is the difference: ", min_difference 
 		if request.end_time.hour == now.hour & min_difference <= TIME_RADIUS:
 			# send alert!
 			print "within time radius"
