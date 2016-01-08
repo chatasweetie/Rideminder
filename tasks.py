@@ -44,14 +44,15 @@ def process_transit_request():
 		print "this is the saved datetime: ", request.end_time
 		print "this is the now: ",now
 		print "this is the difference: ", min_difference 
-		if min_difference <= TIME_RADIUS:
-		# if request.end_time.hour == now.hour & min_difference <= TIME_RADIUS:
-
-			# send alert!
-			print "within time radius"
-			send_text_message_time(request.user_phone)
-			#is_finished to True
-			records_request_complete_db(request)
+		if min_difference > 0:
+			if min_difference <= TIME_RADIUS:
+			# if request.end_time.hour == now.hour & min_difference <= TIME_RADIUS:
+	
+				# send alert!
+				print "within time radius"
+				send_text_message_time(request.user_phone)
+				#is_finished to True
+				records_request_complete_db(request)
 		# if request.end_time > now:
 		# 	print "the time passed without sending the text message"
 		# 	send_text_message_time_passed(request.user_phone)
