@@ -216,13 +216,15 @@ def processes_line_and_bound_selects_closest_vehicle(line, bound, destination_la
 	bounded_vehicles_for_line = validates_bound_direction_of_vehicles_in_line(dic_vehicles_for_line,bound)
 	print "step 2"
 	list_of_vincenty_first = sorts_vehicles_dic_by_distance(bounded_vehicles_for_line, user_lat, user_lon)
-	print "step 3"
-	sleep(5)
-	print "step 4"
-	list_of_vincenty_second = sorts_vehicles_dic_by_distance(bounded_vehicles_for_line, user_lat, user_lon)
-	print "step 5"
-	vehicle_id = selects_closest_vehicle(list_of_vincenty_first,list_of_vincenty_second)
-	print "step 6"
+	# Removed to make process faster for heroku error 12 (timeout)
+	# print "step 3"
+	# sleep(5)
+	# print "step 4"
+	# list_of_vincenty_second = sorts_vehicles_dic_by_distance(bounded_vehicles_for_line, user_lat, user_lon)
+	# print "step 5"
+	# vehicle_id = selects_closest_vehicle(list_of_vincenty_first,list_of_vincenty_second)
+	# print "step 6"
+	vehicle_id = list_of_vincenty_first[0][1]
 	return vehicle_id
 
 
