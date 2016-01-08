@@ -50,7 +50,7 @@ def process_transit_request():
 			send_text_message_time(request.user_phone)
 			#is_finished to True
 			records_request_complete_db(request)
-		if request.end_time < now:
+		if request.end_time > now:
 			print "the time passed without sending the text message"
 			send_text_message_time_passed(request.user_phone)
 			#is_finished to True
