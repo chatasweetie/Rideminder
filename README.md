@@ -4,7 +4,18 @@ Rideminder
 
 **Description**
 
-Rideminder is a messaging system that will notify user when their transit vehicle is within three blocks of their destination via text message in San Fransisco. 
+Rideminder is a messaging system that notifies user when they are either within ½ a mile or within 3 mins of their destination via text message. 
+
+
+**How it works**
+
+Designed to be used at transit stop and requires user’s transit line, transit stop and phone number. It makes 2 API calls for transit information:
+*Firebase - gets realtime data of transit vehicles
+*Google Map Direction - gets direction information
+Rideminder analyses and processes the two types of data - gets the closest transit vehicle number in realtime and creates a datetime object using the estimated arrival time. It places the information into my Postgres database.
+
+The Celery worker (celery is an asynchronous task queue/job queue based on distributed message passing) pulls request that have not been completed from my database every minute. It checks the transit vehicle's current location if it is within ½ a mile of the user’s destination. It also checks the datetime object if the estimated time is within 3 mins. If either of these conditions are satisfied, it sends a text message to the user using Twilio.  
+
 
 
 ### Screenshot
@@ -16,8 +27,8 @@ Rideminder is a messaging system that will notify user when their transit vehicl
 
 ### Technology Stack
 
-**Application:** Python, Flask, Jinja, SQLAlchemy, Celery, RabbitMQ    
-**APIs:** Firebase, Google Map, Twilio  
+**Application:** Python, Flask, Jinja, SQLAlchemy, Celery, RabbitMQ, PostgreSQL    
+**APIs:** Firebase, Google Map, Twilio, Google Map Direction  
 **Front-End**: HTML/CSS, Bootstrap, JQuery, JavaScript, AJAX    
 
 ### UX Design

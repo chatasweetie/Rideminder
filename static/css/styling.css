@@ -7,23 +7,25 @@
 
 .container-fluid {
 	height: 50px;
-	background-color: #507acc;
-	/*opacity: 0.5;*/
+	background-color: #6ed3cf;
+}
+
+.footer {
+    height: 25px;
+    bottom: 0;
+    background-color: #6ed3cf;
 }
 
 .navbar-brand {
     height: 15px;
-    color: #ffff00;
+    color: #9068be;
     font-size: 26px;
 }
 
-p {
-	margin-top: 5px;
+.navbar-brand-footer {
+    color: #9068be;
+    font-size: 26px;
 }
-
-/** {
-	font-family: Menlo, Monaco, Consolas, "Courier New", monospace;
-}*/
 
 .container {
     width: 90%;
@@ -37,7 +39,7 @@ hr {
 }
 
 em {
-	color: #507acc;
+	color: #9068be;
 }
 
 .thankyou {
@@ -68,22 +70,34 @@ img {
 }
 
 body {
-    background-color: #fffff7;
+    background-color: #FEFDFC;
 
 }
 
-@font-face {
+* {
+    font-family: 'Droid Serif', serif;
+}
+/*@font-face {
     font-family: DFont;
     src: url(DFont/OpenDyslexicAlta-Regular.otf);
     font-color: #191919;
-}
+}*/
 
 * {
     font-family: Dfont;
 }
 
 #tag {
-    margin-top: 10px;
+    margin-top: 3px;
     font-size: 125%;
-    color: white;
+    color: #FEFDFC;
+}
+
+.mar {
+    margin-top: 2px;
+    margin-bottom: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+    font-size: 100%;
+    color: #FEFDFC;
 }

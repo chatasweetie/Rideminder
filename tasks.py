@@ -1,3 +1,5 @@
+# Celery task to be processed request every mintue
+
 from celery.task import task
 from geopy.distance import vincenty
 from process_data import gets_geolocation_of_a_vehicle
@@ -44,6 +46,8 @@ def process_transit_request():
 		print "this is the saved datetime: ", request.end_time
 		print "this is the now: ",now
 		print "this is the difference: ", min_difference 
+		# to take care of the difference between a start time that is late in the hour
+		# and an end time in the begining of an hour
 		if min_difference > 0:
 			if min_difference <= TIME_RADIUS:
 			# if request.end_time.hour == now.hour & min_difference <= TIME_RADIUS:
@@ -53,8 +57,4 @@ def process_transit_request():
 				send_text_message_time(request.user_phone)
 				#is_finished to True
 				records_request_complete_db(request)
-		# if request.end_time > now:
-		# 	print "the time passed without sending the text message"
-		# 	send_text_message_time_passed(request.user_phone)
-		# 	#is_finished to True
-		# 	records_request_complete_db(request)
+	

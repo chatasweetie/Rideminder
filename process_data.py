@@ -1,4 +1,4 @@
-"""Functions to process the data, mainly for Firebase data"""
+"""Functions to process the data"""
 from firebase import firebase
 from geopy.distance import vincenty
 from time import sleep
@@ -163,39 +163,40 @@ def sorts_vehicles_dic_by_distance(vehicle_dictionary, user_lat, user_lon):
 	
 	return vehicles_sorted_by_vincenity
 
+# Removed becasue heroku timed out
+#TODO: make sorts_vehicle_dic_by_distance process faster
+# def selects_closest_vehicle(vehicle_list1, vehicle_list2):
+# 	"""From two list of (distance, vehicle id), returns the closest vehicleid.
 
-def selects_closest_vehicle(vehicle_list1, vehicle_list2):
-	"""From two list of (distance, vehicle id), returns the closest vehicleid.
+# 	Compares the vincity distance of the first vehicle of the first dictionary to the 
+# 	second dictionary to validate if its getting smaller (closer), if not then validates 
+# 	the second vehicle distance.
 
-	Compares the vincity distance of the first vehicle of the first dictionary to the 
-	second dictionary to validate if its getting smaller (closer), if not then validates 
-	the second vehicle distance.
+# 		>>> vehicle_list1 = [(0.12315312469250524, u'1426'), (0.12315312469250524, u'1438'), (0.4675029273179666, u'1520'), (0.4675029273179666, u'1539'), (0.4926871038219716, u'1484')]
+# 		>>> vehicle_list2 = [(0.016675650192621124, u'1426'), (0.048622709177496184, u'1438'), (0.3983583482037339, u'1484'), (0.5805606158286056, u'1539'), (0.6169215360786691, u'1520')]
+# 		>>> print selects_closest_vehicle(vehicle_list1, vehicle_list2)
+# 		1426
 
-		>>> vehicle_list1 = [(0.12315312469250524, u'1426'), (0.12315312469250524, u'1438'), (0.4675029273179666, u'1520'), (0.4675029273179666, u'1539'), (0.4926871038219716, u'1484')]
-		>>> vehicle_list2 = [(0.016675650192621124, u'1426'), (0.048622709177496184, u'1438'), (0.3983583482037339, u'1484'), (0.5805606158286056, u'1539'), (0.6169215360786691, u'1520')]
-		>>> print selects_closest_vehicle(vehicle_list1, vehicle_list2)
-		1426
+# 	O(n^2)
+# 	"""
+# 	# if the sorting vehicles cannot determine the closest bus, it'll be catch in the "try"
+# 	vehicle_id = -1
+# 	# vv = (Vincenty, Vehicle_id)
+# 	for vv2 in range(5):
+# 		for vv1 in range(5):
+# 			if vehicle_list1[vv2][1] == vehicle_list1[vv1][1]:
+# 				if vehicle_list1[vv2][0] <= vehicle_list1[vv1][0]:
+# 					vehicle_id = vehicle_list1[vv2][1]
+# 					return vehicle_id
+# 	try: 
+# 		if vehicle_id == -1:
+# 			vehicle_id = vehicle_list2[0][1]
+# 			vehicle_id2 = vehicle_list2[1][0]
 
-	O(n^2)
-	"""
-	# if the sorting vehicles cannot determine the closest bus, it'll be catch in the "try"
-	vehicle_id = -1
-	# vv = (Vincenty, Vehicle_id)
-	for vv2 in range(5):
-		for vv1 in range(5):
-			if vehicle_list1[vv2][1] == vehicle_list1[vv1][1]:
-				if vehicle_list1[vv2][0] <= vehicle_list1[vv1][0]:
-					vehicle_id = vehicle_list1[vv2][1]
-					return vehicle_id
-	try: 
-		if vehicle_id == -1:
-			vehicle_id = vehicle_list2[0][1]
-			vehicle_id2 = vehicle_list2[1][0]
+# 	except IndexError:
+# 		pass
 
-	except IndexError:
-		pass
-
-	return vehicle_id
+# 	return vehicle_id
 
 	
 def processes_line_and_bound_selects_closest_vehicle(line, bound, destination_lat, destination_lon, user_lat, user_lon):
@@ -230,6 +231,7 @@ def processes_line_and_bound_selects_closest_vehicle(line, bound, destination_la
 
 def gets_rawjson_with_lat_lon(user_lat, user_lon, destination_lat, destination_lon):
 	"""makes a call to gogole map to get the json data of two geolocations"""
+
 	orig_coord = user_lat, user_lon
 	dest_coord = destination_lat, destination_lon
 
@@ -238,8 +240,8 @@ def gets_rawjson_with_lat_lon(user_lat, user_lon, destination_lat, destination_l
 
 	googleResponse = urllib.urlopen(url)
 	jsonResponse = json.loads(googleResponse.read())
-	return jsonResponse
 
+	return jsonResponse
 
 
 def rawjson_into_datetime(rawjson):
@@ -266,12 +268,14 @@ def rawjson_into_datetime(rawjson):
 
 	return arrival_time
 
+
 def process_lat_lng_get_arrival_datetime(user_lat, user_lon, destination_lat, destination_lon):
 	"""takes in geolocations and returns the arrival time in datatime when the transit is completed"""
 
 	rawjson = gets_rawjson_with_lat_lon(user_lat, user_lon, destination_lat, destination_lon)
 	print rawjson
 	arrival_time = rawjson_into_datetime(rawjson)
+	
 	return arrival_time
 
 
