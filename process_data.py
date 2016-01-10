@@ -109,8 +109,8 @@ def validates_bound_direction_of_vehicles_in_line(dic_vehicles_for_line, bound_d
 					available_vehicle_with_direction.append(vehicle)
 		except AttributeError:
 			pass
-	return available_vehicle_with_direction
 
+	return available_vehicle_with_direction
 
 
 def gets_geolocation_of_a_vehicle(vehicle_id):
@@ -125,6 +125,7 @@ def gets_geolocation_of_a_vehicle(vehicle_id):
 	O(1)
 	"""
 	vehicle_id = str(vehicle_id)
+
 	try:
 		vehicle_lat = transit_firebase.get("sf-muni/vehicles/" + vehicle_id, "lat")
 		vehicle_lon = transit_firebase.get("sf-muni/vehicles/" + vehicle_id, "lon")
@@ -151,6 +152,7 @@ def sorts_vehicles_dic_by_distance(vehicle_dictionary, user_lat, user_lon):
 
 	user_geolocation = (user_lat,user_lon)
 	tuples_lat_lon_vehicle = []
+
 	for vehicle in vehicle_dictionary:
 		vehicle_id = vehicle
 		vehicle_geolocation = gets_geolocation_of_a_vehicle(vehicle_id)
@@ -181,6 +183,7 @@ def sorts_vehicles_dic_by_distance(vehicle_dictionary, user_lat, user_lon):
 # 	"""
 # 	# if the sorting vehicles cannot determine the closest bus, it'll be catch in the "try"
 # 	vehicle_id = -1
+# 
 # 	# vv = (Vincenty, Vehicle_id)
 # 	for vv2 in range(5):
 # 		for vv1 in range(5):
@@ -211,6 +214,7 @@ def processes_line_and_bound_selects_closest_vehicle(line, bound, destination_la
 		u'...'
 
 	"""
+
 	print "step 0"
 	dic_vehicles_for_line = gets_a_dic_of_vehicle(line)
 	print "step 1"
@@ -219,13 +223,14 @@ def processes_line_and_bound_selects_closest_vehicle(line, bound, destination_la
 	list_of_vincenty_first = sorts_vehicles_dic_by_distance(bounded_vehicles_for_line, user_lat, user_lon)
 	# Removed to make process faster for heroku error 12 (timeout)
 	# print "step 3"
-	# sleep(5)
+	# sleep(30)
 	# print "step 4"
 	# list_of_vincenty_second = sorts_vehicles_dic_by_distance(bounded_vehicles_for_line, user_lat, user_lon)
 	# print "step 5"
 	# vehicle_id = selects_closest_vehicle(list_of_vincenty_first,list_of_vincenty_second)
 	# print "step 6"
 	vehicle_id = list_of_vincenty_first[0][1]
+
 	return vehicle_id
 
 
@@ -250,7 +255,7 @@ def rawjson_into_datetime(rawjson):
 	arrival_time_raw =rawjson['routes'][0]['legs'][0]['arrival_time']['text']
 	arrival_time_raw_split = arrival_time_raw.split(":")
 
-	# This is so line 255 has sometime to reference to
+	# This is so line 264 has sometime to reference to
 	arrival_time_hour = 0 
 
 	if arrival_time_raw[-2:] == "pm":
@@ -275,7 +280,7 @@ def process_lat_lng_get_arrival_datetime(user_lat, user_lon, destination_lat, de
 	rawjson = gets_rawjson_with_lat_lon(user_lat, user_lon, destination_lat, destination_lon)
 	print rawjson
 	arrival_time = rawjson_into_datetime(rawjson)
-	
+
 	return arrival_time
 
 

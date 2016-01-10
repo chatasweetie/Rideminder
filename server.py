@@ -14,8 +14,6 @@ from celery import Celery
 
 from twilio_process import send_text_message_walk, send_text_message_time
 
-# import datetime
-
 
 app = Flask(__name__)
 
@@ -70,18 +68,8 @@ def process_user_info():
 	# arrival_time_datetime = datetime.datetime(2015, 12, 26, 17, 38, 30, 813508)
 
 	adds_to_queue(user_fname, user_lname, user_email, user_phone, vehicle_id, destination_lat, destination_lon, arrival_time_datetime)
-	# send_text_message_walk(user_phone)
 
 	return render_template("/thank_you.html", user_fname=user_fname, user_phone=user_phone)
-
-
-# Twilio routes
-@app.route('/sms', methods=['GET', 'POST'])
-def sms():
-    response = twiml.Response()
-    response.sms("You are within 3 blocks of your destination, thank you for using Rideminder")
-    return str(response)
-
 
 
 @app.route("/error")
