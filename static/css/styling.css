@@ -17,7 +17,7 @@
 }
 
 .navbar-brand {
-    height: 15px;
+    height: 14px;
     color: #9068be;
     font-size: 26px;
 }
@@ -25,6 +25,7 @@
 .navbar-brand-footer {
     color: #9068be;
     font-size: 26px;
+    height: 45px;
 }
 
 .container {
@@ -84,7 +85,7 @@ body {
 
 #tag {
     margin-top: 3px;
-    font-size: 115%;
+    font-size: 95%;
     color: #FEFDFC;
 }
 
