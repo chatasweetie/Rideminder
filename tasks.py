@@ -5,7 +5,7 @@ from geopy.distance import vincenty
 from process_data import gets_geolocation_of_a_vehicle
 from twilio_process import send_text_message_walk, send_text_message_time
 from model import connect_to_db, list_of_is_finished_to_process, list_of_is_finished_to_process, records_request_complete_db
-from server import app, celery, sms
+from server import app, celery
 from firebase import firebase
 import os
 from server import app

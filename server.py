@@ -72,6 +72,13 @@ def process_user_info():
 	return render_template("/thank_you.html", user_fname=user_fname, user_phone=user_phone)
 
 
+@app.route('/sms', methods=['GET', 'POST'])
+def sms():
+	response = twiml.Response()
+	response.sms("You are within 3 blocks of your destination, thank you for using Rideminder")
+
+	return str(response)
+
 @app.route("/error")
 def error():
 	"""error page"""
