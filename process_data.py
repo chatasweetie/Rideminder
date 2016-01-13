@@ -165,53 +165,35 @@ def sorts_vehicles_dic_by_distance(vehicle_dictionary, user_lat, user_lon):
 	
 	return vehicles_sorted_by_vincenity
 
-# Removed becasue heroku timed out
-#TODO: make sorts_vehicle_dic_by_distance process faster
-# def selects_closest_vehicle(vehicle_list1, vehicle_list2):
-# 	"""From two list of (distance, vehicle id), returns the closest vehicleid.
+def selects_closest_vehicle(vehicle_1, vehicle_1_distance, vehicle_2, vehicle_2_distance, user_lat, user_lon):
+	"""From two vehicles (distance, vehicle id), returns the closest vehicleid.
 
-# 	Compares the vincity distance of the first vehicle of the first dictionary to the 
-# 	second dictionary to validate if its getting smaller (closer), if not then validates 
-# 	the second vehicle distance.
+	Compares the inital vincity distance of the first vehicle to an updated one to validate
+	that the first vehicle is actually coming to the user (versus leaving the person).
+	If its not correct, it'll check the second vehicle and validates it.
+	"""
 
-# 		>>> vehicle_list1 = [(0.12315312469250524, u'1426'), (0.12315312469250524, u'1438'), (0.4675029273179666, u'1520'), (0.4675029273179666, u'1539'), (0.4926871038219716, u'1484')]
-# 		>>> vehicle_list2 = [(0.016675650192621124, u'1426'), (0.048622709177496184, u'1438'), (0.3983583482037339, u'1484'), (0.5805606158286056, u'1539'), (0.6169215360786691, u'1520')]
-# 		>>> print selects_closest_vehicle(vehicle_list1, vehicle_list2)
-# 		1426
+	user_geolocation = (user_lat,user_lon)
 
-# 	O(n^2)
-# 	"""
-# 	# if the sorting vehicles cannot determine the closest bus, it'll be catch in the "try"
-# 	vehicle_id = -1
-# 
-# 	# vv = (Vincenty, Vehicle_id)
-# 	for vv2 in range(5):
-# 		for vv1 in range(5):
-# 			if vehicle_list1[vv2][1] == vehicle_list1[vv1][1]:
-# 				if vehicle_list1[vv2][0] <= vehicle_list1[vv1][0]:
-# 					vehicle_id = vehicle_list1[vv2][1]
-# 					return vehicle_id
-# 	try: 
-# 		if vehicle_id == -1:
-# 			vehicle_id = vehicle_list2[0][1]
-# 			vehicle_id2 = vehicle_list2[1][0]
+	vehicle_geolocation = gets_geolocation_of_a_vehicle(vehicle_1)
+	vehicle_1_distance_current = (vincenty(user_geolocation, vehicle_geolocation).miles)
 
-# 	except IndexError:
-# 		pass
+	if vehicle_1_distance_current < vehicle_1_distance:
+		return vehicle_1
 
-# 	return vehicle_id
+	else:
+		vehicle_geolocation = gets_geolocation_of_a_vehicle(vehicle_2)
+		vehicle_2_distance_current = (vincenty(user_geolocation, vehicle_geolocation).miles)
+
+		if vehicle_2_distance_current < vehicle_2_distance:
+			return vehicle_2
+
+	return None
 
 	
-def processes_line_and_bound_selects_closest_vehicle(line, bound, destination_lat, destination_lon, user_lat, user_lon):
-	""""With a line and bound direction(O = Outbound, I=Inbound), it'll get the 
-	list of vehicles on the line and gets the vehicle's geolocation twice (a 
-	minute a part) and compares the distance to make sure that the vehicle is 
-	actually coming to my user
-
-	example output: u'1529'
-
-		>>> processes_line_and_bound_selects_closest_vehicle(line, bound, destination_lat, destination_lon, user_lat, user_lon) # doctest: +ELLIPSIS
-		u'...'
+def processes_line_and_bound_selects_two_closest_vehicle(line, bound, destination_lat, destination_lon, user_lat, user_lon):
+	""""With a line and bound direction(O = Outbound, I=Inbound), it'll get the list of vehicles on the line and gets the 
+	vehicle's geolocation and returns to two closest vehicle distance and id
 
 	"""
 
@@ -220,18 +202,9 @@ def processes_line_and_bound_selects_closest_vehicle(line, bound, destination_la
 	print "step 1"
 	bounded_vehicles_for_line = validates_bound_direction_of_vehicles_in_line(dic_vehicles_for_line,bound)
 	print "step 2"
-	list_of_vincenty_first = sorts_vehicles_dic_by_distance(bounded_vehicles_for_line, user_lat, user_lon)
-	# Removed to make process faster for heroku error 12 (timeout)
-	# print "step 3"
-	# sleep(30)
-	# print "step 4"
-	# list_of_vincenty_second = sorts_vehicles_dic_by_distance(bounded_vehicles_for_line, user_lat, user_lon)
-	# print "step 5"
-	# vehicle_id = selects_closest_vehicle(list_of_vincenty_first,list_of_vincenty_second)
-	# print "step 6"
-	vehicle_id = list_of_vincenty_first[0][1]
+	list_of_vincenty = sorts_vehicles_dic_by_distance(bounded_vehicles_for_line, user_lat, user_lon)
 
-	return vehicle_id
+	return list_of_vincenty[0:3]
 
 
 def gets_rawjson_with_lat_lon(user_lat, user_lon, destination_lat, destination_lon):
