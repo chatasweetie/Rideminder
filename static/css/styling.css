@@ -88,6 +88,14 @@ body {
     color: #FEFDFC;
 }
 
+.padding {
+    height: 80px;
+}
+
+.footer-padding{
+    height: 45px;
+}
+
 .mar {
     margin-top: 2px;
     margin-bottom: 0;
