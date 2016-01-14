@@ -57,17 +57,12 @@ def list_of_is_finished_to_process():
 
 def records_request_vehicle_id_db(request, vehicle_id):
 	"""Sets the transit_request vehicle_id"""
-	request.vehicle_id = vehicle_id
+	print "got inside to record the vehicle_id"
+	request.vehicle_id = int(vehicle_id)
 	db.session.commit()
 
 
-def records_request_current_distance_db(request, vehicle_id_distance):
-	"""Changes the transit_request is_finished to True (request is complete)"""
-	request.vehicle_id_distance = vehicle_difference
-	db.session.commit()
-
-
-def records_time_and_distance(request, timestamp_difference, vehicle_difference):
+def records_time_and_distance(request, vehicle_difference, timestamp_difference):
 	"""Changes the transit_request is_finished to True (request is complete)"""
 	request.finished_timestamp_difference = timestamp_difference
 	request.finished_vehicle_difference = vehicle_difference

@@ -182,13 +182,8 @@ def selects_closest_vehicle(vehicle_1, vehicle_1_distance, vehicle_2, vehicle_2_
 		return vehicle_1
 
 	else:
-		vehicle_geolocation = gets_geolocation_of_a_vehicle(vehicle_2)
-		vehicle_2_distance_current = (vincenty(user_geolocation, vehicle_geolocation).miles)
+		return vehicle_2
 
-		if vehicle_2_distance_current < vehicle_2_distance:
-			return vehicle_2
-
-	return None
 
 	
 def processes_line_and_bound_selects_two_closest_vehicle(line, bound, destination_lat, destination_lon, user_lat, user_lon):

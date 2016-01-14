@@ -35,7 +35,7 @@ def index():
 @app.route("/user_input", methods=["POST"])
 def process_user_info():
 	"""recieves the user data and sends data to appropiate processes"""
-	user_name = request.form.get("name")
+	user_fname = request.form.get("name")
 	user_email = request.form.get("email")
 	raw_user_phone_num = request.form.get("phone")
 	line = str(request.form.get("line"))
@@ -70,10 +70,10 @@ def process_user_info():
 																	# destination_lon)
 	print arrival_time_datetime
 
-	adds_to_queue(user_name, user_email, user_phone, user_lat, user_lon, destination_lat, destination_lon, 
+	adds_to_queue(user_fname, user_email, user_phone, user_lat, user_lon, destination_lat, destination_lon, 
 				   vehicle_1, vehicle_1_distance, vehicle_2, vehicle_2_distance, arrival_time_datetime)
 
-	return render_template("/thank_you.html", user_name=user_name, user_phone=user_phone)
+	return render_template("/thank_you.html", user_fname=user_fname, user_phone=user_phone)
 
 
 @app.route('/sms', methods=['GET', 'POST'])
