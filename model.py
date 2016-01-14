@@ -25,7 +25,6 @@ class Transit_Request(db.Model):
 
 	vehicle_id = db.Column(db.Integer, nullable=False)
 	vehicle_id_distance = db.Column(db.Integer, nullable=True)
-
 	
 	arrival_time = db.Column(db.Integer, nullable=False)
 

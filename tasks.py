@@ -25,7 +25,8 @@ connect_to_db(app)
 
 @celery.task()
 def process_transit_request():
-	"""Gets requests from database to be process and checks if Walk Radius or Time Radius are satified  """
+	"""Gets requests from database to be process and checks if Walk Radius or Time Radius 
+	are satified, then sends the text and records the transation"""
 
 	request_to_process = list_of_is_finished_to_process()	
 
@@ -34,7 +35,8 @@ def process_transit_request():
 
 		if request.vehicle_id is None:
 			print "Getting vehicle id if statsment"
-			vehicle_id = selects_closest_vehicle(request.vehicle_1, request.vehicle_1_distance, request.vehicle_2, request.vehicle_2_distance, request.user_lat, request.user_lon)
+			vehicle_id = selects_closest_vehicle(request.vehicle_1, request.vehicle_1_distance, 
+				request.vehicle_2, request.vehicle_2_distance, request.user_lat, request.user_lon)
 			print "request.vehicle_1_distance:", request.vehicle_1_distance
 			print "this is the closest vehicle:", vehicle_id
 			records_request_vehicle_id_db(request, vehicle_id)
