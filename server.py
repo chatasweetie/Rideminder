@@ -35,6 +35,7 @@ def index():
 @app.route("/user_input", methods=["POST"])
 def process_user_info():
 	"""recieves the user data and sends data to appropiate processes"""
+
 	user_fname = request.form.get("name")
 	user_email = request.form.get("email")
 	raw_user_phone_num = request.form.get("phone")
@@ -56,6 +57,8 @@ def process_user_info():
 
 	list_of_vincenty_vehicle = processes_line_and_bound_selects_two_closest_vehicle(line, bound, 
 											destination_lat, destination_lon, user_lat, user_lon)
+	
+	# sets the two closest vechiles
 	vehicle_1 = list_of_vincenty_vehicle[0][1]
 	vehicle_1_distance = list_of_vincenty_vehicle[0][0]
 	vehicle_2 = list_of_vincenty_vehicle[1][1]
@@ -65,9 +68,9 @@ def process_user_info():
 	user_phone = convert_to_e164(raw_user_phone_num)
 	print "this is the phone number after twilioness", user_phone
 
-	# arrival_time_datetime = datetime.datetime(2016, 1, 12, 22, 05, 58, 70745)
-	arrival_time_datetime = process_lat_lng_get_arrival_datetime(user_lat, user_lon, destination_lat, 
-																	destination_lon)
+	arrival_time_datetime = datetime.datetime(2016, 1, 12, 22, 05, 58, 70745)
+	# arrival_time_datetime = process_lat_lng_get_arrival_datetime(user_lat, user_lon, destination_lat, 
+																	# destination_lon)
 	
 	print arrival_time_datetime
 
@@ -79,6 +82,8 @@ def process_user_info():
 
 @app.route('/sms', methods=['GET', 'POST'])
 def sms():
+	"""for twilio to be able to send text"""
+	
 	response = twiml.Response()
 	response.sms("You are within 3 blocks of your destination, thank you for using Rideminder")
 

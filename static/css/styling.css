@@ -20,6 +20,7 @@
     height: 14px;
     color: #815DAB;
     font-size: 26px;
+    size: 100%;
 }
 
 .navbar-brand-footer {
@@ -75,12 +76,9 @@ body {
 }
 
 * {
-    font-family: 'Droid Serif', serif;
+    font-family: 'Bitter', serif;
 }
 
-* {
-    font-family: Dfont;
-}
 
 #tag {
     margin-top: 3px;

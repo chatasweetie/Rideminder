@@ -142,8 +142,6 @@ class UnitTestMockDataForCelery(unittest.TestCase):
 		eq_(rst, 8)
 
 
-
-
 class IntergrationServerTest(unittest.TestCase):
 	"""Integration Test: testing flask sever"""
 

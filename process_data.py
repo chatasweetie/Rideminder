@@ -70,7 +70,8 @@ def gets_a_list_of_available_line():
 
 
 def gets_a_dic_of_vehicle(line):
-	"""Takes in a vehicle line and returns a dictionary of vehicle ids that are in the line
+	"""Takes in a vehicle line and returns a dictionary of vehicle ids that are in 
+	current available on the transit line
 	    
 	output example: {u'5488': True, u'5604': True, ... u'5525': True}
 
@@ -85,7 +86,7 @@ def gets_a_dic_of_vehicle(line):
 
 
 def validates_bound_direction_of_vehicles_in_line(dic_vehicles_for_line, bound_dir):
-	"""From a dictionary of vehicles in a line, it'll filter for the ones going the 
+	"""From a dictionary of vehicles in a transit line, it'll filter for the ones going the 
 	correct bound direction: "O" = Outboud, "I" = Inboud
 
 	output example: [u'1481', u'1486', ... u'1513']
@@ -114,8 +115,8 @@ def validates_bound_direction_of_vehicles_in_line(dic_vehicles_for_line, bound_d
 
 
 def gets_geolocation_of_a_vehicle(vehicle_id):
-	"""With the vehicle id, it gets from firebase the current latitude and longitude
-	of the vehicle and returns it as a geolocation
+	"""With the vehicle id, it akes a call to firebase to get the the current latitude 
+	and longitude of the vehicle and returns it as a geolocation (lat, lon)
 
 	example output: (37.73831, -122.46859)
 
@@ -186,9 +187,10 @@ def selects_closest_vehicle(vehicle_1, vehicle_1_distance, vehicle_2, vehicle_2_
 
 
 	
-def processes_line_and_bound_selects_two_closest_vehicle(line, bound, destination_lat, destination_lon, user_lat, user_lon):
-	""""With a line and bound direction(O = Outbound, I=Inbound), it'll get the list of vehicles on the line and gets the 
-	vehicle's geolocation and returns to two closest vehicle distance and id
+def processes_line_and_bound_selects_two_closest_vehicle(line, bound, destination_lat, destination_lon, 
+															user_lat, user_lon):
+	""""With a line and bound direction(O = Outbound, I=Inbound), it'll get the list of vehicles on 
+	the line and gets the vehicle's geolocation and returns to two closest vehicle distance and id
 
 	"""
 
@@ -197,7 +199,7 @@ def processes_line_and_bound_selects_two_closest_vehicle(line, bound, destinatio
 	print "step 1"
 	bounded_vehicles_for_line = validates_bound_direction_of_vehicles_in_line(dic_vehicles_for_line,bound)
 	print "step 2"
-	list_of_vincenty = sorts_vehicles_dic_by_distance(bounded_vehicles_for_line, user_lat, user_lon)
+	sorted_list_of_vincenty = sorts_vehicles_dic_by_distance(bounded_vehicles_for_line, user_lat, user_lon)
 
 	return list_of_vincenty[0:3]
 
@@ -218,7 +220,7 @@ def gets_rawjson_with_lat_lon(user_lat, user_lon, destination_lat, destination_l
 
 
 def rawjson_into_datetime(rawjson):
-	"""parses out json to get of arrival time and turn it into datetime"""
+	"""parses out json to get of arrival time and turn it into datetime object"""
 
 	arrival_time_raw =rawjson['routes'][0]['legs'][0]['arrival_time']['text']
 	arrival_time_raw_split = arrival_time_raw.split(":")
@@ -243,7 +245,8 @@ def rawjson_into_datetime(rawjson):
 
 
 def process_lat_lng_get_arrival_datetime(user_lat, user_lon, destination_lat, destination_lon):
-	"""takes in geolocations and returns the arrival time in datatime when the transit is completed"""
+	"""takes in geolocations and returns the arrival time as a datatime object of when the 
+	transit is completed"""
 
 	rawjson = gets_rawjson_with_lat_lon(user_lat, user_lon, destination_lat, destination_lon)
 	print rawjson

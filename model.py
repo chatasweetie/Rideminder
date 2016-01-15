@@ -42,6 +42,7 @@ class Transit_Request(db.Model):
 
 def adds_to_queue(user_fname, user_email, user_phone, user_lat, user_lon, destination_lat, destination_lon, vehicle_1, vehicle_1_distance, vehicle_2, vehicle_2_distance, arrival_time_datetime):
 	"""Takes the form data and inputs into the transit_request database"""
+	
 	new_transit_request = Transit_Request(user_fname=user_fname, user_email=user_email, user_phone=user_phone, user_lat=user_lat, user_lon=user_lon, destination_lat=destination_lat, destination_lon=destination_lon, vehicle_1=vehicle_1, vehicle_1_distance=vehicle_1_distance, vehicle_2=vehicle_2, vehicle_2_distance=vehicle_2_distance, arrival_time=arrival_time_datetime)
 	db.session.add(new_transit_request)
 	db.session.commit()
@@ -49,6 +50,7 @@ def adds_to_queue(user_fname, user_email, user_phone, user_lat, user_lon, destin
 
 def list_of_is_finished_to_process():
 	"""Gets all the transit_request that need to be processed (ie. is_finished = False)"""
+	
 	request_to_process = Transit_Request.query.filter(Transit_Request.is_finished == False).all()
 
 	return request_to_process
@@ -56,13 +58,14 @@ def list_of_is_finished_to_process():
 
 def records_request_vehicle_id_db(request, vehicle_id):
 	"""Sets the transit_request vehicle_id"""
-	print "got inside to record the vehicle_id"
+	
 	request.vehicle_id = int(vehicle_id)
 	db.session.commit()
 
 
 def records_time_and_distance(request, vehicle_difference, timestamp_difference):
 	"""Changes the transit_request is_finished to True (request is complete)"""
+
 	request.finished_timestamp_difference = timestamp_difference
 	request.finished_vehicle_difference = vehicle_difference
 	db.session.commit()
@@ -70,8 +73,10 @@ def records_time_and_distance(request, vehicle_difference, timestamp_difference)
 
 def records_request_complete_db(request):
 	"""Changes the transit_request is_finished to True (request is complete)"""
+
 	request.is_finished = True
 	db.session.commit()
+
 
 def connect_to_db(app):
     """Connect the database to our Flask app."""

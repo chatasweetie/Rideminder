@@ -4,7 +4,7 @@ Rideminder
 
 **Description**
 
-Rideminder is a messaging system that notifies user when they are either within ½ a mile or within 3 mins of their destination via text message. 
+Rideminder is a messaging system that notifies user when they are either within 1/4 a mile or within 3 mins of their destination via text message. 
 
 
 **How it works**
@@ -31,10 +31,6 @@ The Celery worker (celery is an asynchronous task queue/job queue based on distr
 **APIs:** Firebase, Google Map, Twilio, Google Map Direction  
 **Front-End**: HTML/CSS, Bootstrap, JQuery, JavaScript, AJAX    
 
-### UX Design
-**Color:** Choosen to make accessable to persons with colorblindness     
-**Font Size**: Large for persons with visual challenges     
-**Font Type**: Dyslexia Typeface http://opendyslexic.org/g     
 
 
 ### How to run Rideminder locally
