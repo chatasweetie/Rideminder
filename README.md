@@ -1,6 +1,6 @@
 Rideminder
 --------
-Rideminder <www.rideminder.herokuapp.com>
+[Rideminder](https://www.rideminder.herokuapp.com)
 
 **Description**
 
