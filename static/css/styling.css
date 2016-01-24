@@ -53,6 +53,7 @@ em {
 
 label {
     font-size: 115%;
+    display: inline;
 }
 
 p {
