@@ -22,7 +22,7 @@ The Celery worker (celery is an asynchronous task queue/job queue based on distr
 
 **Submit Request**
 
-<img src="rideminder_new_color.jpg">
+<img src="static/rideminder_new_color.jpg">
 
 
 ### Technology Stack
