@@ -1,6 +1,6 @@
 Rideminder
 --------
-
+`Rideminder <rideminder.herokuapp.com>`__
 
 **Description**
 
@@ -22,7 +22,7 @@ The Celery worker (celery is an asynchronous task queue/job queue based on distr
 
 **Submit Request**
 
-<img src="static/Rideminder.jpg">
+<img src="rideminder_new_color.jpg">
 
 
 ### Technology Stack
