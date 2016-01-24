@@ -201,7 +201,7 @@ def processes_line_and_bound_selects_two_closest_vehicle(line, bound, destinatio
 	print "step 2"
 	sorted_list_of_vincenty = sorts_vehicles_dic_by_distance(bounded_vehicles_for_line, user_lat, user_lon)
 
-	return list_of_vincenty[0:3]
+	return sorted_list_of_vincenty[0:3]
 
 
 def gets_rawjson_with_lat_lon(user_lat, user_lon, destination_lat, destination_lon):
