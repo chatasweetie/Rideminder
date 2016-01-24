@@ -30,7 +30,7 @@ def index():
 
     return render_template("homepage.html", list_of_available_lines=list_of_available_lines)
 
-@app.route("/user_input", methods=["POST"])
+@app.route("/thank-you", methods=["POST"])
 def process_user_info():
 	"""recieves the user data and sends data to appropiate processes"""
 

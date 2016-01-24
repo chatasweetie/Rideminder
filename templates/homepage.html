@@ -12,51 +12,51 @@
     <p>While you're at a transit stop, submit your transit line and stop information and you'll be notified either when your transit vehicle is within 1/4 a mile or within 3 mins of when Google estimates your arrival time of your destination via text message.<b><em> * Required for processing </b></em> </p>
   </div>
   <div class="container">
-    <form class="col-sm-2 control-label" id="transit_request" action="/user_input" method="POST">
+    <form class="col-sm-2 control-label" id="transit_request" action="/thank-you" method="POST">
       <div class="form-group">
-        <label for="fname"> Name</label>
-        <input type="text" class="form-control" name="fname" placeholder="optional">
+        <label for="fname"> Name
+        <input type="text" class="form-control" name="fname" placeholder="optional"></label>
       </div>
       <div class="form-group">
-        <label for="email">Email</label>
-        <input type="email" class="form-control" name="email" placeholder="optional">
+        <label for="email">Email
+        <input type="email" class="form-control" name="email" placeholder="optional"></label>
       </div>
       <div class="form-group">
-        <label for="phone"><em>Phone Number*</em></label>
+        <label for="phone"><em>Phone Number*</em>
         <!-- http://bootstrapformhelpers.com/phone/ -->
-        <input type="text" class="form-control bfh-phone" value="(555)555-5555" data-format="+1 (ddd) ddd-dddd" name="phone">
+        <input type="text" class="form-control bfh-phone" value="(555)555-5555" data-format="+1 (ddd) ddd-dddd" name="phone"></label>
       </div>
       <div class="form-group">
-        <label for="line"><em>Transit Line*</em></label>
+        <label for="line"><em>Transit Line*</em>
           <select class="form-control" id="line" name="line">
             {% for line in list_of_available_lines %}
             <option>{{ line }}</option>
             {% endfor %}
-          </select>
+          </select></label>
       </div>
       <div class="form-group">
-        <label for="bound"><em>Direction*</em></label>
+        <label for="bound"><em>Direction*</em>
           <select class="form-control" id="bound" name="bound">
             <option value="I">Inbound</option>
             <option value="O">Outbound</option>
-          </select>
+          </select></label>
       </div>
       <div class="form-group">
-        <label for="destination"><em>Available Stops*</em></label>
+        <label for="destination"><em>Available Stops*</em>
           <select class="form-control"name="destination" id="stops">
             <!-- this is where $ and Ajax adds the stop options -->
-          </select>
+          </select></label>
       </div>
       <!-- class="hidden" -->
       <div class="hidden">
-        <label for="lat"></label>
+        <label for="lat">
           <select name="lat" id="lat">
-          </select>
+          </select></label>
       </div>
       <div class="hidden">
-        <label for="lng"></label>
+        <label for="lng">
           <select name="lng" id="lng">
-          </select>
+          </select></label>
       </div>
 
       <button type="submit" class="btn btn-default" >Submit</button>
