@@ -77,7 +77,7 @@ def process_user_info():
 	else:
 		bound = "Outbound"
 
-	return render_template("/thank_you.html", user_fname=user_fname, user_phone=user_phone, bound=bound, line=line)
+	return render_template("/thank_you.html", user_phone=user_phone, bound=bound, line=line)
 
 
 @app.route('/sms', methods=['GET', 'POST'])
