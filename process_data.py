@@ -261,7 +261,7 @@ def process_lat_lng_get_arrival_datetime(user_lat, user_lon, destination_lat, de
 
 	print "got the jsonResponse", jsonResponse
 
-	empty_json = {u'geocoded_waypoints': [{u'geocoder_status': u'ZERO_RESULTS'}, {u'geocoder_status': u'ZERO_RESULTS'}], u'status': u'NOT_FOUND', u'routes': []}
+	# empty_json = {u'geocoded_waypoints': [{u'geocoder_status': u'ZERO_RESULTS'}, {u'geocoder_status': u'ZERO_RESULTS'}], u'status': u'NOT_FOUND', u'routes': []}
 
 	# if jsonResponse == empty_json:
 
