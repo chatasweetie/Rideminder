@@ -254,21 +254,27 @@ def process_lat_lng_get_arrival_datetime(user_lat, user_lon, destination_lat, de
 	url = "https://maps.googleapis.com/maps/api/directions/json?origin={0}&destination={1}&departure_time=now&traffic_model=best_guess&mode=transit&key={2}".format(str(orig_coord),str(dest_coord),str(GOOGLE_MAP_API_KEY))
 	result= simplejson.load(urllib.urlopen(url))
 
+	print "got to results"
+
 	googleResponse = urllib.urlopen(url)
 	jsonResponse = json.loads(googleResponse.read())
+
+	print "got the jsonResponse"
 
 	arrival_time_raw =rawjson['routes'][0]['legs'][0]['arrival_time']['text']
 	arrival_time_raw_split = arrival_time_raw.split(":")
 
+	print "got to spliting"
 	# This is so arrival_time_hour has sometime to reference to later in the code
 	arrival_time_hour = 0 
 
 	if arrival_time_raw[-2:] == "pm":
 		arrival_time_hour = 12
-		
+	
+	print "got to taking care of pm"	
 	arrival_time_hour += int(arrival_time_raw_split[0])
 	arrival_time_min = arrival_time_raw_split[1][:-2]
-
+	print "got to  hour and min"
 	hours = int(arrival_time_hour)
 	minutes = int(arrival_time_min)
 
