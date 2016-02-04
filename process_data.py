@@ -261,28 +261,33 @@ def process_lat_lng_get_arrival_datetime(user_lat, user_lon, destination_lat, de
 
 	print "got the jsonResponse", jsonResponse
 
-	arrival_time_raw =jsonResponse['routes'][0]['legs'][0]['arrival_time']['text']
-	arrival_time_raw_split = arrival_time_raw.split(":")
+	if jsonResponse:
 
-	print "got to spliting"
-	# This is so arrival_time_hour has sometime to reference to later in the code
-	arrival_time_hour = 0 
+		arrival_time_raw =jsonResponse['routes'][0]['legs'][0]['arrival_time']['text']
+		arrival_time_raw_split = arrival_time_raw.split(":")
 
-	if arrival_time_raw[-2:] == "pm":
-		arrival_time_hour = 12
-	
-	print "got to taking care of pm"	
-	arrival_time_hour += int(arrival_time_raw_split[0])
-	arrival_time_min = arrival_time_raw_split[1][:-2]
-	print "got to  hour and min"
-	hours = int(arrival_time_hour)
-	minutes = int(arrival_time_min)
+		print "got to spliting"
+		# This is so arrival_time_hour has sometime to reference to later in the code
+		arrival_time_hour = 0 
 
-	now = datetime.datetime.utcnow()
+		if arrival_time_raw[-2:] == "pm":
+			arrival_time_hour = 12
+		
+		print "got to taking care of pm"	
+		arrival_time_hour += int(arrival_time_raw_split[0])
+		arrival_time_min = arrival_time_raw_split[1][:-2]
+		print "got to  hour and min"
+		hours = int(arrival_time_hour)
+		minutes = int(arrival_time_min)
 
-	arrival_time = now.replace(hour=hours, minute=minutes)
+		now = datetime.datetime.utcnow()
 
-	return arrival_time
+		arrival_time = now.replace(hour=hours, minute=minutes)
+
+		return arrival_time
+
+	else:
+		return datetime.datetime.utcnow()
 
 	# rawjson = gets_rawjson_with_lat_lon(user_lat, user_lon, destination_lat, destination_lon)
 	# print rawjson
