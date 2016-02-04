@@ -58,7 +58,7 @@ def process_transit_request():
 			#is_finished to True
 			records_request_complete_db(request)
 
-		now = datetime.datetime.now()
+		now = datetime.datetime.utcnow()
 		min_difference = request.arrival_time.minute - now.minute
 		print "this is the saved datetime: ", request.arrival_time
 		print "this is the now: ",now

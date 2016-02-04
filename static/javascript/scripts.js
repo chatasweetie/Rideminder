@@ -11,7 +11,7 @@ function clearMapMarkers() {
 }
 
 
-var user_geolocation = (37.7846810, -122.4073680)
+var user_geolocation = (37.7846810, -122.4073680);
 
 
 function init(){

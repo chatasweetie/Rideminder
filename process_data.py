@@ -237,7 +237,7 @@ def rawjson_into_datetime(rawjson):
 	hours = int(arrival_time_hour)
 	minutes = int(arrival_time_min)
 
-	now = datetime.datetime.now()
+	now = datetime.datetime.utcnow()
 
 	arrival_time = now.replace(hour=hours, minute=minutes)
 

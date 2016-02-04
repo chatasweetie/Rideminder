@@ -66,16 +66,20 @@ def process_user_info():
 	user_phone = convert_to_e164(raw_user_phone_num)
 	print "this is the phone number after twilioness", user_phone
 
-	arrival_time_datetime = datetime.datetime(2016, 1, 12, 22, 05, 58, 70745)
-	# arrival_time_datetime = process_lat_lng_get_arrival_datetime(user_lat, user_lon, destination_lat, 
-																	# destination_lon)
+	arrival_time_datetime = process_lat_lng_get_arrival_datetime(user_lat, user_lon, destination_lat, 
+																	destination_lon)
 	
 	print arrival_time_datetime
 
 	adds_to_queue(user_fname, user_email, user_phone, user_lat, user_lon, destination_lat, destination_lon, 
 				   vehicle_1, vehicle_1_distance, vehicle_2, vehicle_2_distance, arrival_time_datetime)
 
-	return render_template("/thank_you.html", user_fname=user_fname, user_phone=user_phone)
+	if bound == "I":
+		bound = "Inbound"
+	else:
+		bound = "Outbound"
+
+	return render_template("/thank_you.html", user_fname=user_fname, user_phone=user_phone, bound=bound, line=line)
 
 
 @app.route('/sms', methods=['GET', 'POST'])
