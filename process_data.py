@@ -261,7 +261,7 @@ def process_lat_lng_get_arrival_datetime(user_lat, user_lon, destination_lat, de
 
 	print "got the jsonResponse", jsonResponse
 
-	if jsonResponse:
+	if jsonResponse == {u'geocoded_waypoints': [{u'geocoder_status': u'ZERO_RESULTS'}, {u'geocoder_status': u'ZERO_RESULTS'}], u'status': u'NOT_FOUND', u'routes': []}
 
 		arrival_time_raw =jsonResponse['routes'][0]['legs'][0]['arrival_time']['text']
 		arrival_time_raw_split = arrival_time_raw.split(":")
