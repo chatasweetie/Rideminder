@@ -51,7 +51,7 @@ def process_user_info():
 	# user_lat= 37.785152
 	# user_lon = -122.406581
 	# destination_lat = 37.762028
-	# destination_lon = -122.470790s
+	# destination_lon = -122.470790
 
 	list_of_vincenty_vehicle = processes_line_and_bound_selects_two_closest_vehicle(line, bound, 
 											destination_lat, destination_lon, user_lat, user_lon)

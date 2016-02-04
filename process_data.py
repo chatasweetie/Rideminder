@@ -204,8 +204,49 @@ def processes_line_and_bound_selects_two_closest_vehicle(line, bound, destinatio
 	return sorted_list_of_vincenty[0:3]
 
 
-def gets_rawjson_with_lat_lon(user_lat, user_lon, destination_lat, destination_lon):
-	"""makes a call to gogole map to get the json data of two geolocations"""
+# def gets_rawjson_with_lat_lon(user_lat, user_lon, destination_lat, destination_lon):
+# 	"""makes a call to gogole map to get the json data of two geolocations"""
+
+# 	orig_coord = user_lat, user_lon
+# 	dest_coord = destination_lat, destination_lon
+
+# 	url = "https://maps.googleapis.com/maps/api/directions/json?origin={0}&destination={1}&departure_time=now&traffic_model=best_guess&mode=transit&key={2}".format(str(orig_coord),str(dest_coord),str(GOOGLE_MAP_API_KEY))
+# 	result= simplejson.load(urllib.urlopen(url))
+
+# 	googleResponse = urllib.urlopen(url)
+# 	jsonResponse = json.loads(googleResponse.read())
+
+# 	return jsonResponse
+
+
+# def rawjson_into_datetime(rawjson):
+# 	"""parses out json to get of arrival time and turn it into datetime object"""
+
+# 	arrival_time_raw =rawjson['routes'][0]['legs'][0]['arrival_time']['text']
+# 	arrival_time_raw_split = arrival_time_raw.split(":")
+
+# 	# This is so arrival_time_hour has sometime to reference to later in the code
+# 	arrival_time_hour = 0 
+
+# 	if arrival_time_raw[-2:] == "pm":
+# 		arrival_time_hour = 12
+		
+# 	arrival_time_hour += int(arrival_time_raw_split[0])
+# 	arrival_time_min = arrival_time_raw_split[1][:-2]
+
+# 	hours = int(arrival_time_hour)
+# 	minutes = int(arrival_time_min)
+
+# 	now = datetime.datetime.utcnow()
+
+# 	arrival_time = now.replace(hour=hours, minute=minutes)
+
+# 	return arrival_time
+
+
+def process_lat_lng_get_arrival_datetime(user_lat, user_lon, destination_lat, destination_lon):
+	"""takes in geolocations and returns the arrival time as a datatime object of when the 
+	transit is completed"""
 
 	orig_coord = user_lat, user_lon
 	dest_coord = destination_lat, destination_lon
@@ -216,16 +257,10 @@ def gets_rawjson_with_lat_lon(user_lat, user_lon, destination_lat, destination_l
 	googleResponse = urllib.urlopen(url)
 	jsonResponse = json.loads(googleResponse.read())
 
-	return jsonResponse
-
-
-def rawjson_into_datetime(rawjson):
-	"""parses out json to get of arrival time and turn it into datetime object"""
-
 	arrival_time_raw =rawjson['routes'][0]['legs'][0]['arrival_time']['text']
 	arrival_time_raw_split = arrival_time_raw.split(":")
 
-	# This is so line 264 has sometime to reference to
+	# This is so arrival_time_hour has sometime to reference to later in the code
 	arrival_time_hour = 0 
 
 	if arrival_time_raw[-2:] == "pm":
@@ -243,16 +278,11 @@ def rawjson_into_datetime(rawjson):
 
 	return arrival_time
 
+	# rawjson = gets_rawjson_with_lat_lon(user_lat, user_lon, destination_lat, destination_lon)
+	# print rawjson
+	# arrival_time = rawjson_into_datetime(rawjson)
 
-def process_lat_lng_get_arrival_datetime(user_lat, user_lon, destination_lat, destination_lon):
-	"""takes in geolocations and returns the arrival time as a datatime object of when the 
-	transit is completed"""
-
-	rawjson = gets_rawjson_with_lat_lon(user_lat, user_lon, destination_lat, destination_lon)
-	print rawjson
-	arrival_time = rawjson_into_datetime(rawjson)
-
-	return arrival_time
+	# return arrival_time
 
 
 
