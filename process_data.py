@@ -251,6 +251,9 @@ def process_lat_lng_get_arrival_datetime(user_lat, user_lon, destination_lat, de
 	orig_coord = user_lat, user_lon
 	dest_coord = destination_lat, destination_lon
 
+	print "orig_coord", orig_coord
+	print "dest_coord", dest_coord
+
 	url = "https://maps.googleapis.com/maps/api/directions/json?origin={0}&destination={1}&departure_time=now&traffic_model=best_guess&mode=transit&key={2}".format(str(orig_coord),str(dest_coord),str(GOOGLE_MAP_API_KEY))
 	result= simplejson.load(urllib.urlopen(url))
 
