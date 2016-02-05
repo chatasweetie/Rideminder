@@ -6,18 +6,18 @@ import phonenumbers
 import simplejson, urllib
 import json
 import pprint
-import os 
+import os
 import time
 import datetime
 
 
-GOOGLE_MAP_API_KEY= os.environ.get("GOOGLE_MAP_API_KEY")
+GOOGLE_MAP_API_KEY = os.environ.get("GOOGLE_MAP_API_KEY")
 
 # Connects to the public transit API
 transit_firebase = firebase.FirebaseApplication("https://publicdata-transit.firebaseio.com/", None)
 
 # these are for I am working in python -i to play with my functions
-user_lat= 37.785152
+user_lat = 37.785152
 user_lon = -122.406581
 destination_lat = 37.762028
 destination_lon = -122.470790
@@ -47,7 +47,7 @@ def convert_to_e164(raw_phone):
 	phone_representation = phonenumbers.parse(raw_phone, parse_type)
 
 	return phonenumbers.format_number(phone_representation,
-        phonenumbers.PhoneNumberFormat.E164)
+		phonenumbers.PhoneNumberFormat.E164)
 
 
 def gets_a_list_of_available_line():
@@ -60,22 +60,22 @@ def gets_a_list_of_available_line():
 	"""
 
 	available_lines = []
-	
+
 	available_lines_raw = transit_firebase.get("sf-muni/", "routes")
 
 	for line in available_lines_raw:
 		available_lines.append(line)
-	
+
 	return sorted(available_lines)
 
 
 def gets_a_dic_of_vehicle(line):
 	"""Takes in a vehicle line and returns a dictionary of vehicle ids that are in 
 	current available on the transit line
-	    
+
 	output example: {u'5488': True, u'5604': True, ... u'5525': True}
 
-	    >>> gets_a_dic_of_vehicle("N") # doctest: +ELLIPSIS
+		>>> gets_a_dic_of_vehicle("N") # doctest: +ELLIPSIS
 		{u'...': True, ... u'...': True}
 
 	runtime = O(n)
@@ -205,56 +205,50 @@ def processes_line_and_bound_selects_two_closest_vehicle(line, bound, destinatio
 
 
 # def gets_rawjson_with_lat_lon(user_lat, user_lon, destination_lat, destination_lon):
-# 	"""makes a call to gogole map to get the json data of two geolocations"""
+#   """makes a call to gogole map to get the json data of two geolocations"""
 
-# 	orig_coord = user_lat, user_lon
-# 	dest_coord = destination_lat, destination_lon
+#   orig_coord = user_lat, user_lon
+#   dest_coord = destination_lat, destination_lon
 
-# 	url = "https://maps.googleapis.com/maps/api/directions/json?origin={0}&destination={1}&departure_time=now&traffic_model=best_guess&mode=transit&key={2}".format(str(orig_coord),str(dest_coord),str(GOOGLE_MAP_API_KEY))
-# 	result= simplejson.load(urllib.urlopen(url))
+#   url = "https://maps.googleapis.com/maps/api/directions/json?origin={0}&destination={1}&departure_time=now&traffic_model=best_guess&mode=transit&key={2}".format(str(orig_coord),str(dest_coord),str(GOOGLE_MAP_API_KEY))
+#   result= simplejson.load(urllib.urlopen(url))
 
-# 	googleResponse = urllib.urlopen(url)
-# 	jsonResponse = json.loads(googleResponse.read())
+#   googleResponse = urllib.urlopen(url)
+#   jsonResponse = json.loads(googleResponse.read())
 
-# 	return jsonResponse
+#   return jsonResponse
 
 
 # def rawjson_into_datetime(rawjson):
-# 	"""parses out json to get of arrival time and turn it into datetime object"""
+#   """parses out json to get of arrival time and turn it into datetime object"""
 
-# 	arrival_time_raw =rawjson['routes'][0]['legs'][0]['arrival_time']['text']
-# 	arrival_time_raw_split = arrival_time_raw.split(":")
+#   arrival_time_raw =rawjson['routes'][0]['legs'][0]['arrival_time']['text']
+#   arrival_time_raw_split = arrival_time_raw.split(":")
 
-# 	# This is so arrival_time_hour has sometime to reference to later in the code
-# 	arrival_time_hour = 0 
+#   # This is so arrival_time_hour has sometime to reference to later in the code
+#   arrival_time_hour = 0 
 
-# 	if arrival_time_raw[-2:] == "pm":
-# 		arrival_time_hour = 12
+#   if arrival_time_raw[-2:] == "pm":
+#       arrival_time_hour = 12
 		
-# 	arrival_time_hour += int(arrival_time_raw_split[0])
-# 	arrival_time_min = arrival_time_raw_split[1][:-2]
+#   arrival_time_hour += int(arrival_time_raw_split[0])
+#   arrival_time_min = arrival_time_raw_split[1][:-2]
 
-# 	hours = int(arrival_time_hour)
-# 	minutes = int(arrival_time_min)
+#   hours = int(arrival_time_hour)
+#   minutes = int(arrival_time_min)
 
-# 	now = datetime.datetime.utcnow()
+#   now = datetime.datetime.utcnow()
 
-# 	arrival_time = now.replace(hour=hours, minute=minutes)
+#   arrival_time = now.replace(hour=hours, minute=minutes)
 
-# 	return arrival_time
+#   return arrival_time
 
 
 def process_lat_lng_get_arrival_datetime(user_lat, user_lon, destination_lat, destination_lon):
 	"""takes in geolocations and returns the arrival time as a datatime object of when the 
 	transit is completed"""
 
-	orig_coord = user_lat, user_lon
-	dest_coord = destination_lat, destination_lon
-
-	print "orig_coord", orig_coord
-	print "dest_coord", dest_coord
-
-	url = "https://maps.googleapis.com/maps/api/directions/json?origin={0}&destination={1}&departure_time=now&traffic_model=best_guess&mode=transit&key={2}".format(str(orig_coord),str(dest_coord),str(GOOGLE_MAP_API_KEY))
+	url = "https://maps.googleapis.com/maps/api/directions/json?origin={0},{1}&destination={2},{3}&departure_time=now&traffic_model=best_guess&mode=transit&key={4}".format(str(user_lat), str(user_lon),str(destination_lat),str(destination_lon),str(GOOGLE_MAP_API_KEY))
 	result= simplejson.load(urllib.urlopen(url))
 
 	print "got to results"
@@ -268,28 +262,28 @@ def process_lat_lng_get_arrival_datetime(user_lat, user_lon, destination_lat, de
 
 	# if jsonResponse == empty_json:
 
-	# 	arrival_time_raw =jsonResponse['routes'][0]['legs'][0]['arrival_time']['text']
-	# 	arrival_time_raw_split = arrival_time_raw.split(":")
+	#   arrival_time_raw =jsonResponse['routes'][0]['legs'][0]['arrival_time']['text']
+	#   arrival_time_raw_split = arrival_time_raw.split(":")
 
-	# 	print "got to spliting"
-	# 	# This is so arrival_time_hour has sometime to reference to later in the code
-	# 	arrival_time_hour = 0 
+	#   print "got to spliting"
+	#   # This is so arrival_time_hour has sometime to reference to later in the code
+	#   arrival_time_hour = 0
 
-	# 	if arrival_time_raw[-2:] == "pm":
-	# 		arrival_time_hour = 12
+	#   if arrival_time_raw[-2:] == "pm":
+	#       arrival_time_hour = 12
 		
-	# 	print "got to taking care of pm"	
-	# 	arrival_time_hour += int(arrival_time_raw_split[0])
-	# 	arrival_time_min = arrival_time_raw_split[1][:-2]
-	# 	print "got to  hour and min"
-	# 	hours = int(arrival_time_hour)
-	# 	minutes = int(arrival_time_min)
+	#   print "got to taking care of pm"
+	#   arrival_time_hour += int(arrival_time_raw_split[0])
+	#   arrival_time_min = arrival_time_raw_split[1][:-2]
+	#   print "got to  hour and min"
+	#   hours = int(arrival_time_hour)
+	#   minutes = int(arrival_time_min)
 
-	# 	now = datetime.datetime.utcnow()
+	#   now = datetime.datetime.utcnow()
 
-	# 	arrival_time = now.replace(hour=hours, minute=minutes)
+	#   arrival_time = now.replace(hour=hours, minute=minutes)
 
-	# 	return arrival_time
+	#   return arrival_time
 
 	return datetime.datetime.utcnow()
 
