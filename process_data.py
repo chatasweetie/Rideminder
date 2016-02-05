@@ -251,41 +251,33 @@ def process_lat_lng_get_arrival_datetime(user_lat, user_lon, destination_lat, de
 	url = "https://maps.googleapis.com/maps/api/directions/json?origin={0},{1}&destination={2},{3}&departure_time=now&traffic_model=best_guess&mode=transit&key={4}".format(str(user_lat), str(user_lon),str(destination_lat),str(destination_lon),str(GOOGLE_MAP_API_KEY))
 	result= simplejson.load(urllib.urlopen(url))
 
-	print "got to results"
 
 	googleResponse = urllib.urlopen(url)
 	jsonResponse = json.loads(googleResponse.read())
 
-	print "got the jsonResponse", jsonResponse
+	empty_json = {u'geocoded_waypoints': [{u'geocoder_status': u'ZERO_RESULTS'}, {u'geocoder_status': u'ZERO_RESULTS'}], u'status': u'NOT_FOUND', u'routes': []}
 
-	# empty_json = {u'geocoded_waypoints': [{u'geocoder_status': u'ZERO_RESULTS'}, {u'geocoder_status': u'ZERO_RESULTS'}], u'status': u'NOT_FOUND', u'routes': []}
 
-	# if jsonResponse == empty_json:
+	arrival_time_raw =jsonResponse['routes'][0]['legs'][0]['arrival_time']['text']
+	arrival_time_raw_split = arrival_time_raw.split(":")
 
-	#   arrival_time_raw =jsonResponse['routes'][0]['legs'][0]['arrival_time']['text']
-	#   arrival_time_raw_split = arrival_time_raw.split(":")
+	# This is so arrival_time_hour has sometime to reference to later in the code
+	arrival_time_hour = 0
 
-	#   print "got to spliting"
-	#   # This is so arrival_time_hour has sometime to reference to later in the code
-	#   arrival_time_hour = 0
-
-	#   if arrival_time_raw[-2:] == "pm":
-	#       arrival_time_hour = 12
+	if arrival_time_raw[-2:] == "pm":
+	      arrival_time_hour = 12
 		
-	#   print "got to taking care of pm"
-	#   arrival_time_hour += int(arrival_time_raw_split[0])
-	#   arrival_time_min = arrival_time_raw_split[1][:-2]
-	#   print "got to  hour and min"
-	#   hours = int(arrival_time_hour)
-	#   minutes = int(arrival_time_min)
+	arrival_time_hour += int(arrival_time_raw_split[0])
+	arrival_time_min = arrival_time_raw_split[1][:-2]
 
-	#   now = datetime.datetime.utcnow()
+	hours = int(arrival_time_hour)
+	minutes = int(arrival_time_min)
 
-	#   arrival_time = now.replace(hour=hours, minute=minutes)
+	now = datetime.datetime.utcnow()
 
-	#   return arrival_time
+	arrival_time = now.replace(hour=hours, minute=minutes)
 
-	return datetime.datetime.utcnow()
+	return arrival_time
 
 	# rawjson = gets_rawjson_with_lat_lon(user_lat, user_lon, destination_lat, destination_lon)
 	# print rawjson
