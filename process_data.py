@@ -246,13 +246,13 @@ def process_lat_lng_get_arrival_datetime(user_lat, user_lon, destination_lat, de
     transit is completed"""
 
     # this is to activate the Fixie proxy, so google direction api has the same ip address call
-    # proxy  = urllib2.ProxyHandler({'http': os.environ.get('FIXIE_URL', '')})
-    # auth   = urllib2.HTTPBasicAuthHandler()
-    # opener = urllib2.build_opener(proxy, auth, urllib2.HTTPHandler)
+    proxy  = urllib2.ProxyHandler({'http': os.environ.get('FIXIE_URL', '')})
+    auth   = urllib2.HTTPBasicAuthHandler()
+    opener = urllib2.build_opener(proxy, auth, urllib2.HTTPHandler)
     url = "https://maps.googleapis.com/maps/api/directions/json?origin={0},{1}&destination={2},{3}&departure_time=now&traffic_model=best_guess&mode=transit&key={4}".format(str(user_lat), str(user_lon),str(destination_lat),str(destination_lon),str(GOOGLE_MAP_API_KEY))
-    # result= simplejson.load(opener.open(url))
+    response = opener.open(url)
 
-    result= simplejson.load(urllib.urlopen(url))
+    result= simplejson.load(response)
 
     print "got to results"
 
