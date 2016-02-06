@@ -3,11 +3,9 @@ from firebase import firebase
 from geopy.distance import vincenty
 from time import sleep
 import phonenumbers
-import simplejson, urllib
+import simplejson, urllib, urllib2
 import json
-import pprint
 import os
-import time
 import datetime
 
 
@@ -26,182 +24,181 @@ line = "N"
 
 
 def convert_to_e164(raw_phone):
-	"""formats phone numbers to twilio format
+    """formats phone numbers to twilio format
 
-		>>> convert_to_e164("383.239.2280")
-		u'+13832392280'
+        >>> convert_to_e164("383.239.2280")
+        u'+13832392280'
 
-		>>> convert_to_e164("(934)234-2384")
-		u'+19342342384'
+        >>> convert_to_e164("(934)234-2384")
+        u'+19342342384'
 
-	"""
-	if not raw_phone:
-		return
-	if raw_phone[0] == '+':
-		# Phone number may already be in E.164 format.
-		parse_type = None
-	else:
-		# If no country code information present, assume it's a US number
-		parse_type = "US"
+    """
+    if not raw_phone:
+        return
+    if raw_phone[0] == '+':
+        # Phone number may already be in E.164 format.
+        parse_type = None
+    else:
+        # If no country code information present, assume it's a US number
+        parse_type = "US"
 
-	phone_representation = phonenumbers.parse(raw_phone, parse_type)
+    phone_representation = phonenumbers.parse(raw_phone, parse_type)
 
-	return phonenumbers.format_number(phone_representation,
-		phonenumbers.PhoneNumberFormat.E164)
+    return phonenumbers.format_number(phone_representation, phonenumbers.PhoneNumberFormat.E164)
 
 
 def gets_a_list_of_available_line():
-	"""gets all the available lines from firebase into a list
+    """gets all the available lines from firebase into a list
 
-		>>> gets_a_list_of_available_line()
-		[u'1', u'10', u'12', u'14', u'14R', u'14X', u'18', u'19', u'1AX', u'1BX', u'2', u'21', u'22', u'23', u'24', u'25', u'27', u'28', u'28R', u'29', u'3', u'30', u'30X', u'31', u'31AX', u'31BX', u'33', u'35', u'36', u'37', u'38', u'38AX', u'38BX', u'38R', u'39', u'41', u'43', u'44', u'45', u'47', u'48', u'49', u'5', u'52', u'54', u'55', u'56', u'57', u'59', u'5R', u'6', u'60', u'61', u'66', u'67', u'7', u'7R', u'7X', u'8', u'81X', u'82X', u'88', u'89', u'8AX', u'8BX', u'9', u'9R', u'F', u'J', u'KT', u'K_OWL', u'L', u'L_OWL', u'M', u'M_OWL', u'N', u'NX', u'N_OWL', u'T', u'T_OWL']
+        >>> gets_a_list_of_available_line()
+        [u'1', u'10', u'12', u'14', u'14R', u'14X', u'18', u'19', u'1AX', u'1BX', u'2', u'21', u'22', u'23', u'24', u'25', u'27', u'28', u'28R', u'29', u'3', u'30', u'30X', u'31', u'31AX', u'31BX', u'33', u'35', u'36', u'37', u'38', u'38AX', u'38BX', u'38R', u'39', u'41', u'43', u'44', u'45', u'47', u'48', u'49', u'5', u'52', u'54', u'55', u'56', u'57', u'59', u'5R', u'6', u'60', u'61', u'66', u'67', u'7', u'7R', u'7X', u'8', u'81X', u'82X', u'88', u'89', u'8AX', u'8BX', u'9', u'9R', u'F', u'J', u'KT', u'K_OWL', u'L', u'L_OWL', u'M', u'M_OWL', u'N', u'NX', u'N_OWL', u'T', u'T_OWL']
 
-	runtime = O(n)
-	"""
+    runtime = O(n)
+    """
 
-	available_lines = []
+    available_lines = []
 
-	available_lines_raw = transit_firebase.get("sf-muni/", "routes")
+    available_lines_raw = transit_firebase.get("sf-muni/", "routes")
 
-	for line in available_lines_raw:
-		available_lines.append(line)
+    for line in available_lines_raw:
+        available_lines.append(line)
 
-	return sorted(available_lines)
+    return sorted(available_lines)
 
 
 def gets_a_dic_of_vehicle(line):
-	"""Takes in a vehicle line and returns a dictionary of vehicle ids that are in 
-	current available on the transit line
+    """Takes in a vehicle line and returns a dictionary of vehicle ids that are in 
+    current available on the transit line
 
-	output example: {u'5488': True, u'5604': True, ... u'5525': True}
+    output example: {u'5488': True, u'5604': True, ... u'5525': True}
 
-		>>> gets_a_dic_of_vehicle("N") # doctest: +ELLIPSIS
-		{u'...': True, ... u'...': True}
+        >>> gets_a_dic_of_vehicle("N") # doctest: +ELLIPSIS
+        {u'...': True, ... u'...': True}
 
-	runtime = O(n)
-	"""
-	available_vehicles = transit_firebase.get("sf-muni/routes/", line)
-	
-	return available_vehicles
+    runtime = O(n)
+    """
+    available_vehicles = transit_firebase.get("sf-muni/routes/", line)
+
+    return available_vehicles
 
 
 def validates_bound_direction_of_vehicles_in_line(dic_vehicles_for_line, bound_dir):
-	"""From a dictionary of vehicles in a transit line, it'll filter for the ones going the 
-	correct bound direction: "O" = Outboud, "I" = Inboud
+    """From a dictionary of vehicles in a transit line, it'll filter for the ones going the 
+    correct bound direction: "O" = Outboud, "I" = Inboud
 
-	output example: [u'1481', u'1486', ... u'1513']
+    output example: [u'1481', u'1486', ... u'1513']
 
-		>>> dic = gets_a_dic_of_vehicle("N")
-		>>> validates_bound_direction_of_vehicles_in_line(dic, bound)
-		[u'...', u'...', ... u'...']
+        >>> dic = gets_a_dic_of_vehicle("N")
+        >>> validates_bound_direction_of_vehicles_in_line(dic, bound)
+        [u'...', u'...', ... u'...']
 
-	runtime = O(n)
-	"""
-	available_vehicle_with_direction = []
-	bound = bound_dir
+    runtime = O(n)
+    """
+    available_vehicle_with_direction = []
+    bound = bound_dir
 
-	for vehicle in dic_vehicles_for_line:
-		vehicle_id = vehicle
-		try:
-			vehicle_dirTag = transit_firebase.get("sf-muni/vehicles/" + 
-				vehicle_id, "dirTag")
-			if vehicle_dirTag:
-				if vehicle_dirTag.find(bound) != -1:
-					available_vehicle_with_direction.append(vehicle)
-		except AttributeError:
-			pass
+    for vehicle in dic_vehicles_for_line:
+        vehicle_id = vehicle
+        try:
+            vehicle_dirTag = transit_firebase.get("sf-muni/vehicles/" + 
+                vehicle_id, "dirTag")
+            if vehicle_dirTag:
+                if vehicle_dirTag.find(bound) != -1:
+                    available_vehicle_with_direction.append(vehicle)
+        except AttributeError:
+            pass
 
-	return available_vehicle_with_direction
+    return available_vehicle_with_direction
 
 
 def gets_geolocation_of_a_vehicle(vehicle_id):
-	"""With the vehicle id, it akes a call to firebase to get the the current latitude 
-	and longitude of the vehicle and returns it as a geolocation (lat, lon)
+    """With the vehicle id, it akes a call to firebase to get the the current latitude 
+    and longitude of the vehicle and returns it as a geolocation (lat, lon)
 
-	example output: (37.73831, -122.46859)
+    example output: (37.73831, -122.46859)
 
-		>>> print gets_geolocation_of_a_vehicle(1403)# doctest: +ELLIPSIS
-		(..., ...)
+        >>> print gets_geolocation_of_a_vehicle(1403)# doctest: +ELLIPSIS
+        (..., ...)
 
-	O(1)
-	"""
-	vehicle_id = str(vehicle_id)
+    O(1)
+    """
+    vehicle_id = str(vehicle_id)
 
-	try:
-		vehicle_lat = transit_firebase.get("sf-muni/vehicles/" + vehicle_id, "lat")
-		vehicle_lon = transit_firebase.get("sf-muni/vehicles/" + vehicle_id, "lon")
-		vehicle_geolocation = (vehicle_lat, vehicle_lon)
-	except AttributeError:
-		vehicle_geolocation = None 
+    try:
+        vehicle_lat = transit_firebase.get("sf-muni/vehicles/" + vehicle_id, "lat")
+        vehicle_lon = transit_firebase.get("sf-muni/vehicles/" + vehicle_id, "lon")
+        vehicle_geolocation = (vehicle_lat, vehicle_lon)
+    except AttributeError:
+        vehicle_geolocation = None 
 
-	return vehicle_geolocation
+    return vehicle_geolocation
 
 
 def sorts_vehicles_dic_by_distance(vehicle_dictionary, user_lat, user_lon):
-	"""With a list of vehicles from a line, it'll pull out the real time latitude and longitude and 
-	calucates the distance from the user_geolocation. Returns a sorted list of tuples:
+    """With a list of vehicles from a line, it'll pull out the real time latitude and longitude and 
+    calucates the distance from the user_geolocation. Returns a sorted list of tuples:
 
-	example output: [(0.4675029273179666, u'1491'), (0.9429363612471457, u'1486'), ... (7956.1553552570285, u'1446')]
+    example output: [(0.4675029273179666, u'1491'), (0.9429363612471457, u'1486'), ... (7956.1553552570285, u'1446')]
 
-		>>> user_lat= 37.7846810
-		>>> user_lon = -122.4073680
-		>>> vehicles = [u'1481', u'1486', u'1485', u'1520', u'1422', u'1427', u'1548', u'1502', u'1446', u'1468', u'1440', u'1476', u'1462', u'1491', u'1493', u'1497', u'1498', u'1537', u'1510', u'1513']
-		>>> sorts_vehicles_dic_by_distance(vehicles, user_lat, user_lon)
-		[(..., u'...'), (..., u'...'), ... (..., u'...')]
+        >>> user_lat= 37.7846810
+        >>> user_lon = -122.4073680
+        >>> vehicles = [u'1481', u'1486', u'1485', u'1520', u'1422', u'1427', u'1548', u'1502', u'1446', u'1468', u'1440', u'1476', u'1462', u'1491', u'1493', u'1497', u'1498', u'1537', u'1510', u'1513']
+        >>> sorts_vehicles_dic_by_distance(vehicles, user_lat, user_lon)
+        [(..., u'...'), (..., u'...'), ... (..., u'...')]
 
-		"""
+        """
 
-	user_geolocation = (user_lat,user_lon)
-	tuples_lat_lon_vehicle = []
+    user_geolocation = (user_lat,user_lon)
+    tuples_lat_lon_vehicle = []
 
-	for vehicle in vehicle_dictionary:
-		vehicle_id = vehicle
-		vehicle_geolocation = gets_geolocation_of_a_vehicle(vehicle_id)
-		if vehicle_geolocation is not None:
-						# vincenity is the distance between two geolocations that 
-						# takes into account the sphereness of the world
-			distance = (vincenty(user_geolocation, vehicle_geolocation).miles)
-			tuples_lat_lon_vehicle.append(tuple([distance, vehicle_id]))
-	vehicles_sorted_by_vincenity = sorted(tuples_lat_lon_vehicle)
-	
-	return vehicles_sorted_by_vincenity
+    for vehicle in vehicle_dictionary:
+        vehicle_id = vehicle
+        vehicle_geolocation = gets_geolocation_of_a_vehicle(vehicle_id)
+        if vehicle_geolocation is not None:
+                        # vincenity is the distance between two geolocations that 
+                        # takes into account the sphereness of the world
+            distance = (vincenty(user_geolocation, vehicle_geolocation).miles)
+            tuples_lat_lon_vehicle.append(tuple([distance, vehicle_id]))
+    vehicles_sorted_by_vincenity = sorted(tuples_lat_lon_vehicle)
+
+    return vehicles_sorted_by_vincenity
 
 def selects_closest_vehicle(vehicle_1, vehicle_1_distance, vehicle_2, vehicle_2_distance, user_lat, user_lon):
-	"""From two vehicles (distance, vehicle id), returns the closest vehicleid.
+    """From two vehicles (distance, vehicle id), returns the closest vehicleid.
 
-	Compares the inital vincity distance of the first vehicle to an updated one to validate
-	that the first vehicle is actually coming to the user (versus leaving the person).
-	If its not correct, it'll check the second vehicle and validates it.
-	"""
+    Compares the inital vincity distance of the first vehicle to an updated one to validate
+    that the first vehicle is actually coming to the user (versus leaving the person).
+    If its not correct, it'll check the second vehicle and validates it.
+    """
 
-	user_geolocation = (user_lat,user_lon)
+    user_geolocation = (user_lat,user_lon)
 
-	vehicle_geolocation = gets_geolocation_of_a_vehicle(vehicle_1)
-	vehicle_1_distance_current = (vincenty(user_geolocation, vehicle_geolocation).miles)
+    vehicle_geolocation = gets_geolocation_of_a_vehicle(vehicle_1)
+    vehicle_1_distance_current = (vincenty(user_geolocation, vehicle_geolocation).miles)
 
-	if vehicle_1_distance_current < vehicle_1_distance:
-		return vehicle_1
+    if vehicle_1_distance_current < vehicle_1_distance:
+        return vehicle_1
 
-	else:
-		return vehicle_2
+    else:
+        return vehicle_2
 
 
-	
+    
 def processes_line_and_bound_selects_two_closest_vehicle(line, bound, destination_lat, destination_lon, 
-															user_lat, user_lon):
-	""""With a line and bound direction(O = Outbound, I=Inbound), it'll get the list of vehicles on 
-	the line and gets the vehicle's geolocation and returns to two closest vehicle distance and id
+                                                            user_lat, user_lon):
+    """"With a line and bound direction(O = Outbound, I=Inbound), it'll get the list of vehicles on 
+    the line and gets the vehicle's geolocation and returns to two closest vehicle distance and id
 
-	"""
+    """
 
-	print "step 0"
-	dic_vehicles_for_line = gets_a_dic_of_vehicle(line)
-	print "step 1"
-	bounded_vehicles_for_line = validates_bound_direction_of_vehicles_in_line(dic_vehicles_for_line,bound)
-	print "step 2"
-	sorted_list_of_vincenty = sorts_vehicles_dic_by_distance(bounded_vehicles_for_line, user_lat, user_lon)
+    print "step 0"
+    dic_vehicles_for_line = gets_a_dic_of_vehicle(line)
+    print "step 1"
+    bounded_vehicles_for_line = validates_bound_direction_of_vehicles_in_line(dic_vehicles_for_line,bound)
+    print "step 2"
+    sorted_list_of_vincenty = sorts_vehicles_dic_by_distance(bounded_vehicles_for_line, user_lat, user_lon)
 
-	return sorted_list_of_vincenty[0:3]
+    return sorted_list_of_vincenty[0:3]
 
 
 # def gets_rawjson_with_lat_lon(user_lat, user_lon, destination_lat, destination_lon):
@@ -230,7 +227,7 @@ def processes_line_and_bound_selects_two_closest_vehicle(line, bound, destinatio
 
 #   if arrival_time_raw[-2:] == "pm":
 #       arrival_time_hour = 12
-		
+        
 #   arrival_time_hour += int(arrival_time_raw_split[0])
 #   arrival_time_min = arrival_time_raw_split[1][:-2]
 
@@ -245,55 +242,58 @@ def processes_line_and_bound_selects_two_closest_vehicle(line, bound, destinatio
 
 
 def process_lat_lng_get_arrival_datetime(user_lat, user_lon, destination_lat, destination_lon):
-	"""takes in geolocations and returns the arrival time as a datatime object of when the 
-	transit is completed"""
+    """takes in geolocations and returns the arrival time as a datatime object of when the 
+    transit is completed"""
 
-	url = "https://maps.googleapis.com/maps/api/directions/json?origin={0},{1}&destination={2},{3}&departure_time=now&traffic_model=best_guess&mode=transit&key={4}".format(str(user_lat), str(user_lon),str(destination_lat),str(destination_lon),str(GOOGLE_MAP_API_KEY))
-	result= simplejson.load(urllib.urlopen(url))
+    # this is to activate the Fixie proxy, so google direction api has the same ip address call
+    # proxy  = urllib2.ProxyHandler({'http': os.environ.get('FIXIE_URL', '')})
+    # auth   = urllib2.HTTPBasicAuthHandler()
+    # opener = urllib2.build_opener(proxy, auth, urllib2.HTTPHandler)
+    url = "https://maps.googleapis.com/maps/api/directions/json?origin={0},{1}&destination={2},{3}&departure_time=now&traffic_model=best_guess&mode=transit&key={4}".format(str(user_lat), str(user_lon),str(destination_lat),str(destination_lon),str(GOOGLE_MAP_API_KEY))
+    # result= simplejson.load(opener.open(url))
 
-	print "got to results"
+    result= simplejson.load(urllib.urlopen(url))
 
-	googleResponse = urllib.urlopen(url)
-	jsonResponse = json.loads(googleResponse.read())
+    print "got to results"
 
-	print "got the jsonResponse", jsonResponse
+    googleResponse = urllib.urlopen(url)
+    jsonResponse = json.loads(googleResponse.read())
 
-	# empty_json = {u'geocoded_waypoints': [{u'geocoder_status': u'ZERO_RESULTS'}, {u'geocoder_status': u'ZERO_RESULTS'}], u'status': u'NOT_FOUND', u'routes': []}
+    print "got the jsonResponse", jsonResponse
 
-	# if jsonResponse == empty_json:
+    empty_json = {u'geocoded_waypoints': [{u'geocoder_status': u'ZERO_RESULTS'}, {u'geocoder_status': u'ZERO_RESULTS'}], u'status': u'NOT_FOUND', u'routes': []}
 
-	#   arrival_time_raw =jsonResponse['routes'][0]['legs'][0]['arrival_time']['text']
-	#   arrival_time_raw_split = arrival_time_raw.split(":")
+    if jsonResponse != empty_json:
 
-	#   print "got to spliting"
-	#   # This is so arrival_time_hour has sometime to reference to later in the code
-	#   arrival_time_hour = 0
+        arrival_time_raw =jsonResponse['routes'][0]['legs'][0]['arrival_time']['text']
+        arrival_time_raw_split = arrival_time_raw.split(":")
 
-	#   if arrival_time_raw[-2:] == "pm":
-	#       arrival_time_hour = 12
-		
-	#   print "got to taking care of pm"
-	#   arrival_time_hour += int(arrival_time_raw_split[0])
-	#   arrival_time_min = arrival_time_raw_split[1][:-2]
-	#   print "got to  hour and min"
-	#   hours = int(arrival_time_hour)
-	#   minutes = int(arrival_time_min)
+        print "got to spliting"
+        # This is so arrival_time_hour has sometime to reference to later in the code
+        arrival_time_hour = 0
 
-	#   now = datetime.datetime.utcnow()
+        if arrival_time_raw[-2:] == "pm":
+            arrival_time_hour = 12
 
-	#   arrival_time = now.replace(hour=hours, minute=minutes)
+        print "got to taking care of pm"
+        arrival_time_hour += int(arrival_time_raw_split[0])
+        arrival_time_min = arrival_time_raw_split[1][:-2]
+        print "got to  hour and min"
+        hours = int(arrival_time_hour)
+        minutes = int(arrival_time_min)
 
-	#   return arrival_time
+        now = datetime.datetime.utcnow()
 
-	return datetime.datetime.utcnow()
+        arrival_time = now.replace(hour=hours, minute=minutes)
 
-	# rawjson = gets_rawjson_with_lat_lon(user_lat, user_lon, destination_lat, destination_lon)
-	# print rawjson
-	# arrival_time = rawjson_into_datetime(rawjson)
+        return arrival_time
 
-	# return arrival_time
+    return datetime.datetime.utcnow()
 
+    # rawjson = gets_rawjson_with_lat_lon(user_lat, user_lon, destination_lat, destination_lon)
+    # print rawjson
+    # arrival_time = rawjson_into_datetime(rawjson)
 
-
+    # return arrival_time
 
 

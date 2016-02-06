@@ -12,7 +12,7 @@ CELERY_IMPORTS=("tasks",)
 CELERY_RESULT_BACKEND = None
 
 from celery.schedules import crontab
- 
+
 CELERYBEAT_SCHEDULE = {
     'every-minute': {
         'task': 'tasks.process_transit_request',
