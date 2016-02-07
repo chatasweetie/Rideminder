@@ -59,8 +59,7 @@ def process_user_info():
     user_phone = convert_to_e164(raw_user_phone_num)
     print "this is the phone number after twilioness", user_phone
 
-    adds_to_queue(user_fname, user_email, user_phone, user_lat, user_lon, destination_lat, destination_lon, 
-                   vehicle_1, vehicle_1_distance, vehicle_2, vehicle_2_distance, arrival_time_datetime)
+    adds_to_queue(user_fname, user_email, user_phone, user_lat, user_lon, destination_lat, destination_lon, vehicle_1, vehicle_1_distance, vehicle_2, vehicle_2_distance, arrival_time_datetime)
 
     if bound == "I":
         bound = "Inbound"
