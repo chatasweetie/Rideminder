@@ -53,7 +53,7 @@ def adds_to_queue(user_fname, user_email, user_phone, user_lat, user_lon, destin
 def list_of_is_finished_to_process():
     """Gets all the transit_request that need to be processed (ie. is_finished = False)"""
 
-    request_to_process = Transit_Request.query.filter(Transit_Request.is_finished is False).all()
+    request_to_process = Transit_Request.query.filter(Transit_Request.is_finished == False).all()
 
     return request_to_process
 
