@@ -8,7 +8,9 @@ from model import connect_to_db, list_of_is_finished_to_process, records_request
 from server import app, celery
 from firebase import firebase
 import os
+from server import app
 import datetime
+
 
 
 transit_firebase = firebase.FirebaseApplication("https://publicdata-transit.firebaseio.com/", None)
