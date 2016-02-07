@@ -33,7 +33,7 @@ def index():
 def process_user_info():
     """recieves the user data and sends data to appropiate processes"""
 
-    user_fname = request.form.get("name")
+    user_fname = request.form.get("fname")
     user_email = request.form.get("email")
     raw_user_phone_num = request.form.get("phone")
     line = str(request.form.get("line"))
