@@ -35,13 +35,9 @@ def process_transit_request():
 
         #the first time the request is processed, it'll verifiy and set the closest vehicle id
         if request.vehicle_id is None:
-            print "Getting vehicle id if statsment"
             vehicle_id = selects_closest_vehicle(request.vehicle_1, request.vehicle_1_distance,
                 request.vehicle_2, request.vehicle_2_distance, request.user_lat, request.user_lon)
-            print "request.vehicle_1_distance:", request.vehicle_1_distance
-            print "this is the closest vehicle:", vehicle_id
             records_request_vehicle_id_db(request, vehicle_id)
-            print vehicle_id
 
         vehicle_geolocation = gets_geolocation_of_a_vehicle(request.vehicle_id)
         destination_geolocation = (request.destination_lat, request.destination_lon)
@@ -59,8 +55,6 @@ def process_transit_request():
 
         now = datetime.datetime.utcnow()
         min_difference = request.arrival_time.minute - now.minute
-        print "this is the saved datetime: ", request.arrival_time
-        print "this is the now: ", now
         print "this is the difference: ", min_difference
         # to take care of the difference between a start time that is late in the hour
         # and an end time in the begining of an hour

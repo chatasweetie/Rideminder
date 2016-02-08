@@ -191,11 +191,8 @@ def processes_line_and_bound_selects_two_closest_vehicle(line, bound, destinatio
 
     """
 
-    print "step 0"
     dic_vehicles_for_line = gets_a_dic_of_vehicle(line)
-    print "step 1"
     bounded_vehicles_for_line = validates_bound_direction_of_vehicles_in_line(dic_vehicles_for_line,bound)
-    print "step 2"
     sorted_list_of_vincenty = sorts_vehicles_dic_by_distance(bounded_vehicles_for_line, user_lat, user_lon)
 
     return sorted_list_of_vincenty[0:3]

@@ -46,8 +46,6 @@ def process_user_info():
 
     arrival_time_datetime = process_lat_lng_get_arrival_datetime(user_lat, user_lon, destination_lat, destination_lon)
 
-    print arrival_time_datetime
-
     list_of_vincenty_vehicle = processes_line_and_bound_selects_two_closest_vehicle(line, bound, destination_lat, destination_lon, user_lat, user_lon)
 
     # sets the two closest vechiles
@@ -57,7 +55,6 @@ def process_user_info():
     vehicle_2_distance = list_of_vincenty_vehicle[1][0]
 
     user_phone = convert_to_e164(raw_user_phone_num)
-    print "this is the phone number after twilioness", user_phone
 
     adds_to_queue(user_fname, user_email, user_phone, user_lat, user_lon, destination_lat, destination_lon, vehicle_1, vehicle_1_distance, vehicle_2, vehicle_2_distance, arrival_time_datetime)
 
