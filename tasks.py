@@ -15,7 +15,7 @@ import datetime
 
 transit_firebase = firebase.FirebaseApplication("https://publicdata-transit.firebaseio.com/", None)
 
-WALK_RADIUS = .25
+WALK_RADIUS = .15
 TIME_RADIUS = 4
 
 app.debug = True
