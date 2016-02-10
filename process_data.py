@@ -130,13 +130,13 @@ def gets_geolocation_of_a_vehicle(vehicle_id):
         vehicle_lon = transit_firebase.get("sf-muni/vehicles/" + vehicle_id, "lon")
         vehicle_geolocation = (vehicle_lat, vehicle_lon)
     except AttributeError:
-        vehicle_geolocation = None 
+        vehicle_geolocation = None
 
     return vehicle_geolocation
 
 
 def sorts_vehicles_dic_by_distance(vehicle_dictionary, user_lat, user_lon):
-    """With a list of vehicles from a line, it'll pull out the real time latitude and longitude and 
+    """With a list of vehicles from a line, it'll pull out the real time latitude and longitude and
     calucates the distance from the user_geolocation. Returns a sorted list of tuples:
 
     example output: [(0.4675029273179666, u'1491'), (0.9429363612471457, u'1486'), ... (7956.1553552570285, u'1446')]
@@ -199,46 +199,6 @@ def processes_line_and_bound_selects_two_closest_vehicle(line, bound, destinatio
     return sorted_list_of_vincenty[0:3]
 
 
-# def gets_rawjson_with_lat_lon(user_lat, user_lon, destination_lat, destination_lon):
-#   """makes a call to gogole map to get the json data of two geolocations"""
-
-#   orig_coord = user_lat, user_lon
-#   dest_coord = destination_lat, destination_lon
-
-#   url = "https://maps.googleapis.com/maps/api/directions/json?origin={0}&destination={1}&departure_time=now&traffic_model=best_guess&mode=transit&key={2}".format(str(orig_coord),str(dest_coord),str(GOOGLE_MAP_API_KEY))
-#   result= simplejson.load(urllib.urlopen(url))
-
-#   googleResponse = urllib.urlopen(url)
-#   jsonResponse = json.loads(googleResponse.read())
-
-#   return jsonResponse
-
-
-# def rawjson_into_datetime(rawjson):
-#   """parses out json to get of arrival time and turn it into datetime object"""
-
-#   arrival_time_raw =rawjson['routes'][0]['legs'][0]['arrival_time']['text']
-#   arrival_time_raw_split = arrival_time_raw.split(":")
-
-#   # This is so arrival_time_hour has sometime to reference to later in the code
-#   arrival_time_hour = 0 
-
-#   if arrival_time_raw[-2:] == "pm":
-#       arrival_time_hour = 12
-        
-#   arrival_time_hour += int(arrival_time_raw_split[0])
-#   arrival_time_min = arrival_time_raw_split[1][:-2]
-
-#   hours = int(arrival_time_hour)
-#   minutes = int(arrival_time_min)
-
-#   now = datetime.datetime.utcnow()
-
-#   arrival_time = now.replace(hour=hours, minute=minutes)
-
-#   return arrival_time
-
-
 def process_lat_lng_get_arrival_datetime(user_lat, user_lon, destination_lat, destination_lon):
     """takes in geolocations and returns the arrival time as a datatime object of when the
     transit is completed"""
@@ -247,30 +207,28 @@ def process_lat_lng_get_arrival_datetime(user_lat, user_lon, destination_lat, de
     proxyDict = {
               "http": os.environ.get('FIXIE_URL', ''),
               "https": os.environ.get('FIXIE_URL', '')
-            }
+                }
 
-    url = "https://maps.googleapis.com/maps/api/directions/json?origin={0},{1}&destination={2},{3}&departure_time=now&traffic_model=best_guess&mode=transit&key={4}".format(str(user_lat), str(user_lon),str(destination_lat),str(destination_lon),str(GOOGLE_MAP_API_KEY))
+    url = "https://maps.googleapis.com/maps/api/directions/json?origin={0},{1}&destination={2},{3}&departure_time=now&traffic_model=best_guess&mode=transit&key={4}".format(str(user_lat), str(user_lon), str(destination_lat), str(destination_lon), str(GOOGLE_MAP_API_KEY))
 
     r = requests.get(url, proxies=proxyDict)
 
     adict = r.json()
+    print "adict", adict
 
     if "error_message" not in adict:
 
         arrival_time_raw = adict['routes'][0]['legs'][0]['arrival_time']['text']
         arrival_time_raw_split = arrival_time_raw.split(":")
 
-        print "got to spliting"
         # This is so arrival_time_hour has sometime to reference to later in the code
         arrival_time_hour = 0
 
         if arrival_time_raw[-2:] == "pm":
             arrival_time_hour = 12
 
-        print "got to taking care of pm"
         arrival_time_hour += int(arrival_time_raw_split[0])
         arrival_time_min = arrival_time_raw_split[1][:-2]
-        print "got to  hour and min"
         hours = int(arrival_time_hour)
         minutes = int(arrival_time_min)
 
@@ -281,11 +239,3 @@ def process_lat_lng_get_arrival_datetime(user_lat, user_lon, destination_lat, de
         return arrival_time
 
     return datetime.datetime.utcnow()
-
-    # rawjson = gets_rawjson_with_lat_lon(user_lat, user_lon, destination_lat, destination_lon)
-    # print rawjson
-    # arrival_time = rawjson_into_datetime(rawjson)
-
-    # return arrival_time
-
-
