@@ -113,7 +113,7 @@ def validates_bound_direction_of_vehicles_in_line(dic_vehicles_for_line, bound_d
 
 
 def gets_geolocation_of_a_vehicle(vehicle_id):
-    """With the vehicle id, it akes a call to firebase to get the the current latitude 
+    """With the vehicle id, it akes a call to firebase to get the the current latitude
     and longitude of the vehicle and returns it as a geolocation (lat, lon)
 
     example output: (37.73831, -122.46859)
@@ -156,7 +156,7 @@ def sorts_vehicles_dic_by_distance(vehicle_dictionary, user_lat, user_lon):
         vehicle_id = vehicle
         vehicle_geolocation = gets_geolocation_of_a_vehicle(vehicle_id)
         if vehicle_geolocation is not None:
-                        # vincenity is the distance between two geolocations that 
+                        # vincenity is the distance between two geolocations that
                         # takes into account the sphereness of the world
             distance = (vincenty(user_geolocation, vehicle_geolocation).miles)
             tuples_lat_lon_vehicle.append(tuple([distance, vehicle_id]))
@@ -184,16 +184,15 @@ def selects_closest_vehicle(vehicle_1, vehicle_1_distance, vehicle_2, vehicle_2_
         return vehicle_2
 
 
-    
-def processes_line_and_bound_selects_two_closest_vehicle(line, bound, destination_lat, destination_lon, 
+def processes_line_and_bound_selects_two_closest_vehicle(line, bound, destination_lat, destination_lon,
                                                             user_lat, user_lon):
-    """"With a line and bound direction(O = Outbound, I=Inbound), it'll get the list of vehicles on 
+    """"With a line and bound direction(O = Outbound, I=Inbound), it'll get the list of vehicles on
     the line and gets the vehicle's geolocation and returns to two closest vehicle distance and id
 
     """
 
     dic_vehicles_for_line = gets_a_dic_of_vehicle(line)
-    bounded_vehicles_for_line = validates_bound_direction_of_vehicles_in_line(dic_vehicles_for_line,bound)
+    bounded_vehicles_for_line = validates_bound_direction_of_vehicles_in_line(dic_vehicles_for_line, bound)
     sorted_list_of_vincenty = sorts_vehicles_dic_by_distance(bounded_vehicles_for_line, user_lat, user_lon)
 
     return sorted_list_of_vincenty[0:3]
