@@ -11,3 +11,4 @@ rabbitmq_server-3.5.6/*
 *.db
 *.idx
 .DS_Store
+static/.DS_Store

@@ -17,7 +17,7 @@ def send_text_message_walk(phone):
         client = TwilioRestClient(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN)
 
         message = client.messages.create(
-            body="You are within 3 blocks of your destination, thank you for using Rideminder",
+            body="You are within 4 blocks of your destination, thank you for using Rideminder",
             to=phone,
             from_=TWILIO_NUMBER
         )
@@ -33,7 +33,7 @@ def send_text_message_time(phone):
         client = TwilioRestClient(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN)
 
         message = client.messages.create(
-            body="You are within 3 minutes of your destination, thank you for using Rideminder",
+            body="You are within 1 minute of your destination, thank you for using Rideminder",
             to=phone,
             from_=TWILIO_NUMBER
         )
