@@ -1,5 +1,5 @@
 llaves.sh
-env
+env/
 *.pyc
 *.DCL
 *.ets

@@ -27,8 +27,8 @@ function init(){
 
 
 // Takes in the line/route and returns the stop title/name, lat & lon
-$("#line").bind("change lines", function() { 
-   line = ($(this).val()); 
+$("#line").bind("change lines", function() {
+   line = ($(this).val());
    $(function(){
     $.ajax({
         type:"GET",
@@ -39,7 +39,7 @@ $("#line").bind("change lines", function() {
             var optionsHtml = "";
             $("#stops").empty();
             clearMapMarkers();
-            $(xml).find("direction[tag*="+bound+"]>stop").each(function(){                
+            $(xml).find("direction[tag*="+bound+"]>stop").each(function(){
                 var tag = $(this).attr("tag");
                 var stopName =$(xml).find("route>stop[tag*="+tag+"]").attr("title");
                 var stopLAT = $(xml).find("route>stop[tag*="+tag+"]").attr("lat");
@@ -55,7 +55,7 @@ $("#line").bind("change lines", function() {
                 var myLatLng = {lat, lng};
                 var marker = new google.maps.Marker({
                     position: myLatLng,
-                    map: map, 
+                    map: map,
                     title:locations[i].name,
                     clickable: true}
                 );
@@ -69,7 +69,7 @@ $("#line").bind("change lines", function() {
 
 // Takes in the bound/direction and returns the stop title/name, lat & lon
 $("#bound").bind("change paste keyup", function() {
-    bound = ($(this).val()); 
+    bound = ($(this).val());
    $(function(){
     $.ajax({
         type:"GET",
@@ -80,7 +80,7 @@ $("#bound").bind("change paste keyup", function() {
             var optionsHtml = "";
             $("#stops").empty()
             clearMapMarkers();
-            $(xml).find("direction[tag*="+bound+"]>stop").each(function(){               
+            $(xml).find("direction[tag*="+bound+"]>stop").each(function(){
                 var tag = $(this).attr("tag");
                 var stopName =$(xml).find("route>stop[tag*="+tag+"]").attr("title");
                 var stopLAT = $(xml).find("route>stop[tag*="+tag+"]").attr("lat");
@@ -95,7 +95,7 @@ $("#bound").bind("change paste keyup", function() {
                 var myLatLng = {lat, lng};
                 var marker = new google.maps.Marker({
                     position: myLatLng,
-                    map: map, 
+                    map: map,
                     title:locations[i].name});
                     markers.push(marker);
             }
@@ -143,6 +143,7 @@ function addInfoWindow(marker, message) {
     });
 
     google.maps.event.addListener(marker, 'click', function () {
+        infoWindow.close();
         infoWindow.open(map, marker);
     });
 }

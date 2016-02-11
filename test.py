@@ -2,7 +2,7 @@
 import unittest
 from unittest import TestCase
 import doctest
-from process_data import convert_to_e164, gets_a_list_of_available_line, selects_closest_vehicle, gets_a_dic_of_vehicle, validates_bound_direction_of_vehicles_in_line, gets_geolocation_of_a_vehicle, sorts_vehicles_dic_by_distance, selects_closest_vehicle, processes_line_and_bound_selects_closest_vehicle
+from process_data import convert_to_e164, gets_a_list_of_available_line, selects_closest_vehicle, gets_a_dic_of_vehicle, validates_bound_direction_of_vehicles_in_line, gets_geolocation_of_a_vehicle, sorts_vehicles_dic_by_distance, selects_closest_vehicle
 from firebase import firebase
 import process_data
 import tasks
@@ -12,7 +12,7 @@ import server
 from model import Transit_Request
 import model
 from flask_sqlalchemy import SQLAlchemy
-from twilio_process import send_text_message
+from twilio_process import send_text_message_walk
 from nose.tools import eq_ #to test Celery
 
 # to test:
@@ -47,7 +47,7 @@ class UnitTestTwillioTestCase(unittest.TestCase):
         self.assertEqual(convert_to_e164("+18294039493"), u'+18294039493')
         print "complete phone number convertion test"
 
-    def test_send_text_message(self):
+    def test_send_text_message_walk(self):
         self.assertEqual(send_text_message(+12025550141), None)
 
 ########################################################
@@ -105,15 +105,15 @@ class UnitTestMockData(unittest.TestCase):
         vehicle_list2 = [(0.016675650192621124, u'1426'), (0.048622709177496184, u'1438'), (0.3983583482037339, u'1484'), (0.5805606158286056, u'1539'), (0.6169215360786691, u'1520')]
         self.assertEqual(selects_closest_vehicle(vehicle_list1, vehicle_list2), "1426")
 
-    def test_processes_line_and_bound_selects_closest_vehicle(self):
-        user_lat= 37.7846810
-        user_lon = -122.4073680
-        destination_lat = 37.7846810
-        destination_lon = -122.4073680
-        bound = "O"
-        line = "N"
-        results = "1426"
-        self.assertEqual(processes_line_and_bound_selects_closest_vehicle(line, bound, destination_lat, destination_lon, user_lat, user_lon), results)
+    # def test_processes_line_and_bound_selects_closest_vehicle(self):
+    #     user_lat= 37.7846810
+    #     user_lon = -122.4073680
+    #     destination_lat = 37.7846810
+    #     destination_lon = -122.4073680
+    #     bound = "O"
+    #     line = "N"
+    #     results = "1426"
+    #     self.assertEqual(processes_line_and_bound_selects_closest_vehicle(line, bound, destination_lat, destination_lon, user_lat, user_lon), results)
 
 ########################################################
 class UnitTestMockDataForCelery(unittest.TestCase):
