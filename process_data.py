@@ -164,12 +164,21 @@ def sorts_vehicles_dic_by_distance(vehicle_dictionary, user_lat, user_lon):
 
     return vehicles_sorted_by_vincenity
 
+
 def selects_closest_vehicle(vehicle_1, vehicle_1_distance, vehicle_2, vehicle_2_distance, user_lat, user_lon):
     """From two vehicles (distance, vehicle id), returns the closest vehicleid.
 
     Compares the inital vincity distance of the first vehicle to an updated one to validate
     that the first vehicle is actually coming to the user (versus leaving the person).
     If its not correct, it'll check the second vehicle and validates it.
+
+        >>> vehicle_1 = 1426
+        >>> vehicle_1_distance = 0.12315312469250524
+        >>> vehicle_2 = 1438
+        >>> vehicle_2_distance = 0.12315312469250524
+        >>> selects_closest_vehicle(vehicle_1, vehicle_1_distance, vehicle_2, vehicle_2_distance, user_lat, user_lon)
+        1438
+
     """
 
     user_geolocation = (user_lat,user_lon)
@@ -188,6 +197,10 @@ def processes_line_and_bound_selects_two_closest_vehicle(line, bound, destinatio
                                                             user_lat, user_lon):
     """"With a line and bound direction(O = Outbound, I=Inbound), it'll get the list of vehicles on
     the line and gets the vehicle's geolocation and returns to two closest vehicle distance and id
+
+        >>> processes_line_and_bound_selects_two_closest_vehicle(line, bound, destination_lat, destination_lon,
+        ...                                                             user_lat, user_lon)
+        [(..., u'...'), (..., u'...'), ... (..., u'...')]
 
     """
 

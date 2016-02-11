@@ -48,17 +48,23 @@ class UnitTestTwillioTestCase(unittest.TestCase):
         print "complete phone number convertion test"
 
     def test_send_text_message_walk(self):
-        self.assertEqual(send_text_message(+12025550141), None)
+        self.assertEqual(send_text_message_walk(+12025550141), None)
 
 ########################################################
 class UnitTestTransitData(unittest.TestCase):
     def test_gets_a_list_of_available_line(self):
         self.assertTrue(gets_a_list_of_available_line() > 64)
-        print "complete gets a list of aviable lines test "
+        print "complete gets a list of aviable lines test"
 
     def test_selects_closest_vehicle(self):
         print "testing the selects_closest_vehicle"
-        self.assertEqual(selects_closest_vehicle([(0.9338186621320413, u'1472'), (0.9338186621320413, u'1488'), (1.0398499771587593, u'1455'), (1.0498968948022667, u'1548'), (1.0620705886593063, u'1542'), (1.0644210057899908, u'1528'), (1.0687742887784755, u'1431'), (2.8519879512450164, u'1495'), (4.1161739909827215, u'1535'), (4.820269824445265, u'1459'), (4.890819705827765, u'1442'), (4.893685411614527, u'1519'), (6.297064411922732, u'1476')], [(1.031659187344977, u'1455'), (1.0580960246268907, u'1548'), (1.0626269823073644, u'1528'), (1.0687742887784755, u'1431'), (1.074272454517364, u'1542'), (1.1370610262790521, u'1472'), (1.1370610262790521, u'1488'), (2.739059251454709, u'1495'), (4.219898289028735, u'1535'), (4.819294276261407, u'1459'), (4.890819705827765, u'1442'), (4.893685411614527, u'1519'), (6.303176742628762, u'1476')]), '1472')
+        user_lat = 37.785152
+        user_lon = -122.406581
+        vehicle_1 = 1426
+        vehicle_1_distance = 0.12315312469250524
+        vehicle_2 = 1438
+        vehicle_2_distance = 0.12315312469250524
+        self.assertEqual(selects_closest_vehicle(vehicle_1, vehicle_1_distance, vehicle_2, vehicle_2_distance, user_lat, user_lon), '1438')
 
 #######################################################
 class UnitTestMockData(unittest.TestCase):
@@ -78,6 +84,7 @@ class UnitTestMockData(unittest.TestCase):
 
 
     def test_gets_a_dic_of_vehicle(self):
+        print "test gets_a_dic_of_vehicle"
         results = {u'1426': u'True', u'1410': u'True', u'1402': u'True', u'1413': u'True', u'1415': u'True', u'1404': u'True'}
         self.assertEqual(gets_a_dic_of_vehicle("N"), results)
 
@@ -92,7 +99,7 @@ class UnitTestMockData(unittest.TestCase):
         self.assertNotEqual(validates_bound_direction_of_vehicles_in_line(dic, "O"), negative_results)
 
     def test_gets_geolocation_of_a_vehicle(self):
-        self.assertEqual(gets_geolocation_of_a_vehicle(1402),(37.7213, -122.46912))
+        self.assertEqual(gets_geolocation_of_a_vehicle(1402), (37.7213, -122.46912))
 
     def test_sorts_vehicles_dic_by_distance(self):
         dic = gets_a_dic_of_vehicle("N")
@@ -100,20 +107,24 @@ class UnitTestMockData(unittest.TestCase):
         results = [(0.9313235948899348, u'1426'), (4.275886490639952, u'1415'), (4.7115931592023585, u'1410'), (5.526469350242915, u'1402'), (5.59359790362578, u'1413')]
         self.assertEqual(sorts_vehicles_dic_by_distance(bound_dic, 37.7846810, -122.4073680), results)
 
-    def test_selects_closest_vehicle(self): 
-        vehicle_list1 = [(0.12315312469250524, u'1426'), (0.12315312469250524, u'1438'), (0.4675029273179666, u'1520'), (0.4675029273179666, u'1539'), (0.4926871038219716, u'1484')]
-        vehicle_list2 = [(0.016675650192621124, u'1426'), (0.048622709177496184, u'1438'), (0.3983583482037339, u'1484'), (0.5805606158286056, u'1539'), (0.6169215360786691, u'1520')]
-        self.assertEqual(selects_closest_vehicle(vehicle_list1, vehicle_list2), "1426")
+    def test_selects_closest_vehicle(self):
+        vehicle_1 = 1426
+        vehicle_1_distance = 0.12315312469250524
+        vehicle_2 =1438
+        vehicle_2_distance = 0.12315312469250524
+        user_lat = 37.785152
+        user_lon = -122.406581
+        self.assertEqual(selects_closest_vehicle(vehicle_1, vehicle_1_distance, vehicle_2, vehicle_2_distance, user_lat, user_lon), "1438")
 
-    # def test_processes_line_and_bound_selects_closest_vehicle(self):
-    #     user_lat= 37.7846810
-    #     user_lon = -122.4073680
-    #     destination_lat = 37.7846810
-    #     destination_lon = -122.4073680
-    #     bound = "O"
-    #     line = "N"
-    #     results = "1426"
-    #     self.assertEqual(processes_line_and_bound_selects_closest_vehicle(line, bound, destination_lat, destination_lon, user_lat, user_lon), results)
+    def test_selects_closest_vehicle(self):
+        user_lat= 37.7846810
+        user_lon = -122.4073680
+        destination_lat = 37.7846810
+        destination_lon = -122.4073680
+        bound = "O"
+        line = "N"
+        results = "1426"
+        self.assertEqual(selects_closest_vehicle(line, bound, destination_lat, destination_lon, user_lat, user_lon), results)
 
 ########################################################
 class UnitTestMockDataForCelery(unittest.TestCase):
