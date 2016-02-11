@@ -1,9 +1,7 @@
 """Functions to process the data"""
 from firebase import firebase
 from geopy.distance import vincenty
-from time import sleep
 import phonenumbers
-import simplejson, urllib, urllib2
 import json
 import os
 import datetime
