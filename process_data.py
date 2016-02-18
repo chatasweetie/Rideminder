@@ -224,7 +224,6 @@ def process_lat_lng_get_arrival_datetime(user_lat, user_lon, destination_lat, de
     r = requests.get(url, proxies=proxyDict)
 
     adict = r.json()
-    print "adict", adict
 
     if "error_message" not in adict:
 

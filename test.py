@@ -64,7 +64,7 @@ class UnitTestTransitData(unittest.TestCase):
         vehicle_1_distance = 0.12315312469250524
         vehicle_2 = 1438
         vehicle_2_distance = 0.12315312469250524
-        self.assertEqual(selects_closest_vehicle(vehicle_1, vehicle_1_distance, vehicle_2, vehicle_2_distance, user_lat, user_lon), '1438')
+        self.assertEqual(selects_closest_vehicle(vehicle_1, vehicle_1_distance, vehicle_2, vehicle_2_distance, user_lat, user_lon), 1438)
 
 #######################################################
 class UnitTestMockData(unittest.TestCase):
@@ -123,7 +123,7 @@ class UnitTestMockData(unittest.TestCase):
         bound = "O"
         line = "N"
         results = "1426"
-        self.assertEqual(selects_closest_vehicle(line, bound, destination_lat, destination_lon, user_lat, user_lon), results)
+        self.assertEqual(selects_closest_vehicle(line, bound, destination_lat, destination_lon, user_lat, user_lon), line)
 
 ########################################################
 class UnitTestMockDataForCelery(unittest.TestCase):
@@ -168,6 +168,7 @@ class IntergrationServerTest(unittest.TestCase):
         test_client = server.app.test_client()
 
         result = test_client.post('/user_input', data={'fname': 'Jessica', "phone":"13604508678", "line":"N", "bound":"O", "destination":"37.76207,-122.4693199"})
+        print "this is the resulte for test_user_input_form", result
         self.assertIn('<!doctype html>\n<html>\n    <head>\n      <title>Rideminder</title>\n      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">\n      <meta name="viewport" content="width=device-width, initial-scale=1">\n      <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css" rel="stylesheet">\n    <link rel="stylesheet" type="text/css" href="/static/css/styling.css">\n    \n \n\n    </head>\n\n<body>\n    <div class="container-fluid">\n        <p class="navbar-brand">Rideminder</p>\n      </div>\n    </div><!-- /.container-fluid -->\n\n\n\n  <hr>\n\n  \n\n<div class="row">\n\t<div clase="row">\n  \t\t<div class="container thankyou">\n  \t\t\t<p class="center"> Thank you Jessica! </p>\n  \t\t\t<p class="center"> We will text you at +13604508678 when you are within 3 blocks of your destination. </p>\n  \t\t\t<p class="center"> Have a wonderful day! </p>\n\t\t</div>\n \t</div>\n</div>\n\n<div class="row">\n  <div class="col-md-6 col-md-offset-3 center img"><img src="static/sleepingdog.jpg" alt="Picture of a baby sleeping"> <p class="center">Enjoy your nap </p></div>\n</div>\n\n\n\n\n</body>\n</html>', result.data)
 
 

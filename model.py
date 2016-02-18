@@ -47,6 +47,7 @@ def adds_to_queue(user_fname, user_email, user_phone, user_lat, user_lon, destin
     new_transit_request = Transit_Request(user_fname=user_fname, user_email=user_email, user_phone=user_phone, user_lat=user_lat, user_lon=user_lon, destination_lat=destination_lat, destination_lon=destination_lon, vehicle_1=vehicle_1, vehicle_1_distance=vehicle_1_distance, vehicle_2=vehicle_2, vehicle_2_distance=vehicle_2_distance, arrival_time=arrival_time_datetime)
     db.session.add(new_transit_request)
     db.session.commit()
+    print "added to db"
 
 
 def list_of_is_finished_to_process():

@@ -69,3 +69,5 @@ def process_transit_request():
                 records_request_complete_db(request)
 
         records_time_and_distance(request, distance, min_difference)
+        
+    db.session.close()
