@@ -181,7 +181,6 @@ def connect_to_db(app):
     mock_db.init_app(app)
 
 
-
 if __name__ == '__main__':
     unittest.main()
     from server import app
