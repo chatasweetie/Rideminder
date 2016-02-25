@@ -7,8 +7,6 @@ from twilio_process import send_text_message_walk, send_text_message_time
 from model import connect_to_db, list_of_is_finished_to_process, records_request_complete_db, records_request_vehicle_id_db, records_time_and_distance
 from server import app, celery
 from firebase import firebase
-import os
-from server import app
 import datetime
 
 
