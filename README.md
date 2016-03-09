@@ -12,7 +12,7 @@ Rideminder is a messaging system that notifies user when they are either within 
 Designed to be used at transit stop and requires user’s transit line, transit stop and phone number. It makes 2 API calls for transit information:   
    *Firebase - gets realtime data of transit vehicles   
    *Google Map Direction - gets direction information   
-Rideminder analyses and processes the two types of data - gets the closest transit vehicle number in realtime and creates a datetime object using the estimated arrival time. It places the information into my Postgres database.
+Rideminder analyses and processes two types of data - gets the closest transit vehicle number in realtime and creates a datetime object using the estimated arrival time. It places the information into my Postgres database.
 
 The Celery worker (celery is an asynchronous task queue/job queue based on distributed message passing) pulls request that have not been completed from my database every minute. It checks the transit vehicle's current location if it is within ½ a mile of the user’s destination. It also checks the datetime object if the estimated time is within 3 mins. If either of these conditions are satisfied, it sends a text message to the user using Twilio.  
 
@@ -102,7 +102,7 @@ TWILIO_NUMBER
 
 Note: Rideminder can be modified to provide service for many large cities that Firebase support. For the complete list go to:
 
-Firebase Data Sets: Transit https://publicdata-transit.firebaseio.com/
+Firebase Data Sets: [Transit](https://publicdata-transit.firebaseio.com/)
 
 
 ### About the Developer    
