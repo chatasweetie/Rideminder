@@ -26,15 +26,15 @@ The Celery worker (celery is an asynchronous task queue/job queue based on distr
 
 **Submit Request Cell**
 
-<img src="static/rideminder-cell.jpg">
+<img src="static/rideminder-cell.jpg" height="300">
 
 **Thank You for Submission**
 
-<img src="static/thank-you.jpg">
+<img src="static/thank-you.jpg" >
 
 **Thank You for Submission Cell**
 
-<img src="static/thankyou-cell.jpg">
+<img src="static/thankyou-cell.jpg" height="300">
 
 
 ### Technology Stack
@@ -46,7 +46,7 @@ The Celery worker (celery is an asynchronous task queue/job queue based on distr
 
 ### Testing Coverage
 
-<img src="static/coveragereportrideminder.png" height="200">
+<img src="static/coveragereportrideminder.png" height="250">
 
 
 ### How to run Rideminder locally
