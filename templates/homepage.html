@@ -6,13 +6,12 @@
 
 {% block content %}
 
-
   <div clase="row backgroundyellow">
   <div class="container">
     <p>While you're at a transit stop, submit your transit line and stop information and you'll be notified either when your transit vehicle is within 4 block or within 1 min of when Google estimates your arrival time of your destination via text message.<b><em> * Required for processing </b></em> </p>
   </div>
   <div class="container">
-    <form class="col-sm-2 control-label" id="transit_request" action="/thank-you" method="POST">
+    <form id="request" class="col-sm-2 control-label" action="/thank-you" method="POST">
       <div class="form-group">
         <label for="fname"> Name
         <input type="text" class="form-control" name="fname" placeholder="optional"></label>
@@ -58,9 +57,8 @@
         <label for="lng">
           <select name="lng" id="lng">
           </select></label>
-      </div>
-
-      <button type="submit" class="btn btn-default" >Submit</button>
+      </div> <!-- end of hidden -->
+      <button type="submit" class="btn btn-default">Submit</button>
     </form>
     <div class="col-sm-10">
       <div id="transitmap">

@@ -1,4 +1,13 @@
 // default setting for my routes
+
+function showLoading(evt) {
+    console.log("hey");
+  evt.preventDefault();
+  $("#loadinggif").show();
+  $(this).unbind('submit').submit();
+}
+$("#request").submit(showLoading);
+
 var bound = "I";
 var line = "1";
 var locations = [];
@@ -149,4 +158,3 @@ function addInfoWindow(marker, message) {
 }
 
     window.onload = init;
-
