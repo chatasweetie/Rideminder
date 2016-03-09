@@ -44,6 +44,10 @@ The Celery worker (celery is an asynchronous task queue/job queue based on distr
 **Front-End**: HTML/CSS, Bootstrap, JQuery, JavaScript, AJAX    
 
 
+### Testing Coverage
+
+<img src="static/coveragereportrideminder.png">
+
 
 ### How to run Rideminder locally
 
