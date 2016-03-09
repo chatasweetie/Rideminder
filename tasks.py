@@ -1,6 +1,6 @@
 # Celery task to be processed request every mintue
 
-from celery.task import task
+# from celery.task import task
 from geopy.distance import vincenty
 from process_data import gets_geolocation_of_a_vehicle, selects_closest_vehicle
 from twilio_process import send_text_message_walk, send_text_message_time

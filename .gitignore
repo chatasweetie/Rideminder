@@ -12,3 +12,7 @@ rabbitmq_server-3.5.6/*
 *.idx
 .DS_Store
 static/.DS_Store
+.coverage
+.env
+.idea/
+latest.dump

@@ -66,7 +66,7 @@ def gets_a_list_of_available_line():
 
 
 def gets_a_dic_of_vehicle(line):
-    """Takes in a vehicle line and returns a dictionary of vehicle ids that are in 
+    """Takes in a vehicle line and returns a dictionary of vehicle ids that are in
     current available on the transit line
 
     output example: {u'5488': True, u'5604': True, ... u'5525': True}
@@ -82,7 +82,7 @@ def gets_a_dic_of_vehicle(line):
 
 
 def validates_bound_direction_of_vehicles_in_line(dic_vehicles_for_line, bound_dir):
-    """From a dictionary of vehicles in a transit line, it'll filter for the ones going the 
+    """From a dictionary of vehicles in a transit line, it'll filter for the ones going the
     correct bound direction: "O" = Outboud, "I" = Inboud
 
     output example: [u'1481', u'1486', ... u'1513']

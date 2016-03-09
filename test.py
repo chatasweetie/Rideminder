@@ -25,7 +25,7 @@ from nose.tools import eq_ #to test Celery
 
 mock_db = SQLAlchemy()
 
-#######################################################
+######################################################
 def load_tests(loader, tests, ignore):
     """Also run our doctests and file-based doctests."""
 
@@ -57,7 +57,6 @@ class UnitTestTransitData(unittest.TestCase):
         print "complete gets a list of aviable lines test"
 
     def test_selects_closest_vehicle(self):
-        print "testing the selects_closest_vehicle"
         user_lat = 37.785152
         user_lon = -122.406581
         vehicle_1 = 1426
@@ -65,6 +64,7 @@ class UnitTestTransitData(unittest.TestCase):
         vehicle_2 = 1438
         vehicle_2_distance = 0.12315312469250524
         self.assertEqual(selects_closest_vehicle(vehicle_1, vehicle_1_distance, vehicle_2, vehicle_2_distance, user_lat, user_lon), 1438)
+        print "complete selects_closest_vehicle"
 
 #######################################################
 class UnitTestMockData(unittest.TestCase):
@@ -152,6 +152,15 @@ class UnitTestMockDataForCelery(unittest.TestCase):
         eq_(rst, 8)
 
 
+class UnitTestDateTime(unittest.TestCase):
+    """Test Datetime Functionality"""
+    print "processing datetime test"
+
+    def test_process_lat_lng_get_arrival_datetime(self):
+        result = None
+        self.assertEqual(process_lat_lng_get_arrival_datetime(user_lat, user_lon, destination_lat, destination_lon), line)
+
+
 class IntergrationServerTest(unittest.TestCase):
     """Integration Test: testing flask sever"""
 
@@ -162,14 +171,14 @@ class IntergrationServerTest(unittest.TestCase):
     def test_homepage(self):
         result = self.client.get("/")
         self.assertEqual(result.status_code, 200)
+        print "completed homepage test"
 
     def test_user_input_form(self):
-        print "testing user_input page"
         test_client = server.app.test_client()
-
-        result = test_client.post('/user_input', data={'fname': 'Jessica', "phone":"13604508678", "line":"N", "bound":"O", "destination":"37.76207,-122.4693199"})
+        result = test_client.post('/user_input', data={'fname':'Jessica', 'phone':'13604508678', 'line':'N', 'bound':'O', 'destination':'37.76207,-122.4693199', 'lat': '37.785152', 'lan': '-122.406581'})
         print "this is the resulte for test_user_input_form", result
         self.assertIn('<!doctype html>\n<html>\n    <head>\n      <title>Rideminder</title>\n      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">\n      <meta name="viewport" content="width=device-width, initial-scale=1">\n      <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css" rel="stylesheet">\n    <link rel="stylesheet" type="text/css" href="/static/css/styling.css">\n    \n \n\n    </head>\n\n<body>\n    <div class="container-fluid">\n        <p class="navbar-brand">Rideminder</p>\n      </div>\n    </div><!-- /.container-fluid -->\n\n\n\n  <hr>\n\n  \n\n<div class="row">\n\t<div clase="row">\n  \t\t<div class="container thankyou">\n  \t\t\t<p class="center"> Thank you Jessica! </p>\n  \t\t\t<p class="center"> We will text you at +13604508678 when you are within 3 blocks of your destination. </p>\n  \t\t\t<p class="center"> Have a wonderful day! </p>\n\t\t</div>\n \t</div>\n</div>\n\n<div class="row">\n  <div class="col-md-6 col-md-offset-3 center img"><img src="static/sleepingdog.jpg" alt="Picture of a baby sleeping"> <p class="center">Enjoy your nap </p></div>\n</div>\n\n\n\n\n</body>\n</html>', result.data)
+
 
 
 def connect_to_db(app):
@@ -187,6 +196,3 @@ if __name__ == '__main__':
     connect_to_db(app)
     mock_db.create_all()
     print "Connected to DB."
-
-
-
