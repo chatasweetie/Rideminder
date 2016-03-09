@@ -46,7 +46,7 @@ The Celery worker (celery is an asynchronous task queue/job queue based on distr
 
 ### Testing Coverage
 
-<img src="static/coveragereportrideminder.png" style="width: 25px;"/>
+<img src="static/coveragereportrideminder.png" height="200">
 
 
 ### How to run Rideminder locally
