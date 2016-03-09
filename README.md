@@ -107,5 +107,6 @@ Firebase Data Sets: Transit https://publicdata-transit.firebaseio.com/
 
 ### About the Developer    
 Jessica Dene Earley    
+[Short Bio](https://chatasweetie.wordpress.com/about-me/)
 https://www.linkedin.com/in/jessicaearley    
 https://chatasweetie.wordpress.com/    
