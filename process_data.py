@@ -45,7 +45,8 @@ def convert_to_e164(raw_phone):
 
     return phonenumbers.format_number(phone_representation, phonenumbers.PhoneNumberFormat.E164)
 
-
+# TODO: Remove firebase and add 511 data
+####################################################################
 def gets_a_list_of_available_line():
     """gets all the available lines from firebase into a list
 
@@ -99,8 +100,8 @@ def validates_bound_direction_of_vehicles_in_line(dic_vehicles_for_line, bound_d
     for vehicle in dic_vehicles_for_line:
         vehicle_id = vehicle
         try:
-            vehicle_dirTag = transit_firebase.get("sf-muni/vehicles/" + 
-                vehicle_id, "dirTag")
+            vehicle_dirTag = transit_firebase.get("sf-muni/vehicles/" +
+                                vehicle_id, "dirTag")
             if vehicle_dirTag:
                 if vehicle_dirTag.find(bound) != -1:
                     available_vehicle_with_direction.append(vehicle)
@@ -208,6 +209,7 @@ def processes_line_and_bound_selects_two_closest_vehicle(line, bound, destinatio
 
     return sorted_list_of_vincenty[0:3]
 
+####################################################################
 
 def process_lat_lng_get_arrival_datetime(user_lat, user_lon, destination_lat, destination_lon):
     """takes in geolocations and returns the arrival time as a datatime object of when the
@@ -248,3 +250,12 @@ def process_lat_lng_get_arrival_datetime(user_lat, user_lon, destination_lat, de
         return arrival_time
 
     return datetime.datetime.utcnow()
+
+list_of_agencies = 'http://services.my511.org/Transit2.0/GetAgencies.aspx?token=791466c6-fc09-4416-bf0f-e98c17f0fbb4'
+
+agencys_routes = 'http://services.my511.org/Transit2.0/GetRoutesForAgency.aspx?token=791466c6-fc09-4416-bf0f-e98c17f0fbb4&agencyName=BART'
+
+
+list_of_stops_agency = 'http://services.my511.org/Transit2.0/GetStopsForRoute.aspx?token=791466c6-fc09-4416-bf0f-e98c17f0fbb4&routeIDF=BART~917'
+
+times_for_stops = 'http://services.my511.org/Transit2.0/GetNextDeparturesByStopCode.aspx?token=791466c6-fc09-4416-bf0f-e98c17f0fbb4&stopcode=13546 '
