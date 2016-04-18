@@ -6,9 +6,12 @@ import json
 import os
 import datetime
 import requests
+from xml.etree import ElementTree
 
 
 GOOGLE_MAP_API_KEY = os.environ.get("GOOGLE_MAP_API_KEY")
+
+TOKEN_511 = os.environ.get("TOKEN_511")
 
 # Connects to the public transit API
 transit_firebase = firebase.FirebaseApplication("https://publicdata-transit.firebaseio.com/", None)
@@ -38,12 +41,15 @@ def convert_to_e164(raw_phone):
         # Phone number may already be in E.164 format.
         parse_type = None
     else:
-        # If no country code information present, assume it's a US number
+        # If no country code information present, 
+        # assume it's a US number
         parse_type = "US"
 
-    phone_representation = phonenumbers.parse(raw_phone, parse_type)
+    phone_representation = phonenumbers.parse(raw_phone, 
+                                            parse_type)
 
-    return phonenumbers.format_number(phone_representation, phonenumbers.PhoneNumberFormat.E164)
+    return phonenumbers.format_number(phone_representation, 
+                        phonenumbers.PhoneNumberFormat.E164)
 
 # TODO: Remove firebase and add 511 data
 ####################################################################
@@ -211,6 +217,89 @@ def processes_line_and_bound_selects_two_closest_vehicle(line, bound, destinatio
 
 ####################################################################
 
+
+def gets_agencies(TOKEN):
+    """gets all the available agencies with HasDirection"""
+
+    list_of_agencies = 'http://services.my511.org/Transit2.0/GetAgencies.aspx?token=' + TOKEN
+
+    response_agencies = requests.get(list_of_agencies)
+
+    agencies_tree = ElementTree.fromstring(response_agencies.text)
+
+    agencies = {}
+
+    for node in agencies_tree.iter('Agency'):
+        name = node.attrib.get('Name')
+        has_direction = node.attrib.get('HasDirection')
+        agencies[name] = has_direction
+
+    return agencies
+
+
+def gets_routes_for_agency(TOKEN, agency):
+    """gets the routes for an agency"""
+
+    agency_routes = 'http://services.my511.org/Transit2.0/GetRoutesForAgency.aspx?token=' + TOKEN + '&agencyName=' + agency
+
+    response_agency_routes = requests.get(agency_routes)
+
+    route_tree = ElementTree.fromstring(response_agency_routes.text)
+
+    routes = {}
+
+    for node in route_tree.iter('Route'):
+        name = node.attrib.get('Name')
+        code = node.attrib.get('Code')
+        routes[name] = code
+
+    return routes
+
+
+def gets_stops_for_route(TOKEN, agency, route, route_direction=""):
+    """gets all the stops for a route"""
+
+    if route_direction == "":
+        list_of_stops_agency = 'http://services.my511.org/Transit2.0/GetStopsForRoute.aspx?token=' + TOKEN + '&routeIDF=' + agency + '~' + route
+    else:
+        list_of_stops_agency = 'http://services.my511.org/Transit2.0/GetStopsForRoute.aspx?token=' + TOKEN + '&routeIDF=' + agency + '~' + route + '~' + route_direction
+
+    response_list_of_stops = requests.get(list_of_stops_agency)
+
+    stops_tree = ElementTree.fromstring(response_list_of_stops.text)
+
+    stops = []
+
+    for node in stops_tree.iter('Stop'):
+        name = node.attrib.get('name')
+        code = node.attrib.get('StopCode')
+        stops.append((name, code))
+
+    return stops
+
+
+def gets_departure_time_by_stop(TOKEN, stop):
+    """gets all the departure times for a stop"""
+
+    times_for_stops = 'http://services.my511.org/Transit2.0/GetNextDeparturesByStopCode.aspx?token=' + TOKEN + '&stopcode=' + stop
+
+    response_times_for_stops = requests.get(times_for_stops)
+
+    departure_tree = ElementTree.fromstring(response_times_for_stops.text)
+
+    departures = {}
+
+    for node in departure_tree.iter('Route'):
+        name = node.attrib.get('Name')
+        # code = node.attrib.get('Code')
+        for n in node.iter('DepartureTime'):
+            departures.setdefault(name, []).append(n.text)
+
+    return departures
+
+#############################################################
+
+
 def process_lat_lng_get_arrival_datetime(user_lat, user_lon, destination_lat, destination_lon):
     """takes in geolocations and returns the arrival time as a datatime object of when the
     transit is completed"""
@@ -219,7 +308,7 @@ def process_lat_lng_get_arrival_datetime(user_lat, user_lon, destination_lat, de
     proxyDict = {
               "http": os.environ.get('FIXIE_URL', ''),
               "https": os.environ.get('FIXIE_URL', '')
-                }
+    }
 
     url = "https://maps.googleapis.com/maps/api/directions/json?origin={0},{1}&destination={2},{3}&departure_time=now&traffic_model=best_guess&mode=transit&key={4}".format(str(user_lat), str(user_lon), str(destination_lat), str(destination_lon), str(GOOGLE_MAP_API_KEY))
 
@@ -250,12 +339,3 @@ def process_lat_lng_get_arrival_datetime(user_lat, user_lon, destination_lat, de
         return arrival_time
 
     return datetime.datetime.utcnow()
-
-list_of_agencies = 'http://services.my511.org/Transit2.0/GetAgencies.aspx?token=791466c6-fc09-4416-bf0f-e98c17f0fbb4'
-
-agencys_routes = 'http://services.my511.org/Transit2.0/GetRoutesForAgency.aspx?token=791466c6-fc09-4416-bf0f-e98c17f0fbb4&agencyName=BART'
-
-
-list_of_stops_agency = 'http://services.my511.org/Transit2.0/GetStopsForRoute.aspx?token=791466c6-fc09-4416-bf0f-e98c17f0fbb4&routeIDF=BART~917'
-
-times_for_stops = 'http://services.my511.org/Transit2.0/GetNextDeparturesByStopCode.aspx?token=791466c6-fc09-4416-bf0f-e98c17f0fbb4&stopcode=13546 '
