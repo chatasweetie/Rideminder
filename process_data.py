@@ -27,6 +27,8 @@ agency = "BART"
 route = "917"
 RouteDirectionCode = ""
 stop = "11"
+user_stop = "95"
+destination_stop = "30"
 
 
 def convert_to_e164(raw_phone):
@@ -300,6 +302,34 @@ def gets_departure_time_by_stop(stop):
             departures.setdefault(name, []).append(n.text)
 
     return departures
+
+
+def get_stop_for_user_route(user_stop, destination_stop, agency, route, direction):
+    """returns a list of stops for user's route"""
+
+    stops = gets_stops_for_route(agency, route, direction)
+    print "this is the orginal stops", stops
+    for num in range(len(stops)):
+        if user_stop == stops[num][1]:
+            forward = True
+            start = num
+            break
+        if destination_stop == stops[num][1]:
+            forward = False
+            start = 0
+            break
+    if not forward:
+        stops.reverse()
+    print "this is after reversed", stops
+    route = []
+    print "THIS IS FROM THE START", stops[start:]
+    for stop in stops[start:]:
+        print stop
+        if stop[1] == destination_stop:
+            break
+        route.append(stop)
+
+    return route
 
 #############################################################
 
