@@ -16,19 +16,26 @@
         <label for="fname"> Name
         <input type="text" class="form-control" name="fname" placeholder="optional"></label>
       </div>
-      <div class="form-group">
+<!--       <div class="form-group">
         <label for="email">Email
         <input type="email" class="form-control" name="email" placeholder="optional"></label>
-      </div>
+      </div> -->
       <div class="form-group">
         <label for="phone"><em>Phone Number*</em>
         <!-- http://bootstrapformhelpers.com/phone/ -->
         <input type="text" class="form-control bfh-phone" value="(555)555-5555" data-format="+1 (ddd) ddd-dddd" name="phone"></label>
       </div>
+       <div class="form-group">
+        <label for="agency"><em>Agency*</em>
+          <select class="form-control" id="line" name="line">
+            {% for line in agency_list %}
+            <option>{{ line }}</option>
+            {% endfor %}
+          </select></label>
       <div class="form-group">
         <label for="line"><em>Transit Line*</em>
           <select class="form-control" id="line" name="line">
-            {% for line in list_of_available_lines %}
+            {% for line in agency_list %}
             <option>{{ line }}</option>
             {% endfor %}
           </select></label>

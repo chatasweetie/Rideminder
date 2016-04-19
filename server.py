@@ -5,7 +5,7 @@ from jinja2 import StrictUndefined
 from flask import Flask, render_template, request
 from flask_debugtoolbar import DebugToolbarExtension
 
-from process_data import gets_a_list_of_available_line, processes_line_and_bound_selects_two_closest_vehicle, convert_to_e164, process_lat_lng_get_arrival_datetime
+from process_data import gets_a_list_of_available_line, processes_line_and_bound_selects_two_closest_vehicle, convert_to_e164, process_lat_lng_get_arrival_datetime, gets_agencies
 from model import adds_to_queue, connect_to_db
 
 from celery import Celery
@@ -24,9 +24,9 @@ app.jinja_env.undefined = StrictUndefined
 @app.route("/")
 def index():
     """Homepage."""
-    list_of_available_lines = gets_a_list_of_available_line()
+    agency_list = gets_agencies()
 
-    return render_template("homepage.html", list_of_available_lines=list_of_available_lines)
+    return render_template("homepage.html", agency_list=agency_list)
 
 
 @app.route("/thank-you", methods=["POST"])
@@ -34,8 +34,8 @@ def process_user_info():
     """recieves the user data and sends data to appropiate processes"""
 
     user_fname = request.form.get("fname")
-    user_email = request.form.get("email")
     raw_user_phone_num = request.form.get("phone")
+    agency = request.form.get("agency")
     line = str(request.form.get("line"))
     bound = str(request.form.get("bound"))
     destination = request.form.get("destination")
@@ -44,7 +44,10 @@ def process_user_info():
 
     destination_lat, destination_lon = destination.split(",")
 
+    destination_stop = gets_destination_stop(destination_lat, destination_lon)
+    
     arrival_time_datetime = process_lat_lng_get_arrival_datetime(user_lat, user_lon, destination_lat, destination_lon)
+
 
     list_of_vincenty_vehicle = processes_line_and_bound_selects_two_closest_vehicle(line, bound, destination_lat, destination_lon, user_lat, user_lon)
 

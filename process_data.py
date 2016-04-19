@@ -23,6 +23,10 @@ destination_lat = 37.762028
 destination_lon = -122.470790
 bound = "O"
 line = "N"
+agency = "BART"
+route = "917"
+RouteDirectionCode = ""
+stop = "11"
 
 
 def convert_to_e164(raw_phone):
@@ -218,10 +222,10 @@ def processes_line_and_bound_selects_two_closest_vehicle(line, bound, destinatio
 ####################################################################
 
 
-def gets_agencies(TOKEN):
+def gets_agencies():
     """gets all the available agencies with HasDirection"""
 
-    list_of_agencies = 'http://services.my511.org/Transit2.0/GetAgencies.aspx?token=' + TOKEN
+    list_of_agencies = 'http://services.my511.org/Transit2.0/GetAgencies.aspx?token=' + TOKEN_511
 
     response_agencies = requests.get(list_of_agencies)
 
@@ -237,10 +241,10 @@ def gets_agencies(TOKEN):
     return agencies
 
 
-def gets_routes_for_agency(TOKEN, agency):
+def gets_routes_for_agency(agency):
     """gets the routes for an agency"""
 
-    agency_routes = 'http://services.my511.org/Transit2.0/GetRoutesForAgency.aspx?token=' + TOKEN + '&agencyName=' + agency
+    agency_routes = 'http://services.my511.org/Transit2.0/GetRoutesForAgency.aspx?token=' + TOKEN_511 + '&agencyName=' + agency
 
     response_agency_routes = requests.get(agency_routes)
 
@@ -256,13 +260,13 @@ def gets_routes_for_agency(TOKEN, agency):
     return routes
 
 
-def gets_stops_for_route(TOKEN, agency, route, route_direction=""):
+def gets_stops_for_route(agency, route, route_direction=""):
     """gets all the stops for a route"""
 
     if route_direction == "":
-        list_of_stops_agency = 'http://services.my511.org/Transit2.0/GetStopsForRoute.aspx?token=' + TOKEN + '&routeIDF=' + agency + '~' + route
+        list_of_stops_agency = 'http://services.my511.org/Transit2.0/GetStopsForRoute.aspx?token=' + TOKEN_511 + '&routeIDF=' + agency + '~' + route
     else:
-        list_of_stops_agency = 'http://services.my511.org/Transit2.0/GetStopsForRoute.aspx?token=' + TOKEN + '&routeIDF=' + agency + '~' + route + '~' + route_direction
+        list_of_stops_agency = 'http://services.my511.org/Transit2.0/GetStopsForRoute.aspx?token=' + TOKEN_511 + '&routeIDF=' + agency + '~' + route + '~' + route_direction
 
     response_list_of_stops = requests.get(list_of_stops_agency)
 
@@ -278,10 +282,10 @@ def gets_stops_for_route(TOKEN, agency, route, route_direction=""):
     return stops
 
 
-def gets_departure_time_by_stop(TOKEN, stop):
+def gets_departure_time_by_stop(stop):
     """gets all the departure times for a stop"""
 
-    times_for_stops = 'http://services.my511.org/Transit2.0/GetNextDeparturesByStopCode.aspx?token=' + TOKEN + '&stopcode=' + stop
+    times_for_stops = 'http://services.my511.org/Transit2.0/GetNextDeparturesByStopCode.aspx?token=' + TOKEN_511 + '&stopcode=' + stop
 
     response_times_for_stops = requests.get(times_for_stops)
 
