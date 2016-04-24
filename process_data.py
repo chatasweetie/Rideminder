@@ -27,8 +27,8 @@ agency = "BART"
 route = "917"
 RouteDirectionCode = ""
 stop = "11"
-user_stop = "95"
-destination_stop = "30"
+user_stop = "30"
+destination_stop = "95"
 
 
 def convert_to_e164(raw_phone):
@@ -325,9 +325,9 @@ def get_stop_for_user_route(user_stop, destination_stop, agency, route, directio
     print "THIS IS FROM THE START", stops[start:]
     for stop in stops[start:]:
         print stop
+        route.append(stop)
         if stop[1] == destination_stop:
             break
-        route.append(stop)
 
     return route
 
