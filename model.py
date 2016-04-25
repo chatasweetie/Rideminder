@@ -35,7 +35,59 @@ class Transit_Request(db.Model):
     def __repr__(self):
         """Provides useful represenation when printed"""
 
-        return "<Transit Request request_id: {} user_fname: {} vehicle id: {} is_finished: {}>".format(self.request_id, self.user_fname, self.vehicle_id, self.is_finished)
+        return """<Transit Request request_id: {} user_fname: {} vehicle id:
+                    {} is_finished: {}>""".format(self.request_id, self.user_fname,
+                    self.vehicle_id, self.is_finished)
+
+
+class Agency(db.model):
+    """This is an individual Transit Agency"""
+
+    __tablename__ = "agencies"
+
+    agency_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
+    name = db.Column(db.String(100), nullable=True)
+    has_direction = db.Column(db.Boolean, default=False)
+
+    def __repr__(self):
+        """Provides useful represenation when printed"""
+
+        return "<Agency name: {} has_direction: {}>".format(self.name, 
+                                                        self.has_direction)
+
+
+class Route(db.model):
+    """This is an route/line for a Transit Agency"""
+
+    __tablename__ = "routes"
+
+    route_id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=True)
+
+    agency_id = db.relationship("Agency",
+                                backref=db.backref("routes", order_by=route_id))
+
+    def __repr__(self):
+        """Provides useful represenation when printed"""
+
+        return "<Route name: {} agency_id: {}>".format(self.name, self.agency_id)
+
+
+class Stop(db.model):
+    """This is an individual stop for a variety of routes"""
+
+    __tablename__ = "stops"
+
+    stop = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=True)
+    lat = db.Column(db.Integer, nullable=False)
+    lon = db.Column(db.Integer, nullable=False)
+
+    def __repr__(self):
+        """Provides useful represenation when printed"""
+
+        return "<Stop name: {} >".format(self.name)
+
 
 
 ##########################################################################
