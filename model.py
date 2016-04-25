@@ -89,6 +89,24 @@ class Stop(db.model):
         return "<Stop name: {} >".format(self.name)
 
 
+class Route_Stop(db.model):
+    """This is an individual route to an individual stop"""
+
+    __tablename__ = "routes_stops"
+
+    route_stop_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
+
+    route_id = db.relationship("Route",
+                                backref=db.backref("routes", order_by=route_id))
+
+    stop_id = db.relationship("Stop",
+                                backref=db.backref("route_stop", order_by=stop))
+
+    def __repr__(self):
+        """Provides useful represenation when printed"""
+
+        return "<Route_Stop id: {} route id: {} stop id: {}>".format(self.name,
+                                                    self.route_id, self.stop_id)
 
 ##########################################################################
 # Helper Functions
