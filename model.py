@@ -52,7 +52,7 @@ class Agency(db.model):
     def __repr__(self):
         """Provides useful represenation when printed"""
 
-        return "<Agency name: {} has_direction: {}>".format(self.name, 
+        return "<Agency name: {} has_direction: {}>".format(self.name,
                                                         self.has_direction)
 
 
