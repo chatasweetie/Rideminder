@@ -108,5 +108,6 @@ Firebase Data Sets: [Transit](https://publicdata-transit.firebaseio.com/)
 ### About the Developer    
 Jessica Dene Earley    
 [Short Bio](https://chatasweetie.wordpress.com/about-me/)   
-https://www.linkedin.com/in/jessicaearley    
-https://chatasweetie.wordpress.com/    
+[Linkedin](https://www.linkedin.com/in/jessicaearley)    
+[Blog of Rideminder](https://chatasweetie.wordpress.com/category/rideminder/)     
+[Chatasweetie's Blog](https://chatasweetie.wordpress.com/)    

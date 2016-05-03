@@ -47,7 +47,7 @@ class Agency(db.model):
 
     agency_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     name = db.Column(db.String(100), nullable=True)
-    has_direction = db.Column(db.Boolean, default=False)
+    has_direction = db.Column(db.Boolean, default=True)
 
     def __repr__(self):
         """Provides useful represenation when printed"""
@@ -64,7 +64,7 @@ class Route(db.model):
     route_id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=True)
 
-    agency_id = db.relationship("Agency",
+    agency_name = db.relationship("Agency",
                                 backref=db.backref("routes", order_by=route_id))
 
     def __repr__(self):

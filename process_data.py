@@ -47,14 +47,14 @@ def convert_to_e164(raw_phone):
         # Phone number may already be in E.164 format.
         parse_type = None
     else:
-        # If no country code information present, 
+        # If no country code information present,
         # assume it's a US number
         parse_type = "US"
 
-    phone_representation = phonenumbers.parse(raw_phone, 
+    phone_representation = phonenumbers.parse(raw_phone,
                                             parse_type)
 
-    return phonenumbers.format_number(phone_representation, 
+    return phonenumbers.format_number(phone_representation,
                         phonenumbers.PhoneNumberFormat.E164)
 
 # TODO: Remove firebase and add 511 data
@@ -63,7 +63,15 @@ def gets_a_list_of_available_line():
     """gets all the available lines from firebase into a list
 
         >>> gets_a_list_of_available_line()
-        [u'1', u'10', u'12', u'14', u'14R', u'14X', u'18', u'19', u'1AX', u'1BX', u'2', u'21', u'22', u'23', u'24', u'25', u'27', u'28', u'28R', u'29', u'3', u'30', u'30X', u'31', u'31AX', u'31BX', u'33', u'35', u'36', u'37', u'38', u'38AX', u'38BX', u'38R', u'39', u'41', u'43', u'44', u'45', u'47', u'48', u'49', u'5', u'52', u'54', u'55', u'56', u'57', u'59', u'5R', u'6', u'60', u'61', u'66', u'67', u'7', u'7R', u'7X', u'8', u'81X', u'82X', u'88', u'89', u'8AX', u'8BX', u'9', u'9R', u'F', u'J', u'KT', u'K_OWL', u'L', u'L_OWL', u'M', u'M_OWL', u'N', u'NX', u'N_OWL', u'T', u'T_OWL']
+        [u'1', u'10', u'12', u'14', u'14R', u'14X', u'18', u'19', u'1AX', 
+        u'1BX', u'2', u'21', u'22', u'23', u'24', u'25', u'27', u'28', 
+        u'28R', u'29', u'3', u'30', u'30X', u'31', u'31AX', u'31BX', u'33', 
+        u'35', u'36', u'37', u'38', u'38AX', u'38BX', u'38R', u'39', u'41', 
+        u'43', u'44', u'45', u'47', u'48', u'49', u'5', u'52', u'54', u'55', 
+        u'56', u'57', u'59', u'5R', u'6', u'60', u'61', u'66', u'67', u'7', 
+        u'7R', u'7X', u'8', u'81X', u'82X', u'88', u'89', u'8AX', u'8BX', 
+        u'9', u'9R', u'F', u'J', u'KT', u'K_OWL', u'L', u'L_OWL', u'M', 
+        u'M_OWL', u'N', u'NX', u'N_OWL', u'T', u'T_OWL']
 
     runtime = O(n)
     """
@@ -147,8 +155,9 @@ def gets_geolocation_of_a_vehicle(vehicle_id):
 
 
 def sorts_vehicles_dic_by_distance(vehicle_dictionary, user_lat, user_lon):
-    """With a list of vehicles from a line, it'll pull out the real time latitude and longitude and
-    calucates the distance from the user_geolocation. Returns a sorted list of tuples:
+    """With a list of vehicles from a line, it'll pull out the real time latitude 
+    and longitude and calucates the distance from the user_geolocation. Returns 
+    a sorted list of tuples:
 
     example output: [(0.4675029273179666, u'1491'), (0.9429363612471457, u'1486'), ... (7956.1553552570285, u'1446')]
 
@@ -176,7 +185,8 @@ def sorts_vehicles_dic_by_distance(vehicle_dictionary, user_lat, user_lon):
     return vehicles_sorted_by_vincenity
 
 
-def selects_closest_vehicle(vehicle_1, vehicle_1_distance, vehicle_2, vehicle_2_distance, user_lat, user_lon):
+def selects_closest_vehicle(vehicle_1, vehicle_1_distance, vehicle_2, 
+                                vehicle_2_distance, user_lat, user_lon):
     """From two vehicles (distance, vehicle id), returns the closest vehicleid.
 
     Compares the inital vincity distance of the first vehicle to an updated one to validate

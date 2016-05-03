@@ -87,7 +87,7 @@ $("#bound").bind("change paste keyup", function() {
         success: function(xml) {
             console.log("success", xml);
             var optionsHtml = "";
-            $("#stops").empty()
+            $("#stops").empty();
             clearMapMarkers();
             $(xml).find("direction[tag*="+bound+"]>stop").each(function(){
                 var tag = $(this).attr("tag");
