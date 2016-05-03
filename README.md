@@ -6,19 +6,16 @@ Rideminder
 
 Rideminder is a messaging system that notifies user when they are either within 1/4 a mile or within 3 mins of their destination via text message. 
 
-
-<img src="static/img/firebase-deprecated.png" height="250">
-
-
 **How it works**
 
 Designed to be used at transit stop and requires user’s transit line, transit stop and phone number. It makes 2 API calls for transit information:   
 
-   *Firebase - gets realtime data of transit vehicles    
+   *Firebase - gets realtime data of transit vehicles   
+   *Google Map Direction - gets direction information    
 
-   		[Updates on new Dataset](https://chatasweetie.wordpress.com/category/rideminder/)    
+<img src="static/img/firebase-deprecated.png" height="250">
 
-   *Google Map Direction - gets direction information   
+[Updates on new Dataset](https://chatasweetie.wordpress.com/category/rideminder/)    
 
 Rideminder analyses and processes two types of data - gets the closest transit vehicle number in realtime and creates a datetime object using the estimated arrival time. It places the information into my Postgres database.
 
