@@ -16,3 +16,4 @@ static/.DS_Store
 .env
 .idea/
 latest.dump
+static/.DS_Store

@@ -61,8 +61,10 @@ class Route(db.model):
 
     __tablename__ = "routes"
 
-    route_id = db.Column(db.Integer, primary_key=True)
+    route_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     name = db.Column(db.String(100), nullable=True)
+    route_code = db.Column(db.String(100), nullable=True)
+    direction = db.Column(db.String(100), nullable=True)
 
     agency_name = db.relationship("Agency",
                                 backref=db.backref("routes", order_by=route_id))
