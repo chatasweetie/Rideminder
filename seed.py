@@ -29,6 +29,7 @@ def adds_agencies_to_db(agencies_info):
     """ adds agency information to database"""
 
     for agency_ in agencies_info:
+        print agency_
     #     agency = Agency(
     #                 name=agency_,
     #                 has_direction=agencies_info[agency_],
@@ -136,6 +137,17 @@ def gets_unique_stops_from_info(stops_routes_agencies_info):
     return stops
 
 
+def adds_stops_to_db(unique_stops):
+    """all all unique stops to db"""
+
+    for agency in unique_stops:
+        for route in unique_stops[agency]:
+            name = route[0]
+            stop_code = route[1]
+        stop = Stop(
+                    stop=stop_code,
+                    name=name,
+                    )
 
 
 
@@ -145,3 +157,4 @@ basic_routes_agencies_info = gets_basic_routes_for_agency(agencies_info)
 stops_routes_agencies_info = gets_stops_for_routes(basic_routes_agencies_info)
 # adds_routes_to_db(stops_routes_agencies_info)
 unique_stops = gets_unique_stops_from_info(stops_routes_agencies_info)
+# adds_stops_to_db(unique_stops)
