@@ -1,11 +1,13 @@
 import requests
 from xml.etree import ElementTree
 import os
+from muni_info import gets_stop_lat_lon_routes, gets_set_of_muni_stops, gets_lat_lon_for_bart_stop
 
 
-TOKEN_511 = os.environ.get("TOKEN")
-
+TOKEN_511 = os.environ.get("TOKEN_511")
+BART_TOKEN = os.environ.get("BART_TOKEN")
 WANTED_AGENCIES = ("BART", "SF-MUNI", "Caltrain")
+
 
 def gets_agencies():
     """gets wanted agencies with HasDirection"""
@@ -129,12 +131,46 @@ def gets_unique_stops_from_info(stops_routes_agencies_info):
     """returns a new dic of unique stops per agency"""
     stops = {"SF-MUNI": set(), "BART": set(), "Caltrain": set()}
 
-    for item in stops_routes_agencies_info:
-        for stop in stops_routes_agencies_info[item]['stops']:
-            agency = stops_routes_agencies_info[item]['agency']
+    for route in stops_routes_agencies_info:
+        for stop in stops_routes_agencies_info[route]['stops']:
+            agency = stops_routes_agencies_info[route]['agency']
             stops[agency].add(stop)
 
     return stops
+
+
+def gets_lat_lon_for_a_stop(agency, name, stop_code):
+    """gets the lat and lon for a stop"""
+
+    if agency == "SF-MUNI":
+        lat = muni_stops_lat_lon[stop_code]['lat']
+        lon = muni_stops_lat_lon[stop_code]['lon']
+
+    if agency == "BART":
+        lat, lon = gets_lat_lon_for_bart_stop(name)
+        print lat
+        print lon
+
+    else:
+        lat = 0
+        lon = 0
+
+    return (lat, lon)
+
+
+def get_lats_lon_for_stops(unique_stops):
+    """gets the lat and lon for unique stops"""
+
+    unique_stops_lat_lon = {}
+
+    for agency in unique_stops:
+        for stop in unique_stops[agency]:
+            name = stop[0]
+            stop_code = stop[1]
+            lat, lon = gets_lat_lon_for_a_stop(agency, name, stop_code)
+            unique_stops_lat_lon[agency] = {'name': name, 'stop_code': stop_code, 'lat': lat, 'lon': lat}
+
+    return unique_stops_lat_lon
 
 
 def adds_stops_to_db(unique_stops):
@@ -150,11 +186,29 @@ def adds_stops_to_db(unique_stops):
                     )
 
 
-
+#Gets agency information
 agencies_info = gets_agencies()
+
 # adds_agencies_to_db(agencies_info)
+
+# gets the basic information for the agency routes
 basic_routes_agencies_info = gets_basic_routes_for_agency(agencies_info)
+
+# gets the stops for routes, taking into account direction
 stops_routes_agencies_info = gets_stops_for_routes(basic_routes_agencies_info)
+
 # adds_routes_to_db(stops_routes_agencies_info)
+
+# gets the unique stops for each agency
 unique_stops = gets_unique_stops_from_info(stops_routes_agencies_info)
+
+# gets the lat and lons for SF-MUNI stops
+muni_stops_lat_lon = gets_set_of_muni_stops(gets_stop_lat_lon_routes(basic_routes_agencies_info))
+
+
+unique_stops_lat_lon = get_lats_lon_for_stops(unique_stops)
+
+# stops_routes_agencies_info_muni = gets_lat_lon_for_muni_stops(stops_routes_agencies_info)
+
 # adds_stops_to_db(unique_stops)
+
