@@ -40,14 +40,14 @@ class Transit_Request(db.Model):
                     self.vehicle_id, self.is_finished)
 
 
-class Agency(db.model):
+class Agency(db.Model):
     """This is an individual Transit Agency"""
 
     __tablename__ = "agencies"
 
     agency_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
-    name = db.Column(db.String(100), nullable=True)
-    has_direction = db.Column(db.Boolean, default=True)
+    name = db.Column(db.String(100), nullable=False)
+    has_direction = db.Column(db.Boolean, nullable=False)
 
     def __repr__(self):
         """Provides useful represenation when printed"""
@@ -56,15 +56,15 @@ class Agency(db.model):
                                                         self.has_direction)
 
 
-class Route(db.model):
+class Route(db.Model):
     """This is an route/line for a Transit Agency"""
 
     __tablename__ = "routes"
 
     route_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
-    name = db.Column(db.String(100), nullable=True)
-    route_code = db.Column(db.String(100), nullable=True)
-    direction = db.Column(db.String(100), nullable=True)
+    name = db.Column(db.String(100), nullable=False)
+    route_code = db.Column(db.String(100), nullable=False)
+    direction = db.Column(db.String(100), nullable=False)
     agency_id = db.Column(db.Integer,
                             db.ForeignKey("agencies.agency_id"),
                             nullable=False)
@@ -83,15 +83,15 @@ class Route(db.model):
         return "<Route name: {} agency_id: {}>".format(self.name, self.agency_id)
 
 
-class Stop(db.model):
+class Stop(db.Model):
     """This is an individual stop for a variety of routes"""
 
     __tablename__ = "stops"
 
     stop = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=True)
-    lat = db.Column(db.Integer, nullable=False)
-    lon = db.Column(db.Integer, nullable=False)
+    lat = db.Column(db.Float, nullable=False)
+    lon = db.Column(db.Float, nullable=False)
 
     def __repr__(self):
         """Provides useful represenation when printed"""
@@ -99,7 +99,7 @@ class Stop(db.model):
         return "<Stop name: {} >".format(self.name)
 
 
-class Route_Stop(db.model):
+class Route_Stop(db.Model):
     """This is an individual route to an individual stop"""
 
     __tablename__ = "routes_stops"
@@ -163,7 +163,7 @@ def records_request_complete_db(request):
 def connect_to_db(app):
     """Connect the database to our Flask app."""
 
-    app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get("DATABASE_URL", "postgresql://localhost/rideminder")
+    app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get("DATABASE_URL", "postgresql:///ridemindertest")
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
     db.app = app
     db.init_app(app)
@@ -171,7 +171,9 @@ def connect_to_db(app):
 
 if __name__ == "__main__":
     """will connect to the db"""
-
+    import os
+    os.system("dropdb ridemindertest")
+    os.system("createdb ridemindertest")
     from server import app
     connect_to_db(app)
     db.create_all()

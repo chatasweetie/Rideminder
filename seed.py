@@ -1,7 +1,21 @@
 import requests
 from xml.etree import ElementTree
 import os
-from muni_info import gets_stop_lat_lon_routes, gets_set_of_muni_stops, gets_lat_lon_for_bart_stop
+from transit_info import gets_stop_lat_lon_routes, gets_set_of_muni_stops, gets_lat_lon_for_bart_stop, gets_caltrain_stop_lat_lon
+from model import db, connect_to_db, Agency, Route, Stop, Route_Stop
+from server import app
+
+
+if __name__ == '__main__':
+    # import os
+
+    os.system("dropdb ridemindertest")
+    os.system("createdb ridemindertest")
+
+    connect_to_db(app)
+
+    # Make our tables
+    db.create_all()
 
 
 TOKEN_511 = os.environ.get("TOKEN_511")
@@ -31,14 +45,15 @@ def adds_agencies_to_db(agencies_info):
     """ adds agency information to database"""
 
     for agency_ in agencies_info:
-        print agency_
-    #     agency = Agency(
-    #                 name=agency_,
-    #                 has_direction=agencies_info[agency_],
-    #                 )
-    #     db.session.add(agency)
 
-    # db.session.commit()
+        agency = Agency(
+                    name=agency_,
+                    has_direction=agencies_info[agency_],
+                    )
+        db.session.add(agency)
+
+    db.session.commit()
+    print "Agencies Added to DB"
 
 
 def gets_basic_routes_for_agency(agencies):
@@ -90,18 +105,18 @@ def gets_stops_for_routes(routes):
             for direction in ["Inbound", "Outbound"]:
                 url = 'http://services.my511.org/Transit2.0/GetStopsForRoute.aspx?token=' + TOKEN_511 + '&routeIDF=' + agency + '~' + route_code + '~' + direction
                 stops = gets_stops_for_a_route(url)
-                new_routes[route, direction] = {"route_code": route_code, "agency": agency, "direction": direction, "stops": stops}
+                new_routes[route, direction] = {"route_code": route_code, "agency": agency, "direction": direction, "stops": stops, "agency_code": 3}
 
         if agency == "Caltrain":
             for direction in ["NB", "SB1", "SB2", "SB3"]:
                 url = 'http://services.my511.org/Transit2.0/GetStopsForRoute.aspx?token=' + TOKEN_511 + '&routeIDF=' + agency + '~' + route_code + '~' + direction
                 stops = gets_stops_for_a_route(url)
-                new_routes[route, direction] = {"route_code": route_code, "agency": agency, "direction": direction, "stops": stops}
+                new_routes[route, direction] = {"route_code": route_code, "agency": agency, "direction": direction, "stops": stops, "agency_code": 1}
 
         elif agency == "BART":
             url = 'http://services.my511.org/Transit2.0/GetStopsForRoute.aspx?token=' + TOKEN_511 + '&routeIDF=' + agency + '~' + route_code
             stops = gets_stops_for_a_route(url)
-            new_routes[route, direction] = {"route_code": route_code, "agency": agency, "direction": direction, "stops": stops}
+            new_routes[route, direction] = {"route_code": route_code, "agency": agency, "direction": direction, "stops": stops, "agency_code": 2}
 
     return new_routes
 
@@ -112,19 +127,21 @@ def adds_routes_to_db(stops_routes_agencies_info):
     for route, direction in stops_routes_agencies_info:
         direction = stops_routes_agencies_info[route, direction]['direction']
         route_code = stops_routes_agencies_info[route, direction]['route_code']
-        agency = stops_routes_agencies_info[route, direction]['agency']
+        agency_code = stops_routes_agencies_info[route, direction]['agency_code']
         stops = stops_routes_agencies_info[route, direction]['stops']
 
         route = Route(
                     name=route,
                     route_code=route_code,
                     direction=direction,
-                    agency_name=agency,
+                    agency_id=agency_code,
                     )
 
         db.session.add(route)
 
     db.session.commit()
+
+    print "Routes Added to DB"
 
 
 def gets_unique_stops_from_info(stops_routes_agencies_info):
@@ -143,19 +160,33 @@ def gets_lat_lon_for_a_stop(agency, name, stop_code):
     """gets the lat and lon for a stop"""
 
     if agency == "SF-MUNI":
-        lat = muni_stops_lat_lon[stop_code]['lat']
-        lon = muni_stops_lat_lon[stop_code]['lon']
+        stop_info = muni_stops_lat_lon.get(name)
+
+        if stop_info:
+            lat = stop_info['lat']
+            lon = stop_info['lon']
+        else:
+            lat = "******"
+            lon = 0
 
     if agency == "BART":
         lat, lon = gets_lat_lon_for_bart_stop(name)
-        print lat
-        print lon
 
-    else:
-        lat = 0
-        lon = 0
+    if agency == "Caltrain":
+        stop_info = cal_train_stops_lat_lon.get(stop_code)
+        if stop_info:
+            lat = stop_info['lat']
+            lon = stop_info['lon']
+
+        else:
+            lat = "******"
+            lon = 0
 
     return (lat, lon)
+
+
+# to keep track if there are any stops that do not have lat/lon
+sad = {}
 
 
 def get_lats_lon_for_stops(unique_stops):
@@ -168,7 +199,18 @@ def get_lats_lon_for_stops(unique_stops):
             name = stop[0]
             stop_code = stop[1]
             lat, lon = gets_lat_lon_for_a_stop(agency, name, stop_code)
-            unique_stops_lat_lon[agency] = {'name': name, 'stop_code': stop_code, 'lat': lat, 'lon': lat}
+
+            # some stops need to have stop code converted
+            if lat == "******":
+                stop_code_convert = '1' + stop_code
+                lat, lon = gets_lat_lon_for_a_stop(agency, name, stop_code_convert)
+
+            # catches if stop does not have a lat/lon
+            if lat == "******":
+                sad[stop] = {'name': name, 'stop_code': stop_code, 'lat': lat, 'lon': lon, "agency": agency}
+
+            else:
+                unique_stops_lat_lon[stop] = {'name': name, 'stop_code': stop_code, 'lat': lat, 'lon': lon}
 
     return unique_stops_lat_lon
 
@@ -176,20 +218,53 @@ def get_lats_lon_for_stops(unique_stops):
 def adds_stops_to_db(unique_stops):
     """all all unique stops to db"""
 
-    for agency in unique_stops:
-        for route in unique_stops[agency]:
-            name = route[0]
-            stop_code = route[1]
+    for stop in unique_stops:
+        name = stop[0]
+        stop_code = stop[1]
+        lat = unique_stops[stop]['lat']
+        lon = unique_stops[stop]['lon']
+
         stop = Stop(
                     stop=stop_code,
                     name=name,
+                    lat=lat,
+                    lon=lon,
                     )
+        db.session.add(stop)
+
+    db.session.commit()
+    print "Stops Added to DB"
+
+
+def adds_routestop_to_db(stops_routes_agencies_info):
+    """add the relationship between routes and stops to db"""
+
+    for route_direction in stops_routes_agencies_info:
+        route = route_direction[0]
+        direction = route_direction[1]
+
+        route = Route.query.filter_by(name=route, direction=direction).first()
+
+        for stop in stops_routes_agencies_info[route_direction]['stops']:
+            stop_id = stop[1]
+            stops = Stop.query.filter_by(stop=stop_id).all()
+
+            if len(stops) > 0:
+
+                route_stop = Route_Stop(
+                                        route_id=route.route_id,
+                                        stop_id=stop_id,
+                                        )
+                db.session.add(route_stop)
+
+        db.session.commit()
+    print "RouteStops Added to DB"
 
 
 #Gets agency information
 agencies_info = gets_agencies()
 
-# adds_agencies_to_db(agencies_info)
+adds_agencies_to_db(agencies_info)
 
 # gets the basic information for the agency routes
 basic_routes_agencies_info = gets_basic_routes_for_agency(agencies_info)
@@ -197,7 +272,7 @@ basic_routes_agencies_info = gets_basic_routes_for_agency(agencies_info)
 # gets the stops for routes, taking into account direction
 stops_routes_agencies_info = gets_stops_for_routes(basic_routes_agencies_info)
 
-# adds_routes_to_db(stops_routes_agencies_info)
+adds_routes_to_db(stops_routes_agencies_info)
 
 # gets the unique stops for each agency
 unique_stops = gets_unique_stops_from_info(stops_routes_agencies_info)
@@ -205,10 +280,11 @@ unique_stops = gets_unique_stops_from_info(stops_routes_agencies_info)
 # gets the lat and lons for SF-MUNI stops
 muni_stops_lat_lon = gets_set_of_muni_stops(gets_stop_lat_lon_routes(basic_routes_agencies_info))
 
+# gets the lat and lons for Caltrain stops
+cal_train_stops_lat_lon = gets_caltrain_stop_lat_lon("seed_data/stops.txt")
 
 unique_stops_lat_lon = get_lats_lon_for_stops(unique_stops)
 
-# stops_routes_agencies_info_muni = gets_lat_lon_for_muni_stops(stops_routes_agencies_info)
+adds_stops_to_db(unique_stops_lat_lon)
 
-# adds_stops_to_db(unique_stops)
-
+adds_routestop_to_db(stops_routes_agencies_info)

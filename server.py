@@ -45,9 +45,8 @@ def process_user_info():
     destination_lat, destination_lon = destination.split(",")
 
     destination_stop = gets_destination_stop(destination_lat, destination_lon)
-    
-    arrival_time_datetime = process_lat_lng_get_arrival_datetime(user_lat, user_lon, destination_lat, destination_lon)
 
+    arrival_time_datetime = process_lat_lng_get_arrival_datetime(user_lat, user_lon, destination_lat, destination_lon)
 
     list_of_vincenty_vehicle = processes_line_and_bound_selects_two_closest_vehicle(line, bound, destination_lat, destination_lon, user_lat, user_lon)
 
@@ -68,11 +67,6 @@ def process_user_info():
 
     return render_template("/thank_you.html", user_fname=user_fname, user_phone=user_phone, bound=bound, line=line)
 
-
-@app.route("/error")
-def error():
-    """error page"""
-    raise Exception("Error!")
 
 
 # Celery is an open source asynchronous task queue/job queue based on distributed message passing.
