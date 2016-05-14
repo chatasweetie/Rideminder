@@ -6,26 +6,16 @@ from model import db, connect_to_db, Agency, Route, Stop, Route_Stop
 from server import app
 
 
-if __name__ == '__main__':
-    # import os
-
-    os.system("dropdb ridemindertest")
-    os.system("createdb ridemindertest")
-
-    connect_to_db(app)
-
-    # Make our tables
-    db.create_all()
-
-
 TOKEN_511 = os.environ.get("TOKEN_511")
 BART_TOKEN = os.environ.get("BART_TOKEN")
 WANTED_AGENCIES = ("BART", "SF-MUNI", "Caltrain")
 
 
 def gets_agencies():
-    """gets wanted agencies with HasDirection"""
+    """gets wanted agencies and HasDirection
 
+    example: {Agency: has_direction}
+    """
     list_of_agencies = 'http://services.my511.org/Transit2.0/GetAgencies.aspx?token=' + TOKEN_511
     response_agencies = requests.get(list_of_agencies)
     agencies_tree = ElementTree.fromstring(response_agencies.text)
@@ -57,8 +47,10 @@ def adds_agencies_to_db(agencies_info):
 
 
 def gets_basic_routes_for_agency(agencies):
-    """gets the routes for an agency (not including the direction(s))"""
+    """gets the routes for an agency (not including the direction(s))
 
+    example: {Route_name = {route_code, route_agency, agency_hasdirection}
+    """
     routes = {}
 
     for wanted_agency in agencies:
@@ -264,15 +256,11 @@ def adds_routestop_to_db(stops_routes_agencies_info):
 #Gets agency information
 agencies_info = gets_agencies()
 
-adds_agencies_to_db(agencies_info)
-
 # gets the basic information for the agency routes
 basic_routes_agencies_info = gets_basic_routes_for_agency(agencies_info)
 
 # gets the stops for routes, taking into account direction
 stops_routes_agencies_info = gets_stops_for_routes(basic_routes_agencies_info)
-
-adds_routes_to_db(stops_routes_agencies_info)
 
 # gets the unique stops for each agency
 unique_stops = gets_unique_stops_from_info(stops_routes_agencies_info)
@@ -283,8 +271,24 @@ muni_stops_lat_lon = gets_set_of_muni_stops(gets_stop_lat_lon_routes(basic_route
 # gets the lat and lons for Caltrain stops
 cal_train_stops_lat_lon = gets_caltrain_stop_lat_lon("seed_data/stops.txt")
 
+# all unique stops with lat lon
 unique_stops_lat_lon = get_lats_lon_for_stops(unique_stops)
 
-adds_stops_to_db(unique_stops_lat_lon)
 
-adds_routestop_to_db(stops_routes_agencies_info)
+
+if __name__ == '__main__':
+    import os
+
+    os.system("dropdb ridemindertest")
+    os.system("createdb ridemindertest")
+
+    connect_to_db(app)
+
+    # Make the tables
+    db.create_all()
+
+    # Adds data to db
+    adds_agencies_to_db(agencies_info)
+    adds_routes_to_db(stops_routes_agencies_info)
+    adds_stops_to_db(unique_stops_lat_lon)
+    adds_routestop_to_db(stops_routes_agencies_info)
