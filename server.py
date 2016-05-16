@@ -5,7 +5,7 @@ from jinja2 import StrictUndefined
 from flask import Flask, render_template, request
 from flask_debugtoolbar import DebugToolbarExtension
 
-from process_data import gets_a_list_of_available_line, processes_line_and_bound_selects_two_closest_vehicle, convert_to_e164, process_lat_lng_get_arrival_datetime, gets_agencies
+# from process_data import gets_a_list_of_available_line, processes_line_and_bound_selects_two_closest_vehicle, convert_to_e164, process_lat_lng_get_arrival_datetime, gets_agencies
 from model import adds_to_queue, connect_to_db
 
 from celery import Celery
@@ -23,10 +23,30 @@ app.jinja_env.undefined = StrictUndefined
 
 @app.route("/")
 def index():
-    """Homepage."""
-    agency_list = gets_agencies()
+    """Homepage"""
+    agencies = Agency.query.filter().all()
 
     return render_template("homepage.html", agency_list=agency_list)
+
+
+@app.route("/routes.json")
+def routes():
+    """returns agency's routes"""
+
+    agency = request.arg.get("agency")
+
+    routes = {
+        route.marker_id: {
+            "route_id": route.route_id,
+            "name": route.name,
+            "route_code": route.route_code,
+            "direction": route.direction,
+            "stop_list": route.stop_list,
+            "agency_id": route.agency_id,
+        }
+        for route in Route.query.filter_by(agency_id=agency.agency_id).all()}
+
+    return jsonify(routes)
 
 
 @app.route("/thank-you", methods=["POST"])

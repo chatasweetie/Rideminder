@@ -65,6 +65,7 @@ class Route(db.Model):
     name = db.Column(db.String(100), nullable=False)
     route_code = db.Column(db.String(100), nullable=False)
     direction = db.Column(db.String(100), nullable=False)
+    stop_list = db.Column(db.String(5000), nullable=False)
     agency_id = db.Column(db.Integer,
                             db.ForeignKey("agencies.agency_id"),
                             nullable=False)
@@ -112,10 +113,17 @@ class Route_Stop(db.Model):
                             db.ForeignKey("stops.stop"),
                             nullable=False)
 
+    route = db.relationship("Route",
+                                backref=db.backref("route_stops",
+                                order_by=route_id))
+
+    stop = db.relationship("Stop",
+                             backref="route_stops")
+
     def __repr__(self):
         """Provides useful represenation when printed"""
 
-        return "<Route_Stop id: {} route id: {} stop id: {}>".format(self.name,
+        return "<Route_Stop id: {} route id: {} stop id: {}>".format(self.route_stop_id,
                                                     self.route_id, self.stop_id)
 
 ##########################################################################

@@ -120,13 +120,14 @@ def adds_routes_to_db(stops_routes_agencies_info):
         direction = stops_routes_agencies_info[route, direction]['direction']
         route_code = stops_routes_agencies_info[route, direction]['route_code']
         agency_code = stops_routes_agencies_info[route, direction]['agency_code']
-        stops = stops_routes_agencies_info[route, direction]['stops']
+        stops = str(stops_routes_agencies_info[route, direction]['stops'])
 
         route = Route(
                     name=route,
                     route_code=route_code,
                     direction=direction,
                     agency_id=agency_code,
+                    stop_list=stops,
                     )
 
         db.session.add(route)
@@ -223,8 +224,7 @@ def adds_stops_to_db(unique_stops):
                     lon=lon,
                     )
         db.session.add(stop)
-
-    db.session.commit()
+        db.session.commit()
     print "Stops Added to DB"
 
 
@@ -255,25 +255,31 @@ def adds_routestop_to_db(stops_routes_agencies_info):
 
 #Gets agency information
 agencies_info = gets_agencies()
+print "got agencies from api"
 
 # gets the basic information for the agency routes
 basic_routes_agencies_info = gets_basic_routes_for_agency(agencies_info)
+print "got routes and agencies from api"
 
 # gets the stops for routes, taking into account direction
 stops_routes_agencies_info = gets_stops_for_routes(basic_routes_agencies_info)
+print "got stops, routes and agencies from api"
 
 # gets the unique stops for each agency
 unique_stops = gets_unique_stops_from_info(stops_routes_agencies_info)
+print "got unique stops from api"
 
 # gets the lat and lons for SF-MUNI stops
 muni_stops_lat_lon = gets_set_of_muni_stops(gets_stop_lat_lon_routes(basic_routes_agencies_info))
+print "got muni stops from api"
 
 # gets the lat and lons for Caltrain stops
 cal_train_stops_lat_lon = gets_caltrain_stop_lat_lon("seed_data/stops.txt")
+print "got caltrain stops from api"
 
 # all unique stops with lat lon
 unique_stops_lat_lon = get_lats_lon_for_stops(unique_stops)
-
+print "got unique stops with lat/lon from api"
 
 
 if __name__ == '__main__':
