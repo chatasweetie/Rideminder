@@ -89,7 +89,7 @@ class Stop(db.Model):
 
     __tablename__ = "stops"
 
-    stop = db.Column(db.Integer, primary_key=True)
+    stop_code = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=True)
     lat = db.Column(db.Float, nullable=False)
     lon = db.Column(db.Float, nullable=False)

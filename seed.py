@@ -218,7 +218,7 @@ def adds_stops_to_db(unique_stops):
         lon = unique_stops[stop]['lon']
 
         stop = Stop(
-                    stop=stop_code,
+                    stop_code=stop_code,
                     name=name,
                     lat=lat,
                     lon=lon,

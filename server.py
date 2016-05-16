@@ -56,25 +56,19 @@ def process_user_info():
     user_fname = request.form.get("fname")
     raw_user_phone_num = request.form.get("phone")
     agency = request.form.get("agency")
-    line = str(request.form.get("line"))
-    bound = str(request.form.get("bound"))
+    route = request.form.get("route")
+    direction = str(request.form.get("direction"))
     destination = request.form.get("destination")
     user_lat = request.form.get("lat")
     user_lon = request.form.get("lng")
 
     destination_lat, destination_lon = destination.split(",")
 
-    destination_stop = gets_destination_stop(destination_lat, destination_lon)
+    user_inital_stop_code = gets_user_stop(user_lat, user_lon, agency, route, direction)
+
+    user_trip = gets_user_itinerary(agency, route, direction, destination, user_inital_stop_code)
 
     arrival_time_datetime = process_lat_lng_get_arrival_datetime(user_lat, user_lon, destination_lat, destination_lon)
-
-    list_of_vincenty_vehicle = processes_line_and_bound_selects_two_closest_vehicle(line, bound, destination_lat, destination_lon, user_lat, user_lon)
-
-    # sets the two closest vechiles
-    vehicle_1 = list_of_vincenty_vehicle[0][1]
-    vehicle_1_distance = list_of_vincenty_vehicle[0][0]
-    vehicle_2 = list_of_vincenty_vehicle[1][1]
-    vehicle_2_distance = list_of_vincenty_vehicle[1][0]
 
     user_phone = convert_to_e164(raw_user_phone_num)
 

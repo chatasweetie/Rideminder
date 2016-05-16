@@ -17,3 +17,4 @@ static/.DS_Store
 .idea/
 latest.dump
 static/.DS_Store
+*.sql

@@ -7,6 +7,7 @@ import os
 import datetime
 import requests
 from xml.etree import ElementTree
+from model import Route_Stop, Agency, Route, Stop
 
 
 GOOGLE_MAP_API_KEY = os.environ.get("GOOGLE_MAP_API_KEY")
@@ -59,7 +60,39 @@ def convert_to_e164(raw_phone):
 
 # New Data processing
 #############################################################
+def gets_user_stop(user_lat, user_lon, agency, route, direction):
+    """processes the lat/lon of user to find closest stop for their route
 
+    returns stop.stop_code
+
+    """
+
+    route_stop = Route_Stop.query.filter_by(route_id=route)
+
+    user_geolocation = (user_lat,user_lon)
+    stops_vincenty_diff = []
+
+    for rs in route_stop:
+        stop_lat = rs.stop.lat
+        stop_lon = rs.stop.lon
+        stop_code = rs.stop.stop_code
+        stop_geolocation = (lat, lon)
+
+        # vincenity is the distance between two geolocations that
+        # takes into account the sphereness of the world
+        distance = (vincenty(user_geolocation, (stop_lat, stop_lon)).miles)
+        stops_vincenty_diff.append(tuple([distance, stop_code]))
+
+    user_stop = sorted(stops_vincenty_diff)
+
+    return user_stop[0][1]
+
+
+user_trip = gets_user_itinerary(agency, route, direction, destination, user_inital_stop_code)
+
+def gets_user_itinerary(agency, route, direction, destination, user_inital_stop_code):
+    """returns a list of the user's stops from inital to destination"""
+    
 
 
 #############################################################
