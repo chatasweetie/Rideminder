@@ -67,7 +67,7 @@ def gets_user_stop(user_lat, user_lon, agency, route, direction):
 
     """
 
-    route_stop = Route_Stop.query.filter_by(route_id=route)
+    route_stop = Route_Stop.query.filter_by(route_id=route).all()
 
     user_geolocation = (user_lat,user_lon)
     stops_vincenty_diff = []
@@ -90,14 +90,17 @@ def gets_user_stop(user_lat, user_lon, agency, route, direction):
 
 user_trip = gets_user_itinerary(agency, route, direction, destination, user_inital_stop_code)
 
-def gets_user_itinerary(agency, route, direction, destination, user_inital_stop_code):
+def gets_user_itinerary(agency, route_code, direction, destination, user_inital_stop_code):
     """returns a list of the user's stops from inital to destination"""
-    
+
+    route = Route.query.filter_by(route_id=route_code).one()
+
+    return route.stop_list
 
 
 #############################################################
 
-
+#TODO: destination lat/lon doesn't exsit, need to get it through the stop_code
 def process_lat_lng_get_arrival_datetime(user_lat, user_lon, destination_lat, destination_lon):
     """takes in geolocations and returns the arrival time as a datatime object of when the
     transit is completed"""

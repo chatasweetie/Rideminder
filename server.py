@@ -56,19 +56,18 @@ def process_user_info():
     user_fname = request.form.get("fname")
     raw_user_phone_num = request.form.get("phone")
     agency = request.form.get("agency")
-    route = request.form.get("route")
+    route_code = request.form.get("route-code")
     direction = str(request.form.get("direction"))
-    destination = request.form.get("destination")
+    destination_stop_code = request.form.get("destination-stop-code")
     user_lat = request.form.get("lat")
-    user_lon = request.form.get("lng")
+    user_lon = request.form.get("lon")
 
-    destination_lat, destination_lon = destination.split(",")
 
     user_inital_stop_code = gets_user_stop(user_lat, user_lon, agency, route, direction)
 
-    user_trip = gets_user_itinerary(agency, route, direction, destination, user_inital_stop_code)
+    user_trip = gets_user_itinerary(agency, route_code, direction, destination_stop_code, user_inital_stop_code)
 
-    arrival_time_datetime = process_lat_lng_get_arrival_datetime(user_lat, user_lon, destination_lat, destination_lon)
+    arrival_time_datetime = process_lat_lng_get_arrival_datetime(user_lat, user_lon, destination_stop_code)
 
     user_phone = convert_to_e164(raw_user_phone_num)
 

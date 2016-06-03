@@ -1,7 +1,7 @@
 import requests
 from xml.etree import ElementTree
 import os
-from transit_info import gets_stop_lat_lon_routes, gets_set_of_muni_stops, gets_lat_lon_for_bart_stop, gets_caltrain_stop_lat_lon
+from transit_info import gets_stop_lat_lon_routes, gets_set_of_muni_stops, gets_lat_lon_for_bart_stop, gets_caltrain_stop_lat_lon, gets_bartroutes_and_routes
 from model import db, connect_to_db, Agency, Route, Stop, Route_Stop
 from server import app
 
@@ -9,6 +9,21 @@ from server import app
 TOKEN_511 = os.environ.get("TOKEN_511")
 BART_TOKEN = os.environ.get("BART_TOKEN")
 WANTED_AGENCIES = ("BART", "SF-MUNI", "Caltrain")
+
+if __name__ == '__main__':
+    import os
+
+    os.system("dropdb ridemindertest")
+    print "dropdb"
+    os.system("createdb ridemindertest")
+    print "createdb"
+
+    connect_to_db(app)
+    print "connect to db"
+
+    # Make the tables
+    db.create_all()
+    print "create tables"
 
 
 def gets_agencies():
@@ -120,14 +135,12 @@ def adds_routes_to_db(stops_routes_agencies_info):
         direction = stops_routes_agencies_info[route, direction]['direction']
         route_code = stops_routes_agencies_info[route, direction]['route_code']
         agency_code = stops_routes_agencies_info[route, direction]['agency_code']
-        stops = str(stops_routes_agencies_info[route, direction]['stops'])
 
         route = Route(
                     name=route,
                     route_code=route_code,
                     direction=direction,
                     agency_id=agency_code,
-                    stop_list=stops,
                     )
 
         db.session.add(route)
@@ -139,6 +152,7 @@ def adds_routes_to_db(stops_routes_agencies_info):
 
 def gets_unique_stops_from_info(stops_routes_agencies_info):
     """returns a new dic of unique stops per agency"""
+
     stops = {"SF-MUNI": set(), "BART": set(), "Caltrain": set()}
 
     for route in stops_routes_agencies_info:
@@ -239,7 +253,7 @@ def adds_routestop_to_db(stops_routes_agencies_info):
 
         for stop in stops_routes_agencies_info[route_direction]['stops']:
             stop_id = stop[1]
-            stops = Stop.query.filter_by(stop=stop_id).all()
+            stops = Stop.query.filter_by(stop_code=stop_id).all()
 
             if len(stops) > 0:
 
@@ -269,6 +283,9 @@ print "got stops, routes and agencies from api"
 unique_stops = gets_unique_stops_from_info(stops_routes_agencies_info)
 print "got unique stops from api"
 
+# corrects 511 bug with BART API
+stop_routes_agencies_info_bart = gets_bartroutes_and_routes(stops_routes_agencies_info)
+
 # gets the lat and lons for SF-MUNI stops
 muni_stops_lat_lon = gets_set_of_muni_stops(gets_stop_lat_lon_routes(basic_routes_agencies_info))
 print "got muni stops from api"
@@ -283,16 +300,6 @@ print "got unique stops with lat/lon from api"
 
 
 if __name__ == '__main__':
-    import os
-
-    os.system("dropdb ridemindertest")
-    os.system("createdb ridemindertest")
-
-    connect_to_db(app)
-
-    # Make the tables
-    db.create_all()
-
     # Adds data to db
     adds_agencies_to_db(agencies_info)
     adds_routes_to_db(stops_routes_agencies_info)
