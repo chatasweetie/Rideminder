@@ -2,7 +2,7 @@
 import unittest
 from unittest import TestCase
 import doctest
-from process_data import convert_to_e164, gets_a_list_of_available_line, selects_closest_vehicle, gets_a_dic_of_vehicle, validates_bound_direction_of_vehicles_in_line, gets_geolocation_of_a_vehicle, sorts_vehicles_dic_by_distance, selects_closest_vehicle
+from process_data import convert_to_e164, gets_a_list_of_available_line, selects_closest_vehicle, gets_a_dic_of_vehicle, validates_bound_direction_of_vehicles_in_line, gets_geolocation_of_a_vehicle, sorts_vehicles_dic_by_distance, selects_closest_vehicle, process_lat_lng_get_arrival_datetime
 from firebase import firebase
 import process_data
 import tasks
@@ -175,9 +175,11 @@ class IntergrationServerTest(unittest.TestCase):
 
     def test_user_input_form(self):
         test_client = server.app.test_client()
-        result = test_client.post('/user_input', data={'fname':'Jessica', 'phone':'13604508678', 'line':'N', 'bound':'O', 'destination':'37.76207,-122.4693199', 'lat': '37.785152', 'lan': '-122.406581'})
-        print "this is the resulte for test_user_input_form", result
-        self.assertIn('<!doctype html>\n<html>\n    <head>\n      <title>Rideminder</title>\n      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">\n      <meta name="viewport" content="width=device-width, initial-scale=1">\n      <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css" rel="stylesheet">\n    <link rel="stylesheet" type="text/css" href="/static/css/styling.css">\n    \n \n\n    </head>\n\n<body>\n    <div class="container-fluid">\n        <p class="navbar-brand">Rideminder</p>\n      </div>\n    </div><!-- /.container-fluid -->\n\n\n\n  <hr>\n\n  \n\n<div class="row">\n\t<div clase="row">\n  \t\t<div class="container thankyou">\n  \t\t\t<p class="center"> Thank you Jessica! </p>\n  \t\t\t<p class="center"> We will text you at +13604508678 when you are within 3 blocks of your destination. </p>\n  \t\t\t<p class="center"> Have a wonderful day! </p>\n\t\t</div>\n \t</div>\n</div>\n\n<div class="row">\n  <div class="col-md-6 col-md-offset-3 center img"><img src="static/sleepingdog.jpg" alt="Picture of a baby sleeping"> <p class="center">Enjoy your nap </p></div>\n</div>\n\n\n\n\n</body>\n</html>', result.data)
+        result = test_client.post('/thank-you', data={'fname':'Jessica', 'phone':'13604508678',
+                                                        'line':'N', 'bound':'O', 'destination':'37.76207,-122.4693199',
+                                                        'lat': '37.785152', 'lan': '-122.406581'})
+        import pdb; pdb.set_trace()
+        self.assertIn('We will text you at +13604508678 when you are within 3 blocks of your destination', result.data)
 
 
 
