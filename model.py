@@ -147,6 +147,11 @@ def list_of_is_finished_to_process():
 
     return request_to_process
 
+def gets_route_db(route_code):
+    """"""
+
+    return Route.query.filter_by(route_id=route_code).one()
+
 
 def records_request_vehicle_id_db(request, vehicle_id):
     """Sets the transit_request vehicle_id"""

@@ -7,7 +7,7 @@ import os
 import datetime
 import requests
 from xml.etree import ElementTree
-from model import Route_Stop, Agency, Route, Stop
+from model import Route_Stop, Agency, Route, Stop, connect_to_db, db, gets_route_db
 
 
 GOOGLE_MAP_API_KEY = os.environ.get("GOOGLE_MAP_API_KEY")
@@ -60,6 +60,16 @@ def convert_to_e164(raw_phone):
 
 # New Data processing
 #############################################################
+
+def gets_user_itinerary(agency, route_code, direction, destination, user_inital_stop_code):
+    """returns a list of the user's stops from inital to destination"""
+
+    route = gets_route_db(route_code, direction)
+
+    route_stops = gets_stops_from_route(route)
+
+
+
 def gets_user_stop(user_lat, user_lon, agency, route, direction):
     """processes the lat/lon of user to find closest stop for their route
 
@@ -68,6 +78,7 @@ def gets_user_stop(user_lat, user_lon, agency, route, direction):
     """
 
     route_stop = Route_Stop.query.filter_by(route_id=route).all()
+    db.session.query(Route_Stop).filter(Route_Stop.route_id == route).all()
 
     user_geolocation = (user_lat,user_lon)
     stops_vincenty_diff = []
@@ -88,14 +99,7 @@ def gets_user_stop(user_lat, user_lon, agency, route, direction):
     return user_stop[0][1]
 
 
-user_trip = gets_user_itinerary(agency, route, direction, destination, user_inital_stop_code)
-
-def gets_user_itinerary(agency, route_code, direction, destination, user_inital_stop_code):
-    """returns a list of the user's stops from inital to destination"""
-
-    route = Route.query.filter_by(route_id=route_code).one()
-
-    return route.stop_list
+# user_trip = gets_user_itinerary(agency, route, direction, destination, user_inital_stop_code)
 
 
 #############################################################
@@ -140,3 +144,8 @@ def process_lat_lng_get_arrival_datetime(user_lat, user_lon, destination_lat, de
         return arrival_time
 
     return datetime.datetime.utcnow()
+
+
+if __name__ == "__main__":
+    from server import app
+    connect_to_db(app)
