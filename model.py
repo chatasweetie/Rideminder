@@ -65,6 +65,7 @@ class Route(db.Model):
     name = db.Column(db.String(100), nullable=False)
     route_code = db.Column(db.String(100), nullable=False)
     direction = db.Column(db.String(100), nullable=False)
+    stop_list = db.Column(db.String(5000), nullable=False)
     agency_id = db.Column(db.Integer,
                             db.ForeignKey("agencies.agency_id"),
                             nullable=False)

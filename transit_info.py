@@ -178,7 +178,7 @@ def gets_bart_name_stops(routes):
 
     for route in routes:
             for stop in routes[route]['stop_abbr_list']:
-                routes[route].setdefault('stop_name_list', []).append(reversed_bart_station_abbr_name[stop.lower()])
+                routes[route].setdefault('stop_list', []).append(reversed_bart_station_abbr_name[stop.lower()])
 
     return routes
 
@@ -227,7 +227,8 @@ def gets_bartroutes_and_routes(routes_511):
             bart_route_stop[route]['direction'] = bart_511_routes[route_id].get('direction')
             bart_route_stop[route]['agency_code'] = bart_511_routes[route_id].get('agency_code')
             bart_route_stop[route]['agency'] = bart_511_routes[route_id].get('agency')
-            bart_route_stop[route].setdefault('511_stop', []).extend(bart_511_routes[route_id].get('stops'))
+            bart_route_stop[route]['route_code'] = bart_511_routes[route_id].get('route_code')
+            bart_route_stop[route].setdefault('511_stop', []).extend(bart_511_routes[route_id].get('stop_list'))
 
     for route in bart_route_stop:
             bart_route_stop[route]['511_stop_ids'] = gets_set_of_muni_stop_ids(iterable_flatter(bart_route_stop[route]['511_stop']))

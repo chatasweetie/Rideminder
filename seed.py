@@ -112,18 +112,18 @@ def gets_stops_for_routes(routes):
             for direction in ["Inbound", "Outbound"]:
                 url = 'http://services.my511.org/Transit2.0/GetStopsForRoute.aspx?token=' + TOKEN_511 + '&routeIDF=' + agency + '~' + route_code + '~' + direction
                 stops = gets_stops_for_a_route(url)
-                new_routes[route, direction] = {"route_code": route_code, "agency": agency, "direction": direction, "stops": stops, "agency_code": 3}
+                new_routes[route, direction] = {"route_code": route_code, "agency": agency, "direction": direction, "stop_list": stops, "agency_code": 3}
 
         if agency == "Caltrain":
             for direction in ["NB", "SB1", "SB2", "SB3"]:
                 url = 'http://services.my511.org/Transit2.0/GetStopsForRoute.aspx?token=' + TOKEN_511 + '&routeIDF=' + agency + '~' + route_code + '~' + direction
                 stops = gets_stops_for_a_route(url)
-                new_routes[route, direction] = {"route_code": route_code, "agency": agency, "direction": direction, "stops": stops, "agency_code": 1}
+                new_routes[route, direction] = {"route_code": route_code, "agency": agency, "direction": direction, "stop_list": stops, "agency_code": 1}
 
         elif agency == "BART":
             url = 'http://services.my511.org/Transit2.0/GetStopsForRoute.aspx?token=' + TOKEN_511 + '&routeIDF=' + agency + '~' + route_code
             stops = gets_stops_for_a_route(url)
-            new_routes[route, direction] = {"route_code": route_code, "agency": agency, "direction": direction, "stops": stops, "agency_code": 2}
+            new_routes[route, direction] = {"route_code": route_code, "agency": agency, "direction": direction, "stop_list": stops, "agency_code": 2}
 
     return new_routes
 
@@ -131,15 +131,17 @@ def gets_stops_for_routes(routes):
 def adds_routes_to_db(stops_routes_agencies_info):
     """adds all routes info into db"""
 
-    for route, direction in stops_routes_agencies_info:
-        direction = stops_routes_agencies_info[route, direction]['direction']
-        route_code = stops_routes_agencies_info[route, direction]['route_code']
-        agency_code = stops_routes_agencies_info[route, direction]['agency_code']
+    for route in stops_routes_agencies_info:
+        direction = stops_routes_agencies_info[route]['direction']
+        route_code = stops_routes_agencies_info[route]['route_code']
+        stop_list = stops_routes_agencies_info[route]['stop_list']
+        agency_code = stops_routes_agencies_info[route]['agency_code']
 
         route = Route(
                     name=route,
                     route_code=route_code,
                     direction=direction,
+                    stop_list=stop_list,
                     agency_id=agency_code,
                     )
 
@@ -156,7 +158,7 @@ def gets_unique_stops_from_info(stops_routes_agencies_info):
     stops = {"SF-MUNI": set(), "BART": set(), "Caltrain": set()}
 
     for route in stops_routes_agencies_info:
-        for stop in stops_routes_agencies_info[route]['stops']:
+        for stop in stops_routes_agencies_info[route]['stop_list']:
             agency = stops_routes_agencies_info[route]['agency']
             stops[agency].add(stop)
 
@@ -214,7 +216,7 @@ def get_lats_lon_for_stops(unique_stops):
 
             # catches if stop does not have a lat/lon
             if lat == "******":
-                sad[stop] = {'name': name, 'stop_code': stop_code, 'lat': lat, 'lon': lon, "agency": agency}
+                unique_stops_lat_lon[stop] = {'name': name, 'stop_code': stop_code, 'lat': 0, 'lon': 0}
 
             else:
                 unique_stops_lat_lon[stop] = {'name': name, 'stop_code': stop_code, 'lat': lat, 'lon': lon}
@@ -244,24 +246,26 @@ def adds_stops_to_db(unique_stops):
 
 def adds_routestop_to_db(stops_routes_agencies_info):
     """add the relationship between routes and stops to db"""
+    for route in stops_routes_agencies_info:
+        route_code = stops_routes_agencies_info[route]['route_code']
 
-    for route_direction in stops_routes_agencies_info:
-        route = route_direction[0]
-        direction = route_direction[1]
+        route_db = db.session.query(Route).filter(Route.route_code == route_code).first()
 
-        route = Route.query.filter_by(name=route, direction=direction).first()
+        for stop in stops_routes_agencies_info[route]['stop_list']:
 
-        for stop in stops_routes_agencies_info[route_direction]['stops']:
             stop_id = stop[1]
-            stops = Stop.query.filter_by(stop_code=stop_id).all()
-
+            
+            stops = db.session.query(Stop).filter(Stop.stop_code == stop_id).all()
             if len(stops) > 0:
 
                 route_stop = Route_Stop(
-                                        route_id=route.route_id,
+                                        route_id=route_db.route_id,
                                         stop_id=stop_id,
                                         )
                 db.session.add(route_stop)
+            else:
+                print "stops", stops
+                print "stop_id", stop_id
 
         db.session.commit()
     print "RouteStops Added to DB"
@@ -302,6 +306,6 @@ print "got unique stops with lat/lon from api"
 if __name__ == '__main__':
     # Adds data to db
     adds_agencies_to_db(agencies_info)
-    adds_routes_to_db(stops_routes_agencies_info)
+    adds_routes_to_db(stop_routes_agencies_info_bart)
     adds_stops_to_db(unique_stops_lat_lon)
     adds_routestop_to_db(stops_routes_agencies_info)
