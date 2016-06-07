@@ -63,7 +63,7 @@ def process_user_info():
     user_lon = request.form.get("lon")
 
 
-    user_inital_stop_code = gets_user_stop(user_lat, user_lon, route, direction)
+    user_inital_stop_code = gets_user_stop_id(user_lat, user_lon, route, direction)
 
     user_trip = gets_user_itinerary(agency, route_code, direction, destination_stop_code, user_inital_stop_code)
 

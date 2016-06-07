@@ -147,10 +147,10 @@ def list_of_is_finished_to_process():
 
     return request_to_process
 
-def gets_route_db(route_code):
+def gets_route_db(route_code, direction):
     """"""
 
-    return Route.query.filter_by(route_id=route_code).one()
+    return Route.query.filter_by(route_id=route_code, direction=direction).one()
 
 
 def records_request_vehicle_id_db(request, vehicle_id):

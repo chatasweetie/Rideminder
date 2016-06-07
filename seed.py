@@ -13,17 +13,17 @@ WANTED_AGENCIES = ("BART", "SF-MUNI", "Caltrain")
 # if __name__ == '__main__':
 #     import os
 
-    # os.system("dropdb ridemindertest")
-    # print "dropdb"
-    # os.system("createdb ridemindertest")
-    # print "createdb"
+#     os.system("dropdb ridemindertest")
+#     print "dropdb"
+#     os.system("createdb ridemindertest")
+#     print "createdb"
 
-    # connect_to_db(app)
-    # print "connect to db"
+#     connect_to_db(app)
+#     print "connect to db"
 
-    # # Make the tables
-    # db.create_all()
-    # print "create tables"
+#     # Make the tables
+#     db.create_all()
+#     print "create tables"
 
 
 def gets_agencies():
@@ -52,7 +52,7 @@ def adds_agencies_to_db(agencies_info):
     for agency_ in agencies_info:
 
         agency = Agency(
-                    name=agency_,
+                    name=str(agency_),
                     has_direction=agencies_info[agency_],
                     )
         db.session.add(agency)
@@ -138,10 +138,10 @@ def adds_routes_to_db(stops_routes_agencies_info):
         agency_code = stops_routes_agencies_info[route]['agency_code']
 
         route = Route(
-                    name=route,
-                    route_code=route_code,
-                    direction=direction,
-                    stop_list=stop_list,
+                    name=str(route),
+                    route_code=str(route_code),
+                    direction=str(direction),
+                    stop_list=str(stop_list),
                     agency_id=agency_code,
                     )
 
@@ -235,7 +235,7 @@ def adds_stops_to_db(unique_stops):
 
         stop = Stop(
                     stop_code=stop_code,
-                    name=name,
+                    name=str(name),
                     lat=lat,
                     lon=lon,
                     )

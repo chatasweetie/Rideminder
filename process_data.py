@@ -60,6 +60,36 @@ def convert_to_e164(raw_phone):
 
 # New Data processing
 #############################################################
+def gets_stops_from_route(route):
+    """reformats stop_list to be useable"""
+
+    raw_stop_list =str(route.stop_list)
+
+    s = raw_stop_list[1:-2]
+
+    t = s.split(')')
+
+    d = ''.join(t)
+    c = d.split('(')
+    e = ''.join(c)
+    j = e.split("'")
+    g = ''.join(j)
+    h = g.split(', ')
+
+    i =[]
+    u = []
+    for num in range(len(h)):
+        if num % 2 == 0:
+            i.append(h[num])
+        else:
+            u.append(h[num])
+
+    return zip(i, u)
+
+def parse_route_stop_for_user(route_stops, user_inital_stop_code):
+
+    itinerary = []
+
 
 def gets_user_itinerary(agency, route_code, direction, destination, user_inital_stop_code):
     """returns a list of the user's stops from inital to destination"""
@@ -68,29 +98,27 @@ def gets_user_itinerary(agency, route_code, direction, destination, user_inital_
 
     route_stops = gets_stops_from_route(route)
 
+    itinerary = parse_route_stop_for_user(route_stops, user_inital_stop_code)
 
 
-def gets_user_stop(user_lat, user_lon, agency, route, direction):
+
+def gets_user_stop_id(user_lat, user_lon, route, direction):
     """processes the lat/lon of user to find closest stop for their route
 
     returns stop.stop_code
 
     """
 
-    route_stop = Route_Stop.query.filter_by(route_id=route).all()
-    db.session.query(Route_Stop).filter(Route_Stop.route_id == route).all()
+    route_stop = gets_route_db(route_code, direction)
 
     user_geolocation = (user_lat,user_lon)
     stops_vincenty_diff = []
 
-    for rs in route_stop:
-        stop_lat = rs.stop.lat
-        stop_lon = rs.stop.lon
-        stop_code = rs.stop.stop_code
-        stop_geolocation = (lat, lon)
-
-        # vincenity is the distance between two geolocations that
-        # takes into account the sphereness of the world
+    for stop in route_stop.stops:
+        stop_lat = stop.lat
+        stop_lon = stop.lon
+        stop_code = stop.stop_code
+        stop_geolocation = (stop_lat, stop_lon)
         distance = (vincenty(user_geolocation, (stop_lat, stop_lon)).miles)
         stops_vincenty_diff.append(tuple([distance, stop_code]))
 

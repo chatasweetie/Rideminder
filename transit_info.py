@@ -61,11 +61,10 @@ def gets_set_of_muni_stops(route_stops):
     unique_muni_stops_lat_lon = {}
 
     for stop in route_stops:
-        # for i in route_stops[item]:
-        # import pdb; pdb.set_trace()
         unique_muni_stops_lat_lon[stop] = {'stop_id': route_stops[stop]['stop_id'], 'lat': route_stops[stop]['lat'], 'lon': route_stops[stop]['lon']}
 
     return unique_muni_stops_lat_lon
+
 
 def gets_routes_for_bart():
     """returns all the routes for bart"""
