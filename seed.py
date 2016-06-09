@@ -194,10 +194,6 @@ def gets_lat_lon_for_a_stop(agency, name, stop_code):
     return (lat, lon)
 
 
-# to keep track if there are any stops that do not have lat/lon
-sad = {}
-
-
 def get_lats_lon_for_stops(unique_stops):
     """gets the lat and lon for unique stops"""
 
@@ -254,7 +250,7 @@ def adds_routestop_to_db(stops_routes_agencies_info):
         for stop in stops_routes_agencies_info[route]['stop_list']:
 
             stop_id = stop[1]
-            
+
             stops = db.session.query(Stop).filter(Stop.stop_code == stop_id).all()
             if len(stops) > 0:
 

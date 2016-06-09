@@ -3,7 +3,6 @@ from xml.etree import ElementTree
 import os
 
 BART_TOKEN = os.environ.get("BART_TOKEN")
-# muni_stops = ['8AX-Bayshore A Express', 'Parkmerced', '30X-Marina Express', '39-Coit', '18-46th Avenue', 'T-Owl', 'Treasure Island', '1BX-California B Express', '66-Quintara', '8BX-Bayshore B Express', 'Powell Hyde Cable Car', 'Mission Rapid', 'Powell Mason Cable Car', '27-Bryant', '91-Owl', '3-Jackson', '38BX-Geary B Express', '41-Union', 'NX-N Express', '6-Haight-Parnassus', 'L-Owl', 'K-Owl', '1-California', 'J-Church', 'M-Owl', '22-Fillmore', '19th Avenue Rapid', '33-Ashbury-18th', '55-16th Street', '88-Bart Shuttle', '81X-Caltrain Express', '14-Mission', '83X-Caltrain', '14X-Mission Express', '45-Union Stockton', '28-19th Avenue', 'San Bruno Rapid', 'Fulton Rapid', '31-Balboa', '49-Van Ness Mission', '23-Monterey', '67-Bernal Heights', '38-Geary', '82X-Levi Plaza Express', '10-Townsend', '56-Rutland', 'L-Taraval', '37-Corbett', '19-Polk', '38AX-Geary A Express', '43-Masonic', '1AX-California A Express', '90-San Bruno Owl', 'Geary Rapid', '29-Sunset', '36-Teresita', '54-Felton', '47-Van Ness', '5-Fulton', 'HaightNoriega Rapid', '31AX-Balboa A Express', 'M-Ocean View', '12-Folsom Pacific', '52-Excelsior', 'N-Judah', 'KT-Ingleside Third Street', '21-Hayes', 'HaightNoriega', '48-Quintara 24th Street', 'N-Owl', '8-Bayshore', '31BX-Balboa B Express', 'California Cable Car', 'Noriega Express', '76X-Marin Headlands Express', '35-Eureka', 'F-Market And Wharves', '24-Divisadero', '9-San Bruno', '30-Stockton', '2-Clement', '44-OShaughnessy']
 
 # made manually to connect 511 API data to BART API data
 BART_ROUTES = {'Daly City - Dublin/Pleasanton': {'route_id': ['920']}, 'Daly City - Fremont': {'route_id': ['917']}, 'Millbrae/SFIA - Pittsburg/Bay Point': {'route_id': ['1027', '1735', '908']}, 'Pittsburg/Bay Point - SFIA/Millbrae': {'route_id': ['747', '722', '1561']}, 'Millbrae/Daly City - Richmond': {'route_id': ['747', '237']}, 'Dublin/Pleasanton - Daly City': {'route_id': ['747']}, 'Fremont - Daly City': {'route_id': ['747']}, 'Fremont - Richmond': {'route_id': ['237']}, 'Richmond - Daly City/Millbrae': {'route_id': ['747']}, 'Richmond - Fremont': {'route_id': ['237', '764']}, "Coliseum - Oakland Int'l Airport": {'route_id': ['']}, "Oakland Int'l Airport - Coliseum": {'route_id': ['']}}
@@ -66,23 +65,6 @@ def gets_set_of_muni_stops(route_stops):
     return unique_muni_stops_lat_lon
 
 
-def gets_routes_for_bart():
-    """returns all the routes for bart"""
-
-    url = 'http://api.bart.gov/api/route.aspx?cmd=routes&key=' + BART_TOKEN
-
-    response_agencies = requests.get(url)
-
-    bart_tree = ElementTree.fromstring(response_agencies.text)
-
-    stop_list = []
-
-    for node in bart_tree.iter('station'):
-        stop_list.append(node.text)
-
-    return stop
-
-
 def gets_lat_lon_for_bart_stop(stop_name):
     """returns the lat and lon for a bart stop"""
 
@@ -124,6 +106,12 @@ def gets_caltrain_stop_lat_lon(cal_file):
 
 
 def get_BART_routes_and_stops():
+    """gets the routes and stops for BART
+    ie.
+    complete_route_stops[route]= {stop_list: , bart_abbr:  , route_id(s):  , bart_id:  , 
+                                        stop_abbr_list: , bart_num}
+    """
+
     url = 'http://api.bart.gov/api/route.aspx?cmd=routes&key=' + BART_TOKEN
 
     response_agencies = requests.get(url)
@@ -160,6 +148,7 @@ def get_BART_routes_and_stops():
     return complete_route_stops
 
 def get_stop_abb_list_for_routes_BART(routes):
+    """returns routes dictionary with stop abbr list"""
 
     for route in routes:
         url = 'http://api.bart.gov/api/route.aspx?cmd=routeinfo&route=' + routes[route]['bart_num'] + ' &key=' + BART_TOKEN
@@ -174,6 +163,7 @@ def get_stop_abb_list_for_routes_BART(routes):
     return routes
 
 def gets_bart_name_stops(routes):
+    """returns routes dictionary with stop_list"""
 
     for route in routes:
             for stop in routes[route]['stop_abbr_list']:
@@ -182,8 +172,9 @@ def gets_bart_name_stops(routes):
     return routes
 
 def separates_bartroutes_and_routes(routes_511):
-    """ """
-    
+    """pulls out BART info from all_routes and returns two dictionaries,
+    first bart then the rest"""
+
     bart_511_routes = {}
     to_delete = []
 
@@ -193,8 +184,7 @@ def separates_bartroutes_and_routes(routes_511):
             to_delete.append(route)
 
     for route in to_delete:
-        print "gonna try:",route
-        try: 
+        try:
             del routes_511[route]
         except KeyError:
             print "*"*80
@@ -203,14 +193,15 @@ def separates_bartroutes_and_routes(routes_511):
 
     return bart_511_routes, routes_511
 
-def iterable_flatter(lst): 
+
+def iterable_flatter(lst):
     """flattens out list of iterable"""
 
     return list(sum(lst, ()))
 
 
 def gets_set_of_muni_stop_ids(lst):
-
+    """with all the stops, returns only unique stops"""
     stops = list(set(lst))
 
     stop_ids = []
@@ -222,7 +213,7 @@ def gets_set_of_muni_stop_ids(lst):
     return stop_ids
 
 def gets_bartroutes_and_routes(routes_511):
-
+    """with all_routes, replaces BART info with BART API info"""
     bart_511_routes, routes_511 = separates_bartroutes_and_routes(routes_511)
 
     bart_route_stop = get_BART_routes_and_stops()
