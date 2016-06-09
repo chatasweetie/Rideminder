@@ -183,17 +183,23 @@ def gets_bart_name_stops(routes):
 
 def separates_bartroutes_and_routes(routes_511):
     """ """
+    
     bart_511_routes = {}
+    to_delete = []
 
     for route in routes_511:
         if routes_511[route]['agency'] == 'BART':
             bart_511_routes[routes_511[route]['route_code']] = routes_511[route]
+            to_delete.append(route)
 
-    for route in bart_511_routes:
+    for route in to_delete:
+        print "gonna try:",route
         try: 
             del routes_511[route]
         except KeyError:
-            pass
+            print "*"*80
+            print route
+            continue
 
     return bart_511_routes, routes_511
 

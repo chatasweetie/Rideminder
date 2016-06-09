@@ -10,20 +10,20 @@ TOKEN_511 = os.environ.get("TOKEN_511")
 BART_TOKEN = os.environ.get("BART_TOKEN")
 WANTED_AGENCIES = ("BART", "SF-MUNI", "Caltrain")
 
-# if __name__ == '__main__':
-#     import os
+if __name__ == '__main__':
+    import os
 
-#     os.system("dropdb ridemindertest")
-#     print "dropdb"
-#     os.system("createdb ridemindertest")
-#     print "createdb"
+    os.system("dropdb ridemindertest")
+    print "dropdb"
+    os.system("createdb ridemindertest")
+    print "createdb"
 
-#     connect_to_db(app)
-#     print "connect to db"
+    connect_to_db(app)
+    print "connect to db"
 
-#     # Make the tables
-#     db.create_all()
-#     print "create tables"
+    # Make the tables
+    db.create_all()
+    print "create tables"
 
 
 def gets_agencies():
@@ -303,9 +303,9 @@ unique_stops_lat_lon = get_lats_lon_for_stops(unique_stops)
 print "got unique stops with lat/lon from api"
 
 
-# if __name__ == '__main__':
+if __name__ == '__main__':
     # Adds data to db
-    # adds_agencies_to_db(agencies_info)
-    # adds_routes_to_db(stop_routes_agencies_info_bart)
-    # adds_stops_to_db(unique_stops_lat_lon)
-    # adds_routestop_to_db(stops_routes_agencies_info)
+    adds_agencies_to_db(agencies_info)
+    adds_routes_to_db(stop_routes_agencies_info_bart)
+    adds_stops_to_db(unique_stops_lat_lon)
+    adds_routestop_to_db(stops_routes_agencies_info)
