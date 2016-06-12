@@ -2,7 +2,7 @@ import requests
 from xml.etree import ElementTree
 import os
 from transit_info import gets_stop_lat_lon_routes, gets_set_of_muni_stops, gets_lat_lon_for_bart_stop, gets_caltrain_stop_lat_lon, gets_bartroutes_and_routes
-from model import db, connect_to_db, Agency, Route, Stop, Route_Stop
+from model import db, connect_to_db, Agency, Route, Stop, Route_Stop, gets_route_db, gets_stop_db, gets_stop_name_db
 from server import app
 
 
@@ -13,10 +13,10 @@ WANTED_AGENCIES = ("BART", "SF-MUNI", "Caltrain")
 if __name__ == '__main__':
     import os
 
-    os.system("dropdb ridemindertest")
-    print "dropdb"
-    os.system("createdb ridemindertest")
-    print "createdb"
+    # os.system("dropdb ridemindertest")
+    # print "dropdb"
+    # os.system("createdb ridemindertest")
+    # print "createdb"
 
     connect_to_db(app)
     print "connect to db"
@@ -240,28 +240,48 @@ def adds_stops_to_db(unique_stops):
     print "Stops Added to DB"
 
 
-def adds_routestop_to_db(stops_routes_agencies_info):
+def adds_routestop_to_db(stop_routes_agencies_info_bart):
     """add the relationship between routes and stops to db"""
-    for route in stops_routes_agencies_info:
-        route_code = stops_routes_agencies_info[route]['route_code']
+    for route in stop_routes_agencies_info_bart:
+        print "ROUTE:", route
+        route_code = stop_routes_agencies_info_bart[route]['route_code']
+        print "ROUTE_CODE:", route_code
+        direction = stop_routes_agencies_info_bart[route]['direction']
+        print "DIRECTION:", direction
+        route_db = gets_route_db(route_code, direction)
+        print "OBJECT:", route_db
+        if not route_db:
+            continue
 
-        route_db = db.session.query(Route).filter(Route.route_code == route_code).first()
+        if route_db.agency_id == 2:
+            for stop in stop_routes_agencies_info_bart[route]['stop_list']:
+                print "STOP:", stop
 
-        for stop in stops_routes_agencies_info[route]['stop_list']:
+                stops = gets_stop_name_db(stop)
+                if len(stops) > 0:
 
-            stop_id = stop[1]
+                    route_stop = Route_Stop(
+                                            route_id=route_db.route_id,
+                                            stop_id=stops[0].stop_code,
+                                            )
+                    db.session.add(route_stop)
+        else: 
+            for stop in stop_routes_agencies_info_bart[route]['stop_list']:
+                print "STOP:", stop
+                stop_id = stop[1]
+                print "STOP ID:", stop_id
 
-            stops = db.session.query(Stop).filter(Stop.stop_code == stop_id).all()
-            if len(stops) > 0:
+                stops = gets_stop_db(stop_id)
+                if len(stops) > 0:
 
-                route_stop = Route_Stop(
-                                        route_id=route_db.route_id,
-                                        stop_id=stop_id,
-                                        )
-                db.session.add(route_stop)
-            else:
-                print "stops", stops
-                print "stop_id", stop_id
+                    route_stop = Route_Stop(
+                                            route_id=route_db.route_id,
+                                            stop_id=stop_id,
+                                            )
+                    db.session.add(route_stop)
+                else:
+                    print "stops", stops
+                    print "stop_id", stop_id
 
         db.session.commit()
     print "RouteStops Added to DB"
@@ -299,9 +319,9 @@ unique_stops_lat_lon = get_lats_lon_for_stops(unique_stops)
 print "got unique stops with lat/lon from api"
 
 
-if __name__ == '__main__':
-    # Adds data to db
-    adds_agencies_to_db(agencies_info)
-    adds_routes_to_db(stop_routes_agencies_info_bart)
-    adds_stops_to_db(unique_stops_lat_lon)
-    adds_routestop_to_db(stops_routes_agencies_info)
+# if __name__ == '__main__':
+#     # Adds data to db
+#     adds_agencies_to_db(agencies_info)
+#     adds_routes_to_db(stop_routes_agencies_info_bart)
+#     adds_stops_to_db(unique_stops_lat_lon)
+#     adds_routestop_to_db(stop_routes_agencies_info_bart)

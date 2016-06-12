@@ -60,15 +60,24 @@ def convert_to_e164(raw_phone):
 
 # New Data processing
 #############################################################
+def gets_id_for_stops(stop_name):
+    """with the stop_name, returns the stop id"""
+
+
 def gets_stops_from_route(route):
     """reformats stop_list to be useable"""
 
     raw_stop_list =str(route.stop_list)
+    # bart stops are handled differently
+    if route.agency_id == 2:
+        # do something else with BART
+        s = raw_stop_list[2:-2]
+        stop_list = s.split("', '")
+
+        return stop_list
 
     s = raw_stop_list[1:-2]
-
     t = s.split(')')
-
     d = ''.join(t)
     c = d.split('(')
     e = ''.join(c)
@@ -86,20 +95,37 @@ def gets_stops_from_route(route):
 
     return zip(i, u)
 
-def parse_route_stop_for_user(route_stops, user_inital_stop_code):
+def parse_route_stop_for_user(route_stops, user_inital_stop, destination_stop):
 
+    start = False
+    end = False
     itinerary = []
 
+    for stop in route_stops:
+        if stop == user_inital_stop:
+            start = True
+        if start:
+            stop_db = gets_stop_name_db(stop)
+            itinerary.append(stop_db[0])
+            print itinerary
+        if stop == destination_stop:
+            end = True
+        if end:
+            break
 
-def gets_user_itinerary(agency, route_code, direction, destination, user_inital_stop_code):
+    return itinerary
+
+
+def gets_user_itinerary(agency, route_code, direction, destination_stop, user_inital_stop):
     """returns a list of the user's stops from inital to destination"""
 
     route = gets_route_db(route_code, direction)
 
     route_stops = gets_stops_from_route(route)
 
-    itinerary = parse_route_stop_for_user(route_stops, user_inital_stop_code)
+    itinerary = parse_route_stop_for_user(route_stops, user_inital_stop, destination_stop)
 
+    return itinerary
 
 
 def gets_user_stop_id(user_lat, user_lon, route, direction):
@@ -117,17 +143,17 @@ def gets_user_stop_id(user_lat, user_lon, route, direction):
     for stop in route_stop.stops:
         stop_lat = stop.lat
         stop_lon = stop.lon
-        stop_code = stop.stop_code
+        stop_name = stop.name
         stop_geolocation = (stop_lat, stop_lon)
         distance = (vincenty(user_geolocation, (stop_lat, stop_lon)).miles)
-        stops_vincenty_diff.append(tuple([distance, stop_code]))
+        stops_vincenty_diff.append(tuple([distance, stop_name]))
 
     user_stop = sorted(stops_vincenty_diff)
 
     return user_stop[0][1]
 
 
-# user_trip = gets_user_itinerary(agency, route, direction, destination, user_inital_stop_code)
+# user_trip = gets_user_itinerary(agency, route, direction, destination, user_inital_stop)
 
 
 #############################################################
@@ -177,3 +203,4 @@ def process_lat_lng_get_arrival_datetime(user_lat, user_lon, destination_lat, de
 if __name__ == "__main__":
     from server import app
     connect_to_db(app)
+    print "connected to db"
