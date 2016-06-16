@@ -7,7 +7,7 @@ import os
 import datetime
 import requests
 from xml.etree import ElementTree
-from model import Route_Stop, Agency, Route, Stop, connect_to_db, db, gets_route_db
+from model import Route_Stop, Agency, Route, Stop, connect_to_db, db, gets_route_db, gets_stop_name_db, gets_stop_db
 
 
 GOOGLE_MAP_API_KEY = os.environ.get("GOOGLE_MAP_API_KEY")
@@ -20,16 +20,15 @@ transit_firebase = firebase.FirebaseApplication("https://publicdata-transit.fire
 # these are for I am working in python -i to play with my functions
 user_lat = 37.785152
 user_lon = -122.406581
-destination_lat = 37.762028
-destination_lon = -122.470790
-bound = "O"
-line = "N"
 agency = "BART"
-route = "917"
+route_code = "917"
 RouteDirectionCode = ""
 stop = "11"
 user_stop = "30"
 destination_stop = "95"
+direction = "False"
+raw_user_phone_num = "8052525099"
+user_name = "Jessica"
 
 
 def convert_to_e164(raw_phone):
@@ -106,8 +105,7 @@ def parse_route_stop_for_user(route_stops, user_inital_stop, destination_stop):
             start = True
         if start:
             stop_db = gets_stop_name_db(stop)
-            itinerary.append(stop_db[0])
-            print itinerary
+            itinerary.append(stop)
         if stop == destination_stop:
             end = True
         if end:
@@ -128,7 +126,7 @@ def gets_user_itinerary(agency, route_code, direction, destination_stop, user_in
     return itinerary
 
 
-def gets_user_stop_id(user_lat, user_lon, route, direction):
+def gets_user_stop_id(user_lat, user_lon, route_code, direction):
     """processes the lat/lon of user to find closest stop for their route
 
     returns stop.stop_code
@@ -159,9 +157,14 @@ def gets_user_stop_id(user_lat, user_lon, route, direction):
 #############################################################
 
 #TODO: destination lat/lon doesn't exsit, need to get it through the stop_code
-def process_lat_lng_get_arrival_datetime(user_lat, user_lon, destination_lat, destination_lon):
+def process_lat_lng_get_arrival_datetime(user_lat, user_lon, destination_stop):
     """takes in geolocations and returns the arrival time as a datatime object of when the
     transit is completed"""
+
+    stop = gets_stop_db(destination_stop)
+
+    destination_lat = stop[0].lat
+    destination_lon = stop[0].lon
 
     # this is to activate the Fixie proxy, so google direction api has the same ip address call
     proxyDict = {
@@ -204,3 +207,15 @@ if __name__ == "__main__":
     from server import app
     connect_to_db(app)
     print "connected to db"
+
+from model import checks_user_db, Transit_Request
+
+user_inital_stop = gets_user_stop_id(user_lat, user_lon, route_code, direction)
+
+user_itinerary = gets_user_itinerary(agency, route_code, direction, destination_stop, user_inital_stop)
+
+arrival_time_datetime = process_lat_lng_get_arrival_datetime(user_lat, user_lon, destination_stop)
+
+user_phone = convert_to_e164(raw_user_phone_num)
+
+user_db = checks_user_db(user_name, user_phone)

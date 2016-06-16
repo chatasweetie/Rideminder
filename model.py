@@ -1,43 +1,57 @@
 """Class for my database to store user request"""
 import os
 from flask_sqlalchemy import SQLAlchemy
+from datetime import datetime
 
 db = SQLAlchemy()
+
+
+class User(db.Model):
+    """This is an individual user"""
+
+    __tablename__ = "users"
+
+    user_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
+    user_name = db.Column(db.String(100), nullable=True)
+    user_phone = db.Column(db.String(100), nullable=True)
+
+    def __repr__(self):
+        """Provides useful represenation when printed"""
+
+        return """<User user_name: {} >""".format(self.user_name)
 
 
 class Transit_Request(db.Model):
     """This is the individual request for notification"""
 
-    __tablename__ = "transit_request"
+    __tablename__ = "transit_requests"
 
     request_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
-    user_fname = db.Column(db.String(100), nullable=True)
-    user_email = db.Column(db.String(100), nullable=True)
-    user_phone = db.Column(db.String(100), nullable=False)
-    user_lat = db.Column(db.Integer, nullable=False)
-    user_lon = db.Column(db.Integer, nullable=False)
-    destination_lat = db.Column(db.Integer, nullable=False)
-    destination_lon = db.Column(db.Integer, nullable=False)
-
-    vehicle_1 = db.Column(db.Integer, nullable=True)
-    vehicle_1_distance = db.Column(db.Integer, nullable=True)
-    vehicle_2 = db.Column(db.Integer, nullable=True)
-    vehicle_2_distance = db.Column(db.Integer, nullable=True)
-
-    vehicle_id = db.Column(db.Integer, nullable=False)
-
-    arrival_time = db.Column(db.Integer, nullable=False)
-
-    finished_timestamp_difference = db.Column(db.Integer, nullable=True)
-    finished_vehicle_difference = db.Column(db.Integer, nullable=True)
+    inital_stop_code = db.Column(db.String(100), nullable=False)
+    destination_stop_code = db.Column(db.String(100), nullable=False)
+    agency = db.Column(db.String(100), nullable=False)
+    route = db.Column(db.String(200), nullable=False)
+    user_itinerary = db.Column(db.String(5000), nullable=False)
+    arrival_time = db.Column(db.DateTime, nullable=False)
+    start_time_stamp = db.Column(db.DateTime, default=datetime.utcnow)
+    end_time_stamp = db.Column(db.DateTime, nullable=True)
     is_finished = db.Column(db.Boolean, default=False)
+    current_stop = db.Column(db.String(200), nullable=False)
+    time_difference = db.Column(db.Integer, nullable=True)
+    user_id = db.Column(db.Integer,
+                            db.ForeignKey("users.user_id"),
+                            nullable=False)
+
+    user = db.relationship("User",
+                                backref=db.backref("transit_requests"))
 
     def __repr__(self):
         """Provides useful represenation when printed"""
 
-        return """<Transit Request request_id: {} user_fname: {} vehicle id:
-                    {} is_finished: {}>""".format(self.request_id, self.user_fname,
-                    self.vehicle_id, self.is_finished)
+        return """<Transit Request request_id: {} user_inital_stop: {}
+                    user_destination_stop: {} >""".format(self.request_id,
+                    self.inital_stop_code, self.destination_stop_code)
+
 
 
 class Agency(db.Model):
@@ -131,13 +145,32 @@ class Route_Stop(db.Model):
 ##########################################################################
 # Helper Functions
 
-def adds_to_queue(user_fname, user_email, user_phone, user_lat, user_lon, destination_lat, destination_lon, vehicle_1, vehicle_1_distance, vehicle_2, vehicle_2_distance, arrival_time_datetime):
-    """Takes the form data and inputs into the transit_request database"""
 
-    new_transit_request = Transit_Request(user_fname=user_fname, user_email=user_email, user_phone=user_phone, user_lat=user_lat, user_lon=user_lon, destination_lat=destination_lat, destination_lon=destination_lon, vehicle_1=vehicle_1, vehicle_1_distance=vehicle_1_distance, vehicle_2=vehicle_2, vehicle_2_distance=vehicle_2_distance, arrival_time=arrival_time_datetime)
+def checks_user_db(user_name, user_phone):
+    """checks the db if the user is in the db and returns user object"""
+    user = User.query.filter_by(user_phone=user_phone).first()
+
+    if user:
+        return user
+
+    new_user = User(user_name=user_name, user_phone=user_phone)
+    db.session.add(new_user)
+    db.session.commit()
+
+    return User.query.filter_by(user_phone=user_phone).first()
+
+
+def adds_transit_request(user_inital_stop, destination_stop, agency, route,
+    user_itinerary, arrival_time_datetime, user_db):
+    """"""
+    now = datetime.utcnow()
+    new_transit_request = Transit_Request(inital_stop_code=user_inital_stop, 
+                destination_stop_code=destination_stop, agency=agency, route=route, 
+                user_itinerary=user_itinerary, arrival_time=arrival_time_datetime,  
+                start_time_stamp=now, current_stop=user_itinerary[0], user_id=user_db.user_id)
+
     db.session.add(new_transit_request)
     db.session.commit()
-    print "added to db"
 
 
 def list_of_is_finished_to_process():
@@ -146,6 +179,7 @@ def list_of_is_finished_to_process():
     request_to_process = Transit_Request.query.filter(Transit_Request.is_finished == False).all()
 
     return request_to_process
+
 
 def gets_route_db(route_code, direction='False'):
     """"""

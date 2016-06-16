@@ -6,7 +6,7 @@ from flask import Flask, render_template, request
 from flask_debugtoolbar import DebugToolbarExtension
 
 # from process_data import gets_a_list_of_available_line, processes_line_and_bound_selects_two_closest_vehicle, convert_to_e164, process_lat_lng_get_arrival_datetime, gets_agencies
-from model import adds_to_queue, connect_to_db
+from model import adds_to_queue, connect_to_db, checks_user_db, adds_process_request, adds_transit_request
 
 from celery import Celery
 
@@ -53,7 +53,7 @@ def routes():
 def process_user_info():
     """recieves the user data and sends data to appropiate processes"""
 
-    user_fname = request.form.get("fname")
+    user_name = request.form.get("fname")
     raw_user_phone_num = request.form.get("phone")
     agency = request.form.get("agency")
     route_code = request.form.get("route-code")
@@ -62,23 +62,20 @@ def process_user_info():
     user_lat = request.form.get("lat")
     user_lon = request.form.get("lon")
 
+    user_inital_stop = gets_user_stop_id(user_lat, user_lon, route_code, direction)
 
-    user_inital_stop = gets_user_stop_id(user_lat, user_lon, route, direction)
+    user_itinerary = gets_user_itinerary(agency, route_code, direction, destination_stop, user_inital_stop)
 
-    user_trip = gets_user_itinerary(agency, route_code, direction, destination_stop, user_inital_stop)
-
-    arrival_time_datetime = process_lat_lng_get_arrival_datetime(user_lat, user_lon, destination_stop_code)
+    arrival_time_datetime = process_lat_lng_get_arrival_datetime(user_lat, user_lon, destination_stop)
 
     user_phone = convert_to_e164(raw_user_phone_num)
 
-    adds_to_queue(user_fname, user_email, user_phone, user_lat, user_lon, destination_lat, destination_lon, vehicle_1, vehicle_1_distance, vehicle_2, vehicle_2_distance, arrival_time_datetime)
+    user_db = checks_user_db(user_name, user_phone)
 
-    if bound == "I":
-        bound = "Inbound"
-    else:
-        bound = "Outbound"
+    adds_transit_request(user_inital_stop, destination_stop, agency, route_code, user_itinerary, arrival_time_datetime, user_db)
 
-    return render_template("/thank_you.html", user_fname=user_fname, user_phone=user_phone, bound=bound, line=line)
+
+    return render_template("/thank_you.html", user_fname=user_fname, user_phone=user_phone, direction=direction, route_code=route_code)
 
 
 
@@ -90,8 +87,7 @@ celery.config_from_object('celeryconfig')
 
 
 if __name__ == "__main__":
-    # We have to set debug=True here, since it has to be True at the point
-    # that we invoke the DebugToolbarExtension
+
     app.debug = False
 
     connect_to_db(app)
