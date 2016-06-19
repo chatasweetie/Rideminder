@@ -27,18 +27,20 @@
       </div>
        <div class="form-group">
         <label for="agency"><em>Agency*</em>
-          <select class="form-control" id="line" name="line">
-            {% for line in agency_list %}
-            <option>{{ line }}</option>
+          <select class="form-control" id="agency" name="agency">
+            {% for agency in agencies %}
+            <option>{{ agency.name }}</option>
             {% endfor %}
           </select></label>
-      <div class="form-group">
-        <label for="line"><em>Transit Line*</em>
-          <select class="form-control" id="line" name="line">
-            {% for line in agency_list %}
-            <option>{{ line }}</option>
+        </div>
+
+
+      <div class="form-group" id="route">
+        <label for="route"><em>Route*</em><select class="form-control" id="route-options" name="route">
+          {% for route in routes %}
+            <option>{{ route.name }}</option>
             {% endfor %}
-          </select></label>
+        </select></label>
       </div>
       <div class="form-group">
         <label for="bound"><em>Direction*</em>

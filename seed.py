@@ -264,16 +264,11 @@ def adds_routestop_to_db(stop_routes_agencies_info_bart):
                 stop_id = stop[1]
 
                 stops = gets_stop_db(stop_id)
-                if len(stops) > 0:
-
-                    route_stop = Route_Stop(
-                                            route_id=route_db.route_id,
-                                            stop_id=stop_id,
-                                            )
-                    db.session.add(route_stop)
-                else:
-                    print "stops", stops
-                    print "stop_id", stop_id
+                route_stop = Route_Stop(
+                                        route_id=route_db.route_id,
+                                        stop_id=stop_id,
+                                        )
+                db.session.add(route_stop)
 
         db.session.commit()
     print "RouteStops Added to DB"

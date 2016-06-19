@@ -94,24 +94,28 @@ def gets_stops_from_route(route):
 
     return zip(i, u)
 
-def parse_route_stop_for_user(route_stops, user_inital_stop, destination_stop):
 
+def parse_route_stop_for_user(route_stops, user_inital_stop, destination_stop):
     start = False
-    end = False
-    itinerary = []
+    itinerary = ""
+
+    user_inital_stop_db = gets_stop_db(user_inital_stop)
+    destination_stop_db = gets_stop_db(destination_stop)
+
+    # import pdb; pdb.set_trace()
 
     for stop in route_stops:
-        if stop == user_inital_stop:
+        if stop == str(user_inital_stop_db.name):
             start = True
         if start:
             stop_db = gets_stop_name_db(stop)
-            itinerary.append(stop)
-        if stop == destination_stop:
-            end = True
-        if end:
-            break
+            itinerary = itinerary + str(stop_db[0].stop_code) + ', '
+            if stop == str(destination_stop_db.name):
+                return itinerary[:-2]
 
-    return itinerary
+    route_stops.reverse()
+
+    return parse_route_stop_for_user(route_stops, user_inital_stop, destination_stop)
 
 
 def gets_user_itinerary(agency, route_code, direction, destination_stop, user_inital_stop):
@@ -141,10 +145,10 @@ def gets_user_stop_id(user_lat, user_lon, route_code, direction):
     for stop in route_stop.stops:
         stop_lat = stop.lat
         stop_lon = stop.lon
-        stop_name = stop.name
+        stop_code = stop.stop_code
         stop_geolocation = (stop_lat, stop_lon)
         distance = (vincenty(user_geolocation, (stop_lat, stop_lon)).miles)
-        stops_vincenty_diff.append(tuple([distance, stop_name]))
+        stops_vincenty_diff.append(tuple([distance, stop_code]))
 
     user_stop = sorted(stops_vincenty_diff)
 
@@ -163,8 +167,8 @@ def process_lat_lng_get_arrival_datetime(user_lat, user_lon, destination_stop):
 
     stop = gets_stop_db(destination_stop)
 
-    destination_lat = stop[0].lat
-    destination_lon = stop[0].lon
+    destination_lat = stop.lat
+    destination_lon = stop.lon
 
     # this is to activate the Fixie proxy, so google direction api has the same ip address call
     proxyDict = {
@@ -201,6 +205,24 @@ def process_lat_lng_get_arrival_datetime(user_lat, user_lon, destination_stop):
         return arrival_time
 
     return datetime.datetime.utcnow()
+
+
+def gets_stop_times_by_stop(stop_code):
+
+    url = 'http://services.my511.org/Transit2.0/GetNextDeparturesByStopCode.aspx?token=' + TOKEN_511 + '&stopcode=' + stop
+
+    response = requests.get(url)
+
+    departure_tree = ElementTree.fromstring(response.text)
+
+    departures = {}
+
+    for node in departure_tree.iter('Route'):
+        code = node.attrib.get('Code')
+        for n in node.iter('DepartureTime'):
+            departures.setdefault(code, []).append(n.text)
+
+    return departures
 
 
 if __name__ == "__main__":

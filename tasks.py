@@ -2,9 +2,9 @@
 
 # from celery.task import task
 from geopy.distance import vincenty
-from process_data import gets_geolocation_of_a_vehicle, selects_closest_vehicle
-from twilio_process import send_text_message_walk, send_text_message_time
-from model import connect_to_db, list_of_is_finished_to_process, records_request_complete_db, records_request_vehicle_id_db, records_time_and_distance
+from process_data import gets_stop_times_by_stop
+from twilio_process import send_text_message, send_text_message
+from model import connect_to_db, list_of_is_finished_to_process, records_request_complete_db, records_request_vehicle_id_db, update_request
 from server import app, celery
 from firebase import firebase
 import datetime
@@ -29,31 +29,34 @@ def process_transit_request():
     request_to_process = list_of_is_finished_to_process()
 
     for request in request_to_process:
-        print request.vehicle_id
+        print 'checking this request', request
 
-        #the first time the request is processed, it'll verifiy and set the closest vehicle id
-        if request.vehicle_id is None:
-            vehicle_id = selects_closest_vehicle(request.vehicle_1, request.vehicle_1_distance,
-                request.vehicle_2, request.vehicle_2_distance, request.user_lat, request.user_lon)
-            records_request_vehicle_id_db(request, vehicle_id)
+        departures_times = gets_stop_times_by_stop(request.current_stop)
 
-        vehicle_geolocation = gets_geolocation_of_a_vehicle(request.vehicle_id)
-        destination_geolocation = (request.destination_lat, request.destination_lon)
-        distance = (vincenty(destination_geolocation, vehicle_geolocation).miles)
-        print "the vehicle ", request.vehicle_id
-        print "the distance ", distance
+        routes_time = departures_times.get(request.route)
 
-        #checks the distance of the transit vehicle
-        if distance <= WALK_RADIUS:
-            # send alert!
-            print "within walking radius"
-            send_text_message_walk(request.user_phone)
-            #is_finished to True
-            records_request_complete_db(request)
+        if not routes_time:
+            continue
 
+        if routes_time[0] < 2:
+            if request.current_stop == request.destination_stop_code:
+                send_text_message(request.user.user_phone)
+                records_request_complete_db(request)
+                break
+
+            user_itinerary = request.user_itinerary.split(', ')
+
+            for i in range(len(user_itinerary)):
+                if user_itinerary[i] == request.current_stop:
+                    request.current_stop = str(user_itinerary[i + 1])
+                    print 'changed current stop', request.current_stop
+                    break
+        # checking google estimated time
         now = datetime.datetime.utcnow()
         min_difference = request.arrival_time.minute - now.minute
         print "this is the difference: ", min_difference
+
+        request.time_difference = min_difference
         # to take care of the difference between a start time that is late in the hour
         # and an end time in the begining of an hour
 
@@ -62,8 +65,8 @@ def process_transit_request():
             if min_difference <= TIME_RADIUS:
                 # send alert!
                 print "within time radius"
-                send_text_message_time(request.user_phone)
+                send_text_message(request.user.user_phone)
                 #is_finished to True
                 records_request_complete_db(request)
 
-        records_time_and_distance(request, distance, min_difference)
+        update_request(request)

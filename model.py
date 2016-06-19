@@ -167,7 +167,7 @@ def adds_transit_request(user_inital_stop, destination_stop, agency, route,
     new_transit_request = Transit_Request(inital_stop_code=user_inital_stop, 
                 destination_stop_code=destination_stop, agency=agency, route=route, 
                 user_itinerary=user_itinerary, arrival_time=arrival_time_datetime,  
-                start_time_stamp=now, current_stop=user_itinerary[0], user_id=user_db.user_id)
+                start_time_stamp=now, current_stop=user_inital_stop, user_id=user_db.user_id)
 
     db.session.add(new_transit_request)
     db.session.commit()
@@ -181,6 +181,12 @@ def list_of_is_finished_to_process():
     return request_to_process
 
 
+def gets_agency_db(name):
+    """returns the db object of A agency"""
+
+    return Agency.query.filter_by(name=name).first()
+
+
 def gets_route_db(route_code, direction='False'):
     """"""
 
@@ -190,7 +196,7 @@ def gets_route_db(route_code, direction='False'):
 def gets_stop_db(stop_id):
     """"""
 
-    return Stop.query.filter_by(stop_code=stop_id).all()
+    return Stop.query.filter_by(stop_code=stop_id).first()
 
 
 def gets_stop_name_db(stop_name):
@@ -205,11 +211,9 @@ def records_request_vehicle_id_db(request, vehicle_id):
     db.session.commit()
 
 
-def records_time_and_distance(request, vehicle_difference, timestamp_difference):
-    """Changes the transit_request is_finished to True (request is complete)"""
+def update_request(request):
+    """Updates the request's information into the db"""
 
-    request.finished_timestamp_difference = timestamp_difference
-    request.finished_vehicle_difference = vehicle_difference
     db.session.commit()
 
 

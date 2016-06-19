@@ -2,11 +2,11 @@
 import os
 from jinja2 import StrictUndefined
 
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, jsonify
 from flask_debugtoolbar import DebugToolbarExtension
 
 # from process_data import gets_a_list_of_available_line, processes_line_and_bound_selects_two_closest_vehicle, convert_to_e164, process_lat_lng_get_arrival_datetime, gets_agencies
-from model import adds_to_queue, connect_to_db, checks_user_db, adds_process_request, adds_transit_request
+from model import connect_to_db, checks_user_db, adds_transit_request, gets_agency_db, Agency
 
 from celery import Celery
 
@@ -26,27 +26,32 @@ def index():
     """Homepage"""
     agencies = Agency.query.filter().all()
 
-    return render_template("homepage.html", agency_list=agency_list)
+    agency_db = gets_agency_db('Caltrain')
+
+    routes = agency_db.routes
+
+    return render_template("homepage.html", agencies=agencies, routes=routes)
 
 
-@app.route("/routes.json")
+@app.route("/agency.json", methods=["GET"])
 def routes():
     """returns agency's routes"""
 
-    agency = request.arg.get("agency")
+    agency = request.args.get("agency")
+    print agency
+
+    agency_db = gets_agency_db(agency)
+    print agency_db
 
     routes = {
-        route.marker_id: {
+        route.name: {
             "route_id": route.route_id,
             "name": route.name,
-            "route_code": route.route_code,
             "direction": route.direction,
-            "stop_list": route.stop_list,
-            "agency_id": route.agency_id,
         }
-        for route in Route.query.filter_by(agency_id=agency.agency_id).all()}
+        for route in agency_db.routes}
 
-    return jsonify(routes)
+    return jsonify(sorted(routes.items()))
 
 
 @app.route("/thank-you", methods=["POST"])
