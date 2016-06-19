@@ -2,7 +2,8 @@
 import os
 from jinja2 import StrictUndefined
 
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify, flash
+from flask import redirect
 from flask_debugtoolbar import DebugToolbarExtension
 
 from process_data import gets_user_stop_id, gets_user_itinerary, process_lat_lng_get_arrival_datetime, convert_to_e164
@@ -97,6 +98,10 @@ def process_user_info():
 
     user_itinerary = gets_user_itinerary(agency, route_code, destination_stop, user_inital_stop)
 
+    if not user_itinerary:
+        flash("You are too far away from your transit stop, try again when your closer")
+        return redirect("/")
+
     arrival_time_datetime = process_lat_lng_get_arrival_datetime(user_lat, user_lon, destination_stop)
 
     user_phone = convert_to_e164(raw_user_phone_num)
@@ -108,6 +113,24 @@ def process_user_info():
 
     return render_template("/thank_you.html", user_fname=user_name, user_phone=user_phone, route_code=route_code)
 
+
+
+############################################################################
+# Error Pages
+
+@app.errorhandler(404)
+def page_not_found(error):
+    """404 Page Not Found handling"""
+
+    return render_template('/errors/404.html'), 404
+
+
+@app.errorhandler(500)
+def internal_error(error):
+    # db.session.rollback()
+    """500 Error handling """
+
+    return render_template('/errors/500.html'), 500
 
 
 # Celery is an open source asynchronous task queue/job queue based on distributed message passing.

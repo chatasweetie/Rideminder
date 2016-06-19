@@ -14,7 +14,7 @@
     <div class="container-fluid">
       <div class="row">
         <div class="col-xs-6 col-sm-3 col-md-2">
-          <p class="navbar-brand">Rideminder</p> 
+          <a href="/"> <p class="navbar-brand">Rideminder</p> </a>
         </div>
         <div class="col-xs-6 col-sm-3">
           <p class="navbar-brand" id="tag"> Never miss your stop again </p>
@@ -26,12 +26,16 @@
 
   <hr>
  <div id="loadinggif"></div>
+ <div id="extending">
+    {% for flash in get_flashed_messages() %}
+      <div class="alert alert-danger" style="width:90%; margin:0 auto;">{{ flash }}</div>
+    {% endfor %}
   {% block content %} Shmagoo. put your content here {% endblock %}
 
 
 </body>
     <div class="container-fluid footer center footer-padding">
-        <p class="navbar-brand mar center">Created by: <a href="https://chatasweetie.wordpress.com/about-me/">Jessica Dene Earley</a>,   <a href="https://chatasweetie.wordpress.com/">Blog</a>,   <a href="https://www.linkedin.com/in/jessicaearley">Linkedin</a>,  <a href="https://twitter.com/chatasweetie">Twitter</a>,  <a href="https://github.com/chatasweetie">Github</a>,   <a href="http://google.com/+JessicaEarleyChatasweetie">G+</a>   </p>
+        <p class="navbar-brand mar center">Created by: <a href="https://chatasweetie.wordpress.com/about-me/">Jessica Dene Earley</a>,   <a href="https://chatasweetie.com/">Blog</a>,   <a href="https://www.linkedin.com/in/jessicaearley">Linkedin</a>,  <a href="https://twitter.com/chatasweetie">Twitter</a>,  <a href="https://github.com/chatasweetie">Github</a>,   <a href="http://google.com/+JessicaEarleyChatasweetie">G+</a>   </p>
       </div>
     </div><!-- /.container-fluid -->
 
