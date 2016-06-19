@@ -15,9 +15,7 @@ var markers= [];
 
 $(document).ready(function() {
     console.log( "ready!" );
-
     $("#agency").change(function(){
-        // console.log($(this).val());
         $.get('/agency.json', { "agency": $(this).val()},
             function (routes) {
                 $('#route-options').empty();
@@ -29,22 +27,26 @@ $(document).ready(function() {
                     $('#route-options').append('<option value=' + route.route_id + '>' + route.name + '</option>');
                 }
                 console.log($("#route-options").val());
-                $(document).ready(function() {
-                    $.get('/route.json', { "route_id": $("#route-options").val(),
-                        function (route_stops) {
-                            console.log(route_stops);
-                            // $('#stop-options').empty();
-                            // var stop;
-
-                            // for (var key in stops){
-                            //     stop = stops[key];
-
-                            //     $('#stop-options').append('<option value=' + stop.stop_code + '>' + stop.name + '</option>');
-                            // }
-                        }});
-                });
             });
+    });
 });
+
+$(document).ready(function() {
+    $("#route-options").change(function(){
+        console.log($(this).val());
+        $.get('/route.json', { "route_id": $(this).val()},
+            function (stops) {
+                console.log(stops);
+                $('#stop-options').empty();
+                    var stop;
+
+                    for (var key in stops){
+                        stop = stops[key];
+
+                    $('#stop-options').append('<option value=' + stop.stop_code + ' data-lat= ' + stop.lat +' data-lon= ' + stop.lon + '>' + stop.name + '</option>');
+                }
+            });
+    });
 });
 
 // function clearMapMarkers() {

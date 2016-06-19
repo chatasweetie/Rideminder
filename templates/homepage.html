@@ -12,14 +12,12 @@
   </div>
   <div class="container">
     <form id="request" class="col-sm-2 control-label" action="/thank-you" method="POST">
+
       <div class="form-group">
-        <label for="fname"> Name
-        <input type="text" class="form-control" name="fname" placeholder="optional"></label>
+        <label for="name"> Name
+        <input type="text" class="form-control" name="name" placeholder="optional"></label>
       </div>
-<!--       <div class="form-group">
-        <label for="email">Email
-        <input type="email" class="form-control" name="email" placeholder="optional"></label>
-      </div> -->
+
       <div class="form-group">
         <label for="phone"><em>Phone Number*</em>
         <!-- http://bootstrapformhelpers.com/phone/ -->
@@ -44,9 +42,9 @@
       </div>
 
       <div class="form-group" id="stop">
-        <label for="stop"><em>Available Stops*</em><select class="form-control" id="stop-options" name="route">
+        <label for="stop"><em>Available Stops*</em><select class="form-control" id="stop-options" name="stop">
           {% for stop in stops %}
-            <option data-lat= '{{stop.lat}}' data-lon= '{{stop.lon}}'>{{ stop.name }}</option>
+            <option value= '{{stop.stop_code}}' data-lat= '{{stop.lat}}' data-lon= '{{stop.lon}}'>{{ stop.name }}</option>
             {% endfor %}
         </select></label>
       </div>

@@ -7,7 +7,7 @@ import os
 import datetime
 import requests
 from xml.etree import ElementTree
-from model import Route_Stop, Agency, Route, Stop, connect_to_db, db, gets_route_db, gets_stop_name_db, gets_stop_db
+from model import Route_Stop, Agency, Route, Stop, connect_to_db, db, gets_route_db, gets_stop_name_db, gets_route_id_db, gets_stop_db
 
 
 GOOGLE_MAP_API_KEY = os.environ.get("GOOGLE_MAP_API_KEY")
@@ -95,12 +95,13 @@ def gets_stops_from_route(route):
     return zip(i, u)
 
 
-def parse_route_stop_for_user(route_stops, user_inital_stop, destination_stop):
+def parse_route_stop_for_user(route_stops, user_inital_stop, destination_stop, count=0):
     start = False
     itinerary = ""
 
     user_inital_stop_db = gets_stop_db(user_inital_stop)
     destination_stop_db = gets_stop_db(destination_stop)
+    
 
     # import pdb; pdb.set_trace()
 
@@ -114,14 +115,16 @@ def parse_route_stop_for_user(route_stops, user_inital_stop, destination_stop):
                 return itinerary[:-2]
 
     route_stops.reverse()
+    if count == 1:
+        return itinerary
 
-    return parse_route_stop_for_user(route_stops, user_inital_stop, destination_stop)
+    return parse_route_stop_for_user(route_stops, user_inital_stop, destination_stop, 1)
 
 
-def gets_user_itinerary(agency, route_code, direction, destination_stop, user_inital_stop):
+def gets_user_itinerary(agency, route_code, destination_stop, user_inital_stop):
     """returns a list of the user's stops from inital to destination"""
 
-    route = gets_route_db(route_code, direction)
+    route = gets_route_id_db(route_code)
 
     route_stops = gets_stops_from_route(route)
 
@@ -130,14 +133,14 @@ def gets_user_itinerary(agency, route_code, direction, destination_stop, user_in
     return itinerary
 
 
-def gets_user_stop_id(user_lat, user_lon, route_code, direction):
+def gets_user_stop_id(user_lat, user_lon, route_code):
     """processes the lat/lon of user to find closest stop for their route
 
     returns stop.stop_code
 
     """
 
-    route_stop = gets_route_db(route_code, direction)
+    route_stop = gets_route_id_db(route_code)
 
     user_geolocation = (user_lat,user_lon)
     stops_vincenty_diff = []
@@ -229,15 +232,3 @@ if __name__ == "__main__":
     from server import app
     connect_to_db(app)
     print "connected to db"
-
-from model import checks_user_db, Transit_Request
-
-user_inital_stop = gets_user_stop_id(user_lat, user_lon, route_code, direction)
-
-user_itinerary = gets_user_itinerary(agency, route_code, direction, destination_stop, user_inital_stop)
-
-arrival_time_datetime = process_lat_lng_get_arrival_datetime(user_lat, user_lon, destination_stop)
-
-user_phone = convert_to_e164(raw_user_phone_num)
-
-user_db = checks_user_db(user_name, user_phone)

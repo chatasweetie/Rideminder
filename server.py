@@ -5,6 +5,7 @@ from jinja2 import StrictUndefined
 from flask import Flask, render_template, request, jsonify
 from flask_debugtoolbar import DebugToolbarExtension
 
+from process_data import gets_user_stop_id, gets_user_itinerary, process_lat_lng_get_arrival_datetime, convert_to_e164
 # from process_data import gets_a_list_of_available_line, processes_line_and_bound_selects_two_closest_vehicle, convert_to_e164, process_lat_lng_get_arrival_datetime, gets_agencies
 from model import connect_to_db, checks_user_db, adds_transit_request, gets_agency_db, Agency, gets_route_db, gets_route_id_db
 
@@ -66,7 +67,7 @@ def stops():
 
     stops = {
         stop.name: {
-            "route_id": stop.stop_code,
+            "stop_code": stop.stop_code,
             "name": stop.name,
             "lat": stop.lat,
             "lon": stop.lon,
@@ -81,18 +82,20 @@ def stops():
 def process_user_info():
     """recieves the user data and sends data to appropiate processes"""
 
-    user_name = request.form.get("fname")
+    user_name = request.form.get("name")
     raw_user_phone_num = request.form.get("phone")
     agency = request.form.get("agency")
-    route_code = request.form.get("route-code")
-    direction = request.form.get("direction")
-    destination_stop = request.form.get("destination-stop")
+    route_code = request.form.get("route")
+    destination_stop = request.form.get("stop")
     user_lat = request.form.get("lat")
     user_lon = request.form.get("lon")
 
-    user_inital_stop = gets_user_stop_id(user_lat, user_lon, route_code, direction)
+    print "*"*80
+    print destination_stop
 
-    user_itinerary = gets_user_itinerary(agency, route_code, direction, destination_stop, user_inital_stop)
+    user_inital_stop = gets_user_stop_id(user_lat, user_lon, route_code)
+
+    user_itinerary = gets_user_itinerary(agency, route_code, destination_stop, user_inital_stop)
 
     arrival_time_datetime = process_lat_lng_get_arrival_datetime(user_lat, user_lon, destination_stop)
 
@@ -103,7 +106,7 @@ def process_user_info():
     adds_transit_request(user_inital_stop, destination_stop, agency, route_code, user_itinerary, arrival_time_datetime, user_db)
 
 
-    return render_template("/thank_you.html", user_fname=user_fname, user_phone=user_phone, direction=direction, route_code=route_code)
+    return render_template("/thank_you.html", user_fname=user_name, user_phone=user_phone, route_code=route_code)
 
 
 
