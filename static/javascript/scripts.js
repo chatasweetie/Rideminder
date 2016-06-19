@@ -16,22 +16,35 @@ var markers= [];
 $(document).ready(function() {
     console.log( "ready!" );
 
-$("#agency").change(function(){
-    console.log($(this).val());
-    $.get('/agency.json', { "agency": $(this).val()},
-        function (routes) {
-            console.log(routes);
-            $('#route-options').empty();
-            var route;
+    $("#agency").change(function(){
+        // console.log($(this).val());
+        $.get('/agency.json', { "agency": $(this).val()},
+            function (routes) {
+                $('#route-options').empty();
+                var route;
 
-            for (var key in routes){
-                route = routes[key];
+                for (var key in routes){
+                    route = routes[key];
 
-                $('#route-options').append('<option value=' + route.route_id + '>' + route.name + '</option>');
-            }
+                    $('#route-options').append('<option value=' + route.route_id + '>' + route.name + '</option>');
+                }
+                console.log($("#route-options").val());
+                $(document).ready(function() {
+                    $.get('/route.json', { "route_id": $("#route-options").val(),
+                        function (route_stops) {
+                            console.log(route_stops);
+                            // $('#stop-options').empty();
+                            // var stop;
 
-    }
-);});
+                            // for (var key in stops){
+                            //     stop = stops[key];
+
+                            //     $('#stop-options').append('<option value=' + stop.stop_code + '>' + stop.name + '</option>');
+                            // }
+                        }});
+                });
+            });
+});
 });
 
 // function clearMapMarkers() {
@@ -41,7 +54,7 @@ $("#agency").change(function(){
 // }
 
 
-var user_geolocation = (37.7846810, -122.4073680);
+// var user_geolocation = (37.7846810, -122.4073680);
 
 
 // function init(){

@@ -36,25 +36,21 @@
 
 
       <div class="form-group" id="route">
-        <label for="route"><em>Route*</em><select class="form-control" id="route-options" name="route">
+        <label for="route"><em>Route & Direction*</em><select class="form-control" id="route-options" name="route">
           {% for route in routes %}
-            <option>{{ route.name }}</option>
+            <option value= '{{route.route_id}}' >{{ route.name }}</option>
             {% endfor %}
         </select></label>
       </div>
-      <div class="form-group">
-        <label for="bound"><em>Direction*</em>
-          <select class="form-control" id="bound" name="bound">
-            <option value="I">Inbound</option>
-            <option value="O">Outbound</option>
-          </select></label>
+
+      <div class="form-group" id="stop">
+        <label for="stop"><em>Available Stops*</em><select class="form-control" id="stop-options" name="route">
+          {% for stop in stops %}
+            <option data-lat= '{{stop.lat}}' data-lon= '{{stop.lon}}'>{{ stop.name }}</option>
+            {% endfor %}
+        </select></label>
       </div>
-      <div class="form-group">
-        <label for="destination"><em>Available Stops*</em>
-          <select class="form-control"name="destination" id="stops">
-            <!-- this is where $ and Ajax adds the stop options -->
-          </select></label>
-      </div>
+      
       <!-- class="hidden" -->
       <!-- this is to get the user's lat and lng -->
       <div class="hidden">

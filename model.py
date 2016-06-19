@@ -193,6 +193,13 @@ def gets_route_db(route_code, direction='False'):
     return Route.query.filter_by(route_code=route_code, direction=direction).first()
 
 
+def gets_route_id_db(route_id):
+    """"""
+
+    return Route.query.filter_by(route_id=route_id).first()
+
+
+
 def gets_stop_db(stop_id):
     """"""
 

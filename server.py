@@ -6,7 +6,7 @@ from flask import Flask, render_template, request, jsonify
 from flask_debugtoolbar import DebugToolbarExtension
 
 # from process_data import gets_a_list_of_available_line, processes_line_and_bound_selects_two_closest_vehicle, convert_to_e164, process_lat_lng_get_arrival_datetime, gets_agencies
-from model import connect_to_db, checks_user_db, adds_transit_request, gets_agency_db, Agency
+from model import connect_to_db, checks_user_db, adds_transit_request, gets_agency_db, Agency, gets_route_db, gets_route_id_db
 
 from celery import Celery
 
@@ -30,7 +30,9 @@ def index():
 
     routes = agency_db.routes
 
-    return render_template("homepage.html", agencies=agencies, routes=routes)
+    stops = routes[0].stops
+
+    return render_template("homepage.html", agencies=agencies, routes=routes, stops=stops)
 
 
 @app.route("/agency.json", methods=["GET"])
@@ -38,10 +40,8 @@ def routes():
     """returns agency's routes"""
 
     agency = request.args.get("agency")
-    print agency
 
     agency_db = gets_agency_db(agency)
-    print agency_db
 
     routes = {
         route.name: {
@@ -52,6 +52,29 @@ def routes():
         for route in agency_db.routes}
 
     return jsonify(sorted(routes.items()))
+
+
+@app.route("/route.json", methods=["GET"])
+def stops():
+    """returns routes's stops"""
+
+    route_id = request.args.get("route_id")
+    print "route_id:", route_id
+
+    route_db = gets_route_id_db(route_id)
+    print "route_db:", route_db
+
+    stops = {
+        stop.name: {
+            "route_id": stop.stop_code,
+            "name": stop.name,
+            "lat": stop.lat,
+            "lon": stop.lon,
+        }
+        for stop in route_db.stops}
+    print stops
+
+    return jsonify(stops)
 
 
 @app.route("/thank-you", methods=["POST"])
