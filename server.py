@@ -28,13 +28,7 @@ def index():
     """Homepage"""
     agencies = Agency.query.filter().all()
 
-    agency_db = gets_agency_db('Caltrain')
-
-    routes = agency_db.routes
-
-    stops = routes[0].stops
-
-    return render_template("homepage.html", agencies=agencies, routes=routes, stops=stops)
+    return render_template("homepage.html", agencies=agencies)
 
 
 @app.route("/agency.json", methods=["GET"])

@@ -135,6 +135,9 @@ def adds_routes_to_db(stops_routes_agencies_info):
         route_code = stops_routes_agencies_info[route]['route_code']
         stop_list = stops_routes_agencies_info[route]['stop_list']
         agency_code = stops_routes_agencies_info[route]['agency_code']
+        if agency_code != 2:
+            name = route[0], ', ', route[1]
+            route = ''.join(name)
 
         route = Route(
                     name=str(route),
