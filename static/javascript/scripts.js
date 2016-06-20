@@ -18,7 +18,9 @@ $(document).ready(function() {
     $("#agency").change(function(){
         $.get('/agency.json', { "agency": $(this).val()},
             function (routes) {
+                $('#stop-options').append('<option value= None>SELECT STOP</option>');
                 $('#route-options').empty();
+                $('#route-options').append('<option value= None>SELECT ROUTE</option>');
                 var route;
 
                 for (var key in routes){
@@ -27,6 +29,7 @@ $(document).ready(function() {
                     $('#route-options').append('<option value=' + route.route_id + '>' + route.name + '</option>');
                 }
                 console.log($("#route-options").val());
+                $('#stop-options').append('<option value= None>SELECT STOP</option>');
             });
     });
 });
@@ -38,6 +41,7 @@ $(document).ready(function() {
             function (stops) {
                 console.log(stops);
                 $('#stop-options').empty();
+                $('#stop-options').append('<option value= None>SELECT STOP</option>');
                     var stop;
 
                     for (var key in stops){

@@ -6,12 +6,13 @@
 }
 
 .container-fluid {
-	height: 50px;
+	height: auto;
 	background-color: #6ed3cf;
+    padding: 5px 0px 5px 5px;
 }
 
 .footer {
-    height: 25px;
+    height: auto;
     bottom: 0;
     background-color: #6ed3cf;
 }
@@ -26,7 +27,6 @@
 
 .navbar-brand-footer {
     font-size: 26px;
-    height: 45px;
 }
 
 .container {
@@ -84,16 +84,13 @@ body {
 
 #tag {
     margin-top: 3px;
-    font-size: 83%;
+    font-size: 100%;
     color: #FEFDFC;
+    padding: 15px 0px 0px 0px;
 }
 
 .padding {
     height: 80px;
-}
-
-.footer-padding{
-    height: 45px;
 }
 
 .mar {
@@ -104,7 +101,14 @@ body {
     font-size: 100%;
     color: #FEFDFC;
     width: 100%;
+}
 
+.fa {
+    color: #9068be;
+}
+
+.chata {
+    height: 70px;
 }
 
 #loadinggif {

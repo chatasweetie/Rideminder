@@ -26,6 +26,7 @@
        <div class="form-group">
         <label for="agency"><em>Agency*</em>
           <select class="form-control" id="agency" name="agency">
+            <option value= None>SELECT AGENCY</option>
             {% for agency in agencies %}
             <option>{{ agency.name }}</option>
             {% endfor %}
@@ -35,17 +36,13 @@
 
       <div class="form-group" id="route">
         <label for="route"><em>Route & Direction*</em><select class="form-control" id="route-options" name="route">
-          {% for route in routes %}
-            <option value= '{{route.route_id}}' >{{ route.name }}</option>
-            {% endfor %}
+          <option value= None>SELECT ROUTE</option>
         </select></label>
       </div>
 
       <div class="form-group" id="stop">
         <label for="stop"><em>Available Stops*</em><select class="form-control" id="stop-options" name="stop">
-          {% for stop in stops %}
-            <option value= '{{stop.stop_code}}' data-lat= '{{stop.lat}}' data-lon= '{{stop.lon}}'>{{ stop.name }}</option>
-            {% endfor %}
+          <option value= None>SELECT STOP</option>
         </select></label>
       </div>
       
