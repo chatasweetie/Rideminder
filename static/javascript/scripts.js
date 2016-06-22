@@ -103,6 +103,8 @@ if (navigator.geolocation) {
       };
       $("#lat").append("<option id=\"lat\" value=\""+pos.lat+"\">"+pos.lat+"</option>");
       $("#lng").append("<option id=\"lng\" value=\""+pos.lng+"\">"+pos.lng+"</option>");
+      console.log(pos.lat);
+      console.log(pos.lng);
       infoWindow.setPosition(pos);
       infoWindow.setContent('You are here');
       map.setCenter(pos);
