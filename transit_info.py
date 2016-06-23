@@ -32,7 +32,7 @@ def gets_stop_lat_lon_routes(muni_routes):
 
         route = routes[i]
 
-        url = 'http://webservices.nextbus.com/service/publicXMLFeed?command=routeConfig&a=sf-muni&r=' + route[0]
+        url = 'http://webservices.nextbus.com/service/publicXMLFeed?command=routeConfig&a=sfmta&r=' + route[0]
 
         response_agencies = requests.get(url)
 
@@ -136,7 +136,7 @@ def get_BART_routes_and_stops():
     routes = {}
 
     for i in range(len(name)):
-        routes[name[i]] = {'bart_abbr': abbr[i], 'bart_id': id[i], 'bart_num': num[i], 'route_id(s)': BART_ROUTES[name[i]]['route_id']}
+        routes[name[i]] = {'bart_abbr': abbr[i], 'bart_id': id[i], 'bart_num': num[i], 'route_code': BART_ROUTES[name[i]]['route_id']}
 
     routes_stops = get_stop_abb_list_for_routes_BART(routes)
 
@@ -219,11 +219,11 @@ def gets_bartroutes_and_routes(routes_511):
     bart_route_stop = get_BART_routes_and_stops()
 
     for route in bart_route_stop:
-        for route_id in bart_route_stop[route]['route_id(s)']:
+        for route_id in bart_route_stop[route]['route_code']:
             bart_route_stop[route]['direction'] = bart_511_routes[route_id].get('direction')
             bart_route_stop[route]['agency_code'] = bart_511_routes[route_id].get('agency_code')
             bart_route_stop[route]['agency'] = bart_511_routes[route_id].get('agency')
-            bart_route_stop[route]['route_code'] = bart_511_routes[route_id].get('route_code')
+            # bart_route_stop[route]['route_code'] = bart_511_routes[route_id].get('route_code')
             bart_route_stop[route].setdefault('511_stop', []).extend(bart_511_routes[route_id].get('stop_list'))
 
     for route in bart_route_stop:

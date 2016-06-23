@@ -99,9 +99,9 @@ def process_user_info():
 
     user_db = checks_user_db(user_name, user_phone)
 
-    adds_transit_request(user_inital_stop, destination_stop, agency, route_code, user_itinerary, arrival_time_datetime, user_db)
-
     route = gets_route_id_db(route_code)
+
+    adds_transit_request(user_inital_stop, destination_stop, agency, route.route_code, user_itinerary, arrival_time_datetime, user_db)
 
     user_inital_stop = gets_stop_db(user_inital_stop)
     destination_stop = gets_stop_db(destination_stop)

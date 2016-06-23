@@ -1,6 +1,5 @@
 # Celery task to be processed request every mintue
 
-# from celery.task import task
 from geopy.distance import vincenty
 from process_data import gets_stop_times_by_stop
 from twilio_process import send_text_message, send_text_message
@@ -9,11 +8,6 @@ from server import app, celery
 from firebase import firebase
 import datetime
 
-
-
-transit_firebase = firebase.FirebaseApplication("https://publicdata-transit.firebaseio.com/", None)
-
-WALK_RADIUS = .10
 TIME_RADIUS = 2
 
 app.debug = True
@@ -30,15 +24,20 @@ def process_transit_request():
 
     for request in request_to_process:
         print 'checking this request', request
+        print 'current_stop:', request.current_stop
 
         departures_times = gets_stop_times_by_stop(request.current_stop)
 
+        print "DepartureTime:", departures_times
+
         routes_time = departures_times.get(request.route)
+
+        print "ROUTE_TIME:", routes_time
 
         if not routes_time:
             continue
 
-        if routes_time[0] < 2:
+        if int(routes_time[0]) < 3:
             if request.current_stop == request.destination_stop_code:
                 send_text_message(request.user.user_phone)
                 records_request_complete_db(request)
@@ -54,7 +53,7 @@ def process_transit_request():
         # checking google estimated time
         now = datetime.datetime.utcnow()
         min_difference = request.arrival_time.minute - now.minute
-        print "this is the difference: ", min_difference
+        print "this is the time difference: ", min_difference
 
         request.time_difference = min_difference
         # to take care of the difference between a start time that is late in the hour

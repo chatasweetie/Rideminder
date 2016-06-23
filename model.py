@@ -49,8 +49,8 @@ class Transit_Request(db.Model):
         """Provides useful represenation when printed"""
 
         return """<Transit Request request_id: {} user_inital_stop: {}
-                    user_destination_stop: {} >""".format(self.request_id,
-                    self.inital_stop_code, self.destination_stop_code)
+                    user_destination_stop: {} route: {}>""".format(self.request_id,
+                    self.inital_stop_code, self.destination_stop_code, self.route)
 
 
 
