@@ -187,11 +187,12 @@ def gets_agency_db(name):
     return Agency.query.filter_by(name=name).first()
 
 
-def gets_route_db(route_code, direction='False'):
+def gets_route_db(route_code, direction=False):
     """"""
+    if direction is False:
+        return Route.query.filter_by(name=route_code).first()
 
     return Route.query.filter_by(route_code=route_code, direction=direction).first()
-
 
 def gets_route_id_db(route_id):
     """"""

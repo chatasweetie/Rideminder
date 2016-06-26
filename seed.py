@@ -11,10 +11,10 @@ BART_TOKEN = os.environ.get("BART_TOKEN")
 WANTED_AGENCIES = ("BART", "SFMTA", "Caltrain")
 
 if __name__ == '__main__':
-    # import os
-    # os.system("dropdb ridemindertest")
-    # print "dropdb"
-    # os.system("createdb ridemindertest")
+    import os
+    os.system("dropdb ridemindertest")
+    print "dropdb"
+    os.system("createdb ridemindertest")
     print "createdb"
 
     connect_to_db(app)
@@ -115,18 +115,18 @@ def gets_stops_for_routes(routes):
             for direction in ["Inbound", "Outbound"]:
                 url = 'http://services.my511.org/Transit2.0/GetStopsForRoute.aspx?token=' + TOKEN_511 + '&routeIDF=' + agency + '~' + route_code + '~' + direction
                 stops = gets_stops_for_a_route(url)
-                new_routes[route, direction] = {"route_code": route_code, "agency": agency, "direction": direction, "stop_list": stops, "agency_code": 3}
+                new_routes[route, direction] = {"route_code": route_code, "agency": agency, "direction": direction, "stop_list": stops, "agency_code": 1}
 
         if agency == "Caltrain":
             for direction in ["NB", "SB1", "SB2", "SB3"]:
                 url = 'http://services.my511.org/Transit2.0/GetStopsForRoute.aspx?token=' + TOKEN_511 + '&routeIDF=' + agency + '~' + route_code + '~' + direction
                 stops = gets_stops_for_a_route(url)
-                new_routes[route, direction] = {"route_code": route_code, "agency": agency, "direction": direction, "stop_list": stops, "agency_code": 1}
+                new_routes[route, direction] = {"route_code": route_code, "agency": agency, "direction": direction, "stop_list": stops, "agency_code": 2}
 
         elif agency == "BART":
             url = 'http://services.my511.org/Transit2.0/GetStopsForRoute.aspx?token=' + TOKEN_511 + '&routeIDF=' + agency + '~' + route_code
             stops = gets_stops_for_a_route(url)
-            new_routes[route, direction] = {"route_code": route_code, "agency": agency, "direction": direction, "stop_list": stops, "agency_code": 2}
+            new_routes[route, direction] = {"route_code": route_code, "agency": agency, "direction": direction, "stop_list": stops, "agency_code": 3}
 
     # direction does not actually exist
     del new_routes[('BABY BULLET', 'SB3')]
@@ -142,9 +142,11 @@ def adds_routes_to_db(stops_routes_agencies_info):
         route_code = stops_routes_agencies_info[route]['route_code']
         stop_list = stops_routes_agencies_info[route]['stop_list']
         agency_code = stops_routes_agencies_info[route]['agency_code']
-        if agency_code != 2:
+        if agency_code != 3:
             name = route[0], ', ', route[1]
             route = ''.join(name)
+        else:
+            route_code = ','.join([str(x) for x in route_code])
 
         route = Route(
                     name=str(route),
@@ -251,14 +253,24 @@ def adds_stops_to_db(unique_stops):
 
 def adds_routestop_to_db(stop_routes_agencies_info_bart):
     """add the relationship between routes and stops to db"""
+    # import pdb; pdb.set_trace()
     for route in stop_routes_agencies_info_bart:
         route_code = stop_routes_agencies_info_bart[route]['route_code']
         direction = stop_routes_agencies_info_bart[route]['direction']
-        route_db = gets_route_db(route_code, direction)
-        if not route_db:
-            continue
+        agency_code = stop_routes_agencies_info_bart[route]['agency_code']
 
-        if route_db.agency_id == 2:
+        if agency_code == 3:
+
+            route_db = gets_route_db(route)
+            if not route_db:
+                continue
+            print "*"*80
+            print route
+            print route_code
+            print direction
+            print route_db
+            print route_db.agency_id
+            print stop_routes_agencies_info_bart[route]['stop_list']
             for stop in stop_routes_agencies_info_bart[route]['stop_list']:
 
                 stops = gets_stop_name_db(stop)
@@ -268,8 +280,15 @@ def adds_routestop_to_db(stop_routes_agencies_info_bart):
                                             route_id=route_db.route_id,
                                             stop_id=stops[0].stop_code,
                                             )
+                    print stop
+                    print route_db.route_id
+                    print stops[0].stop_code
+                    print route_stop
                     db.session.add(route_stop)
+                    db.session.commit()
         else: 
+            route_db = gets_route_db(route_code, direction)
+
             for stop in stop_routes_agencies_info_bart[route]['stop_list']:
                 stop_id = stop[1]
 
@@ -279,6 +298,7 @@ def adds_routestop_to_db(stop_routes_agencies_info_bart):
                                         stop_id=stop_id,
                                         )
                 db.session.add(route_stop)
+                db.session.commit()
 
         db.session.commit()
     print "RouteStops Added to DB"
@@ -316,9 +336,9 @@ unique_stops_lat_lon = get_lats_lon_for_stops(unique_stops)
 print "got unique stops with lat/lon from api"
 
 
-# if __name__ == '__main__':
-# #     # Adds data to db
-#     adds_agencies_to_db(agencies_info)
-#     adds_routes_to_db(stop_routes_agencies_info_bart)
-#     adds_stops_to_db(unique_stops_lat_lon)
-#     adds_routestop_to_db(stop_routes_agencies_info_bart)
+if __name__ == '__main__':
+#     # Adds data to db
+    adds_agencies_to_db(agencies_info)
+    adds_routes_to_db(stop_routes_agencies_info_bart)
+    adds_stops_to_db(unique_stops_lat_lon)
+    adds_routestop_to_db(stop_routes_agencies_info_bart)

@@ -32,7 +32,7 @@ def gets_stop_lat_lon_routes(muni_routes):
 
         route = routes[i]
 
-        url = 'http://webservices.nextbus.com/service/publicXMLFeed?command=routeConfig&a=sfmta&r=' + route[0]
+        url = 'http://webservices.nextbus.com/service/publicXMLFeed?command=routeConfig&a=sf-muni&r=' + route[0]
 
         response_agencies = requests.get(url)
 
