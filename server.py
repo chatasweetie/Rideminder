@@ -84,11 +84,19 @@ def process_user_info():
     user_lat = request.form.get("lat")
     user_lon = request.form.get("lng")
 
+    print user_name
+    print raw_user_phone_num
+    print agency
+    print route_code
+    print destination_stop
+    print user_lat
+    print user_lon
 
     user_inital_stop = gets_user_stop_id(user_lat, user_lon, route_code)
 
+    print user_inital_stop
     user_itinerary = gets_user_itinerary(agency, route_code, destination_stop, user_inital_stop)
-
+    print 'user_itinerary', user_itinerary
     if not user_itinerary:
         flash("You are too far away from your transit stop, try again when your closer")
         return redirect("/")

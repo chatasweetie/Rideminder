@@ -18,17 +18,13 @@ TOKEN_511 = os.environ.get("TOKEN_511")
 transit_firebase = firebase.FirebaseApplication("https://publicdata-transit.firebaseio.com/", None)
 
 # these are for I am working in python -i to play with my functions
-user_lat = 37.785152
-user_lon = -122.406581
-agency = "BART"
-route_code = "917"
-RouteDirectionCode = ""
-stop = "11"
-user_stop = "30"
-destination_stop = "95"
-direction = "False"
-raw_user_phone_num = "8052525099"
-user_name = "Jessica"
+
+raw_user_phone_num = 8052525094
+agency = 'BART'
+route_code = 77
+destination_stop = 15
+user_lat = 37.7937552
+user_lon = -122.271049
 
 
 def convert_to_e164(raw_phone):
@@ -68,7 +64,7 @@ def gets_stops_from_route(route):
 
     raw_stop_list =str(route.stop_list)
     # bart stops are handled differently
-    if route.agency_id == 2:
+    if route.agency_id == 3:
         # do something else with BART
         s = raw_stop_list[2:-2]
         stop_list = s.split("', '")
@@ -101,9 +97,6 @@ def parse_route_stop_for_user(route_stops, user_inital_stop, destination_stop, c
 
     user_inital_stop_db = gets_stop_db(user_inital_stop)
     destination_stop_db = gets_stop_db(destination_stop)
-    
-
-    # import pdb; pdb.set_trace()
 
     for stop in route_stops:
         if stop == str(user_inital_stop_db.name):
