@@ -1,24 +1,17 @@
-// default setting for my routes
+"use strict";
 
+// a nice loading image for when user submits form
 function showLoading(evt) {
-    console.log("hey");
   evt.preventDefault();
   $("#loadinggif").show();
   $(this).unbind('submit').submit();
 }
 $("#request").submit(showLoading);
 
-var bound = "I";
-var line = "1";
 var locations = [];
 var markers= [];
-
-function clearMapMarkers() {
-  for (var i = 0; i < markers.length; i++) {
-    markers[i].setMap(null);
-  }
-}
-
+var image = 'http://maps.google.com/mapfiles/marker_purple.png';
+var user = 'http://maps.google.com/mapfiles/dd-start.png';
 
 var user_geolocation = (37.7846810, -122.4073680);
 
@@ -35,86 +28,78 @@ function init(){
     var infoWindow = new google.maps.InfoWindow({map: map});
 
 
-// Takes in the line/route and returns the stop title/name, lat & lon
-$("#line").bind("change lines", function() {
-   line = ($(this).val());
-   $(function(){
-    $.ajax({
-        type:"GET",
-        url: "http://webservices.nextbus.com/service/publicXMLFeed?command=routeConfig&a=sf-muni&r="+line+"",
-        dataType:"xml",
-        success: function(xml) {
-            console.log("success", xml);
-            var optionsHtml = "";
-            $("#stops").empty();
-            clearMapMarkers();
-            $(xml).find("direction[tag*="+bound+"]>stop").each(function(){
-                var tag = $(this).attr("tag");
-                var stopName =$(xml).find("route>stop[tag*="+tag+"]").attr("title");
-                var stopLAT = $(xml).find("route>stop[tag*="+tag+"]").attr("lat");
-                var stopLON = $(xml).find("route>stop[tag*="+tag+"]").attr("lon");
-                var geolocation = stopLAT+","+stopLON;
-                $("#stops").append("<option id=\""+stopName+"\" value=\""+geolocation+"\">"+stopName+"</option>");
-                locations.push({name: stopName, lat: stopLAT, lng: stopLON});
-            });
 
-            for (var i=0;i<locations.length;i++){
-                var lat = parseFloat(locations[i].lat);
-                var lng = parseFloat(locations[i].lng);
-                var myLatLng = {lat, lng};
-                var marker = new google.maps.Marker({
-                    position: myLatLng,
-                    map: map,
-                    title:locations[i].name,
-                    clickable: true}
-                );
-                    markers.push(marker);
-            }
-            locations = [];
-        }
+$(document).ready(function() {
+    console.log( "ready!" );
+    $("#agency").change(function(){
+        $.get('/agency.json', { "agency": $(this).val()},
+            function (routes) {
+                $('#stop-options').append('<option value= None>SELECT STOP</option>');
+                $('#route-options').empty();
+                $('#route-options').append('<option value= None>SELECT ROUTE</option>');
+                clearMapMarkers();
+                var route;
+
+                for (var key in routes){
+                    route = routes[key];
+
+                    $('#route-options').append('<option value=' + route.route_id + '>' + route.name + '</option>');
+                }
+                $('#stop-options').append('<option value= None>SELECT STOP</option>');
+            });
     });
 });
-});
 
-// Takes in the bound/direction and returns the stop title/name, lat & lon
-$("#bound").bind("change paste keyup", function() {
-    bound = ($(this).val());
-   $(function(){
-    $.ajax({
-        type:"GET",
-        url: "http://webservices.nextbus.com/service/publicXMLFeed?command=routeConfig&a=sf-muni&r="+line+"",
-        dataType:"xml",
-        success: function(xml) {
-            console.log("success", xml);
-            var optionsHtml = "";
-            $("#stops").empty()
-            clearMapMarkers();
-            $(xml).find("direction[tag*="+bound+"]>stop").each(function(){
-                var tag = $(this).attr("tag");
-                var stopName =$(xml).find("route>stop[tag*="+tag+"]").attr("title");
-                var stopLAT = $(xml).find("route>stop[tag*="+tag+"]").attr("lat");
-                var stopLON = $(xml).find("route>stop[tag*="+tag+"]").attr("lon");
-                var geolocation = stopLAT+","+stopLON;
-                $("#stops").append("<option id=\""+stopName+"\" value=\""+geolocation+"\">"+stopName+"</option>");
-                locations.push({name: stopName, lat: stopLAT, lng: stopLON});
-            });
-            for (var i=0;i<locations.length;i++){
-                var lat = parseFloat(locations[i].lat);
-                var lng = parseFloat(locations[i].lng);
-                var myLatLng = {lat, lng};
-                var marker = new google.maps.Marker({
-                    position: myLatLng,
-                    map: map,
-                    title:locations[i].name});
-                    markers.push(marker);
-            }
-            locations = [];
-        }
+$(document).ready(function() {
+    $("#route-options").change(function(){
+        console.log($(this).val());
+        $.get('/route.json', { "route_id": $(this).val()},
+            function (stops) {
+                console.log(stops);
+                $('#user-stop-options').empty();
+                $('#destination-stop-options').empty();
+                $('#user-stop-options').append('<option value= None>SELECT STOP</option>');
+                $('#destination-stop-options').append('<option value= None>SELECT STOP</option>');
+                clearMapMarkers();
+                    var stop;
+
+                    for (var key in stops){
+                        stop = stops[key];
+
+                    $('#user-stop-options').append('<option value=' + stop.stop_code + ' data-lat= ' + stop.lat +' data-lon= ' + stop.lon + '>' + stop.name + '</option>');
+                    $('#destination-stop-options').append('<option value=' + stop.stop_code + ' data-lat= ' + stop.lat +' data-lon= ' + stop.lon + '>' + stop.name + '</option>');
+                    var stopName = stop.name;
+                    var stopLAT = stop.lat;
+                    var stopLON = stop.lon;
+                    var geolocation = stopLAT+","+stopLON;
+                    locations.push({name: stopName, lat: stopLAT, lng: stopLON}); }
+                    for (var i=0;i<locations.length;i++){
+                        var lat = parseFloat(locations[i].lat);
+                        var lng = parseFloat(locations[i].lng);
+                        var myLatLng = {lat, lng};
+                        var marker = new google.maps.Marker({
+                            position: myLatLng,
+                            map: map,
+                            title:locations[i].name,
+                            icon: image
+                        });
+                            markers.push(marker);
+                    }
+                locations = [];
+                }
+            );
     });
 });
-});
 
 
+
+
+
+function clearMapMarkers() {
+  for (var i = 0; i < markers.length; i++) {
+    markers[i].setMap(null);
+  }
+}
 
 if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(function(position) {

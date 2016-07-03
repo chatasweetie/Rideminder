@@ -2,11 +2,12 @@
 import os
 from jinja2 import StrictUndefined
 
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, jsonify, flash
+from flask import redirect
 from flask_debugtoolbar import DebugToolbarExtension
 
-from process_data import gets_a_list_of_available_line, processes_line_and_bound_selects_two_closest_vehicle, convert_to_e164, process_lat_lng_get_arrival_datetime
-from model import adds_to_queue, connect_to_db
+from process_data import gets_user_stop_id, gets_user_itinerary, process_lat_lng_get_arrival_datetime, convert_to_e164
+from model import connect_to_db, checks_user_db, adds_transit_request, gets_agency_db, Agency, gets_route_db, gets_route_id_db, gets_stop_db
 
 from celery import Celery
 
@@ -23,53 +24,109 @@ app.jinja_env.undefined = StrictUndefined
 
 @app.route("/")
 def index():
-    """Homepage."""
-    list_of_available_lines = gets_a_list_of_available_line()
+    """Homepage"""
+    agencies = Agency.query.filter().all()
 
-    return render_template("homepage.html", list_of_available_lines=list_of_available_lines)
+    return render_template("homepage.html", agencies=agencies)
+
+
+@app.route("/agency.json", methods=["GET"])
+def routes():
+    """returns agency's routes"""
+
+    agency = request.args.get("agency")
+
+    agency_db = gets_agency_db(agency)
+
+    routes = {
+        route.name: {
+            "route_id": route.route_id,
+            "name": route.name,
+            "direction": route.direction,
+        }
+        for route in agency_db.routes}
+
+    return jsonify(sorted(routes.items()))
+
+
+@app.route("/route.json", methods=["GET"])
+def stops():
+    """returns routes's stops"""
+
+    route_id = request.args.get("route_id")
+    print "route_id:", route_id
+
+    route_db = gets_route_id_db(route_id)
+    print "route_db:", route_db
+
+    stops = {
+        stop.name: {
+            "stop_code": stop.stop_code,
+            "name": stop.name,
+            "lat": stop.lat,
+            "lon": stop.lon,
+        }
+        for stop in route_db.stops}
+    print stops
+
+    return jsonify(stops)
 
 
 @app.route("/thank-you", methods=["POST"])
 def process_user_info():
     """recieves the user data and sends data to appropiate processes"""
 
-    user_fname = request.form.get("fname")
-    user_email = request.form.get("email")
+    user_name = request.form.get("name")
     raw_user_phone_num = request.form.get("phone")
-    line = str(request.form.get("line"))
-    bound = str(request.form.get("bound"))
-    destination = request.form.get("destination")
+    agency = request.form.get("agency")
+    route_code = request.form.get("route")
+    user_inital_stop = request.form.get("user_stop")
+    destination_stop = request.form.get("destination_stop")
     user_lat = request.form.get("lat")
     user_lon = request.form.get("lng")
 
-    destination_lat, destination_lon = destination.split(",")
+    if user_lat:
+        user_inital_stop = gets_user_stop_id(user_lat, user_lon, route_code)
 
-    arrival_time_datetime = process_lat_lng_get_arrival_datetime(user_lat, user_lon, destination_lat, destination_lon)
+    user_itinerary = gets_user_itinerary(agency, route_code, destination_stop, user_inital_stop)
 
-    list_of_vincenty_vehicle = processes_line_and_bound_selects_two_closest_vehicle(line, bound, destination_lat, destination_lon, user_lat, user_lon)
+    if not user_itinerary:
+        flash("You are too far away from your transit stop, try again when your closer")
+        return redirect("/")
 
-    # sets the two closest vechiles
-    vehicle_1 = list_of_vincenty_vehicle[0][1]
-    vehicle_1_distance = list_of_vincenty_vehicle[0][0]
-    vehicle_2 = list_of_vincenty_vehicle[1][1]
-    vehicle_2_distance = list_of_vincenty_vehicle[1][0]
+    arrival_time_datetime = process_lat_lng_get_arrival_datetime(user_lat, user_lon, destination_stop)
 
     user_phone = convert_to_e164(raw_user_phone_num)
 
-    adds_to_queue(user_fname, user_email, user_phone, user_lat, user_lon, destination_lat, destination_lon, vehicle_1, vehicle_1_distance, vehicle_2, vehicle_2_distance, arrival_time_datetime)
+    user_db = checks_user_db(user_name, user_phone)
 
-    if bound == "I":
-        bound = "Inbound"
-    else:
-        bound = "Outbound"
+    route = gets_route_id_db(route_code)
 
-    return render_template("/thank_you.html", user_fname=user_fname, user_phone=user_phone, bound=bound, line=line)
+    adds_transit_request(user_inital_stop, destination_stop, agency, route.name, route.route_code, user_itinerary, arrival_time_datetime, user_db)
+
+    user_inital_stop = gets_stop_db(user_inital_stop)
+    destination_stop = gets_stop_db(destination_stop)
+
+    return render_template("/thank_you.html", user_fname=user_name, user_phone=user_phone, route=route, user_inital_stop=user_inital_stop, destination_stop=destination_stop)
 
 
-@app.route("/error")
-def error():
-    """error page"""
-    raise Exception("Error!")
+
+############################################################################
+# Error Pages
+
+@app.errorhandler(404)
+def page_not_found(error):
+    """404 Page Not Found handling"""
+
+    return render_template('/errors/404.html'), 404
+
+
+@app.errorhandler(500)
+def internal_error(error):
+    # db.session.rollback()
+    """500 Error handling """
+
+    return render_template('/errors/500.html'), 500
 
 
 # Celery is an open source asynchronous task queue/job queue based on distributed message passing.
@@ -80,8 +137,7 @@ celery.config_from_object('celeryconfig')
 
 
 if __name__ == "__main__":
-    # We have to set debug=True here, since it has to be True at the point
-    # that we invoke the DebugToolbarExtension
+
     app.debug = False
 
     connect_to_db(app)
