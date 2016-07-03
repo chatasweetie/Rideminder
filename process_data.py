@@ -203,7 +203,7 @@ def process_lat_lng_get_arrival_datetime(user_lat, user_lon, destination_stop):
     return datetime.datetime.utcnow()
 
 
-def gets_stop_times_by_stop(stop_code):
+def gets_stop_times_by_stop(stop):
 
     url = 'http://services.my511.org/Transit2.0/GetNextDeparturesByStopCode.aspx?token=' + TOKEN_511 + '&stopcode=' + stop
 

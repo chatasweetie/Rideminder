@@ -264,13 +264,7 @@ def adds_routestop_to_db(stop_routes_agencies_info_bart):
             route_db = gets_route_db(route)
             if not route_db:
                 continue
-            print "*"*80
-            print route
-            print route_code
-            print direction
-            print route_db
-            print route_db.agency_id
-            print stop_routes_agencies_info_bart[route]['stop_list']
+
             for stop in stop_routes_agencies_info_bart[route]['stop_list']:
 
                 stops = gets_stop_name_db(stop)
@@ -280,10 +274,6 @@ def adds_routestop_to_db(stop_routes_agencies_info_bart):
                                             route_id=route_db.route_id,
                                             stop_id=stops[0].stop_code,
                                             )
-                    print stop
-                    print route_db.route_id
-                    print stops[0].stop_code
-                    print route_stop
                     db.session.add(route_stop)
                     db.session.commit()
         else: 

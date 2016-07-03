@@ -80,23 +80,16 @@ def process_user_info():
     raw_user_phone_num = request.form.get("phone")
     agency = request.form.get("agency")
     route_code = request.form.get("route")
-    destination_stop = request.form.get("stop")
+    user_inital_stop = request.form.get("user_stop")
+    destination_stop = request.form.get("destination_stop")
     user_lat = request.form.get("lat")
     user_lon = request.form.get("lng")
 
-    print user_name
-    print raw_user_phone_num
-    print agency
-    print route_code
-    print destination_stop
-    print user_lat
-    print user_lon
+    if user_lat:
+        user_inital_stop = gets_user_stop_id(user_lat, user_lon, route_code)
 
-    user_inital_stop = gets_user_stop_id(user_lat, user_lon, route_code)
-
-    print user_inital_stop
     user_itinerary = gets_user_itinerary(agency, route_code, destination_stop, user_inital_stop)
-    print 'user_itinerary', user_itinerary
+
     if not user_itinerary:
         flash("You are too far away from your transit stop, try again when your closer")
         return redirect("/")
@@ -109,12 +102,12 @@ def process_user_info():
 
     route = gets_route_id_db(route_code)
 
-    adds_transit_request(user_inital_stop, destination_stop, agency, route.route_code, user_itinerary, arrival_time_datetime, user_db)
+    adds_transit_request(user_inital_stop, destination_stop, agency, route.name, route.route_code, user_itinerary, arrival_time_datetime, user_db)
 
     user_inital_stop = gets_stop_db(user_inital_stop)
     destination_stop = gets_stop_db(destination_stop)
 
-    return render_template("/thank_you.html", user_fname=user_name, user_phone=user_phone, route=route, user_inital_stop=user_inital_stop, destination_stop=destination_stop, arrival_time_datetime=arrival_time_datetime.strftime("%-H:%-M%p"))
+    return render_template("/thank_you.html", user_fname=user_name, user_phone=user_phone, route=route, user_inital_stop=user_inital_stop, destination_stop=destination_stop)
 
 
 

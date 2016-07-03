@@ -11,6 +11,7 @@ $("#request").submit(showLoading);
 var locations = [];
 var markers= [];
 var image = 'http://maps.google.com/mapfiles/marker_purple.png';
+var user = 'http://maps.google.com/mapfiles/dd-start.png';
 
 var user_geolocation = (37.7846810, -122.4073680);
 
@@ -44,7 +45,6 @@ $(document).ready(function() {
 
                     $('#route-options').append('<option value=' + route.route_id + '>' + route.name + '</option>');
                 }
-                console.log($("#route-options").val());
                 $('#stop-options').append('<option value= None>SELECT STOP</option>');
             });
     });
@@ -56,15 +56,18 @@ $(document).ready(function() {
         $.get('/route.json', { "route_id": $(this).val()},
             function (stops) {
                 console.log(stops);
-                $('#stop-options').empty();
-                $('#stop-options').append('<option value= None>SELECT STOP</option>');
+                $('#user-stop-options').empty();
+                $('#destination-stop-options').empty();
+                $('#user-stop-options').append('<option value= None>SELECT STOP</option>');
+                $('#destination-stop-options').append('<option value= None>SELECT STOP</option>');
                 clearMapMarkers();
                     var stop;
 
                     for (var key in stops){
                         stop = stops[key];
 
-                    $('#stop-options').append('<option value=' + stop.stop_code + ' data-lat= ' + stop.lat +' data-lon= ' + stop.lon + '>' + stop.name + '</option>');
+                    $('#user-stop-options').append('<option value=' + stop.stop_code + ' data-lat= ' + stop.lat +' data-lon= ' + stop.lon + '>' + stop.name + '</option>');
+                    $('#destination-stop-options').append('<option value=' + stop.stop_code + ' data-lat= ' + stop.lat +' data-lon= ' + stop.lon + '>' + stop.name + '</option>');
                     var stopName = stop.name;
                     var stopLAT = stop.lat;
                     var stopLON = stop.lon;
@@ -88,12 +91,15 @@ $(document).ready(function() {
     });
 });
 
+
+
+
+
 function clearMapMarkers() {
   for (var i = 0; i < markers.length; i++) {
     markers[i].setMap(null);
   }
 }
-
 
 if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(function(position) {
@@ -103,8 +109,6 @@ if (navigator.geolocation) {
       };
       $("#lat").append("<option id=\"lat\" value=\""+pos.lat+"\">"+pos.lat+"</option>");
       $("#lng").append("<option id=\"lng\" value=\""+pos.lng+"\">"+pos.lng+"</option>");
-      console.log(pos.lat);
-      console.log(pos.lng);
       infoWindow.setPosition(pos);
       infoWindow.setContent('You are here');
       map.setCenter(pos);

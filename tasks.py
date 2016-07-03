@@ -30,7 +30,16 @@ def process_transit_request():
 
         print "DepartureTime:", departures_times
 
-        routes_time = departures_times.get(request.route)
+        print "Route_code:", request.route_code
+
+        if ',' in str(request.route_code):
+            route_codes = str(request.route_code).split(',')
+            for code in route_codes:
+                routes_time = departures_times.get(code)
+                if routes_time:
+                    break
+        else:
+            routes_time = departures_times.get(request.route)
 
         print "ROUTE_TIME:", routes_time
 

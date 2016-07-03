@@ -31,6 +31,7 @@ class Transit_Request(db.Model):
     destination_stop_code = db.Column(db.String(100), nullable=False)
     agency = db.Column(db.String(100), nullable=False)
     route = db.Column(db.String(200), nullable=False)
+    route_code = db.Column(db.String(200), nullable=False)
     user_itinerary = db.Column(db.String(5000), nullable=False)
     arrival_time = db.Column(db.DateTime, nullable=False)
     start_time_stamp = db.Column(db.DateTime, default=datetime.utcnow)
@@ -161,13 +162,14 @@ def checks_user_db(user_name, user_phone):
 
 
 def adds_transit_request(user_inital_stop, destination_stop, agency, route,
-    user_itinerary, arrival_time_datetime, user_db):
+    route_code, user_itinerary, arrival_time_datetime, user_db):
     """"""
     now = datetime.utcnow()
-    new_transit_request = Transit_Request(inital_stop_code=user_inital_stop, 
-                destination_stop_code=destination_stop, agency=agency, route=route, 
-                user_itinerary=user_itinerary, arrival_time=arrival_time_datetime,  
-                start_time_stamp=now, current_stop=user_inital_stop, user_id=user_db.user_id)
+    new_transit_request = Transit_Request(inital_stop_code=user_inital_stop,
+                destination_stop_code=destination_stop, agency=agency, route=route,
+                route_code=route_code, user_itinerary=user_itinerary,
+                arrival_time=arrival_time_datetime, start_time_stamp=now,
+                current_stop=user_inital_stop, user_id=user_db.user_id)
 
     db.session.add(new_transit_request)
     db.session.commit()
