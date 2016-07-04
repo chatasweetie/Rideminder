@@ -237,7 +237,7 @@ def records_request_complete_db(request):
 def connect_to_db(app):
     """Connect the database to our Flask app."""
 
-    app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get("DATABASE_URL", "postgresql:///ridemindertest")
+    app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get("DATABASE_URL", "postgresql:///rideminder")
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
     db.app = app
     db.init_app(app)
@@ -246,8 +246,8 @@ def connect_to_db(app):
 if __name__ == "__main__":
     """will connect to the db"""
     import os
-    os.system("dropdb ridemindertest")
-    os.system("createdb ridemindertest")
+    os.system("dropdb rideminder")
+    os.system("createdb rideminder")
     from server import app
     connect_to_db(app)
     db.create_all()
