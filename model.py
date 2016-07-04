@@ -237,7 +237,7 @@ def records_request_complete_db(request):
 def connect_to_db(app):
     """Connect the database to our Flask app."""
 
-    app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get("DATABASE_URL", "postgresql:///rideminder")
+    app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get("HEROKU_POSTGRESQL_CRIMSON_URL", "postgresql:///rideminder")
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
     db.app = app
     db.init_app(app)
