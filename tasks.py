@@ -39,7 +39,7 @@ def process_transit_request():
                 if routes_time:
                     break
         else:
-            routes_time = departures_times.get(request.route)
+            routes_time = departures_times.get(request.route_code)
 
         print "ROUTE_TIME:", routes_time
 
