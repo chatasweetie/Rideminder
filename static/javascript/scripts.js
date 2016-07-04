@@ -6,27 +6,27 @@ function showLoading(evt) {
   $("#loadinggif").show();
   $(this).unbind('submit').submit();
 }
+
+
 $("#request").submit(showLoading);
+
 
 var locations = [];
 var markers= [];
 var image = 'http://maps.google.com/mapfiles/marker_purple.png';
 var user = 'http://maps.google.com/mapfiles/dd-start.png';
 
-var user_geolocation = (37.7846810, -122.4073680);
-
 
 function init(){
     var mapDiv = document.getElementById("transitmap");
     var mapOptions= {
-        center: new google.maps.LatLng(37.7846810, -122.4073680),
+        center: new google.maps.LatLng(37.757189, -122.335684),
         zoom: 10,
         mapTypeId: google.maps.MapTypeId.ROADMAP
     };
     var map = new google.maps.Map(mapDiv, mapOptions);
 
     var infoWindow = new google.maps.InfoWindow({map: map});
-
 
 
 $(document).ready(function() {
@@ -50,12 +50,11 @@ $(document).ready(function() {
     });
 });
 
+
 $(document).ready(function() {
     $("#route-options").change(function(){
-        console.log($(this).val());
         $.get('/route.json', { "route_id": $(this).val()},
             function (stops) {
-                console.log(stops);
                 $('#user-stop-options').empty();
                 $('#destination-stop-options').empty();
                 $('#user-stop-options').append('<option value= None>SELECT STOP</option>');
@@ -92,9 +91,6 @@ $(document).ready(function() {
 });
 
 
-
-
-
 function clearMapMarkers() {
   for (var i = 0; i < markers.length; i++) {
     markers[i].setMap(null);
@@ -124,10 +120,9 @@ if (navigator.geolocation) {
 function handleLocationError(browserHasGeolocation, infoWindow, pos) {
   infoWindow.setPosition(pos);
   infoWindow.setContent(browserHasGeolocation ?
-                        'Error: The Geolocation service failed. You must provide your stop location' :
+                        'Error: The Geolocation service failed. \n You must provide your stop location' :
                         'Error: Your browser doesn\'t support geolocation.');
 }
-
 
 
 function addInfoWindow(marker, message) {
