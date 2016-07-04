@@ -60,10 +60,8 @@ def stops():
     """returns routes's stops"""
 
     route_id = request.args.get("route_id")
-    print "route_id:", route_id
 
     route_db = gets_route_id_db(route_id)
-    print "route_db:", route_db
 
     stops = {
         stop.name: {
@@ -73,7 +71,6 @@ def stops():
             "lon": stop.lon,
         }
         for stop in route_db.stops}
-    print stops
 
     return jsonify(stops)
 
@@ -94,6 +91,7 @@ def process_user_info():
     if user_lat:
         user_inital_stop = gets_user_stop_id(user_lat, user_lon, route_code)
 
+    print 'user_inital_stop:', user_inital_stop
     user_itinerary = gets_user_itinerary(agency, route_code, destination_stop, user_inital_stop)
 
     if not user_itinerary:
@@ -101,15 +99,15 @@ def process_user_info():
         return redirect("/")
 
     arrival_time_datetime = process_lat_lng_get_arrival_datetime(user_lat, user_lon, destination_stop)
-
+    print 'arrival time:', arrival_time_datetime
     user_phone = convert_to_e164(raw_user_phone_num)
-
+    print 'user phone:', user_phone
     user_db = checks_user_db(user_name, user_phone)
-
+    print 'user:', user_db
     route = gets_route_id_db(route_code)
-
+    print 'route', route
     adds_transit_request(user_inital_stop, destination_stop, agency, route.name, route.route_code, user_itinerary, arrival_time_datetime, user_db)
-
+    print 'added to queue'
     user_inital_stop = gets_stop_db(user_inital_stop)
     destination_stop = gets_stop_db(destination_stop)
 
