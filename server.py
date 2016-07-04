@@ -5,6 +5,7 @@ from jinja2 import StrictUndefined
 from flask import Flask, render_template, request, jsonify, flash
 from flask import redirect
 from flask_debugtoolbar import DebugToolbarExtension
+from flask import send_from_directory
 
 from process_data import gets_user_stop_id, gets_user_itinerary, process_lat_lng_get_arrival_datetime, convert_to_e164
 from model import connect_to_db, checks_user_db, adds_transit_request, gets_agency_db, Agency, gets_route_db, gets_route_id_db, gets_stop_db
@@ -21,6 +22,11 @@ app.config['SECRET_KEY'] = os.environ.get("FLASK_SECRET_KEY", "abcdef")
 # Make Jinja2 to raise an error instead of failing sliently
 app.jinja_env.undefined = StrictUndefined
 
+
+@app.route('/logo.png')
+def favicon():
+    return send_from_directory(os.path.join(app.root_path, 'static', 'img'),
+                               'logo.png', mimetype='image/png')
 
 @app.route("/")
 def index():

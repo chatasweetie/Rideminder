@@ -20,7 +20,7 @@ function init(){
     var mapDiv = document.getElementById("transitmap");
     var mapOptions= {
         center: new google.maps.LatLng(37.7846810, -122.4073680),
-        zoom: 14,
+        zoom: 10,
         mapTypeId: google.maps.MapTypeId.ROADMAP
     };
     var map = new google.maps.Map(mapDiv, mapOptions);
