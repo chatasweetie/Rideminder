@@ -86,17 +86,17 @@ def process_user_info():
     route_code = request.form.get("route")
     user_inital_stop = request.form.get("user_stop")
     destination_stop = request.form.get("destination_stop")
-    user_lat = request.form.get("lat")
-    user_lon = request.form.get("lng")
+    # user_lat = request.form.get("lat")
+    # user_lon = request.form.get("lng")
     print "AGNECY:", agency
     print "route_code:", route_code
     print "user_inital_stop:", user_inital_stop
     print "destination_stop:", destination_stop
-    print "USER LAT:", user_lat
-    print "USER LON:", user_lon
+    # print "USER LAT:", user_lat
+    # print "USER LON:", user_lon
 
-    if user_lat:
-        user_inital_stop = gets_user_stop_id(user_lat, user_lon, route_code)
+    # if user_lat:
+    #     user_inital_stop = gets_user_stop_id(user_lat, user_lon, route_code)
 
     print 'user_inital_stop:', user_inital_stop
     user_itinerary = gets_user_itinerary(agency, route_code, destination_stop,
@@ -108,16 +108,16 @@ def process_user_info():
 
     arrival_time_datetime = process_lat_lng_get_arrival_datetime(user_lat, user_lon,
                                                                 destination_stop)
-
+    print "ARRIVAL TIME:" arrival_time_datetime
     user_phone = convert_to_e164(raw_user_phone_num)
 
     user_db = checks_user_db(user_name, user_phone)
-
+    print "USER" user_db
     route = gets_route_id_db(route_code)
 
     adds_transit_request(user_inital_stop, destination_stop, agency, route.name,
                         route.route_code, user_itinerary, arrival_time_datetime, user_db)
-
+    print "added to db"
     user_inital_stop = gets_stop_db(user_inital_stop)
     destination_stop = gets_stop_db(destination_stop)
 
