@@ -1,30 +1,15 @@
 """Functions to process the data"""
-from firebase import firebase
 from geopy.distance import vincenty
 import phonenumbers
-import json
 import os
 import datetime
 import requests
 from xml.etree import ElementTree
-from model import Route_Stop, Agency, Route, Stop, connect_to_db, db, gets_route_db, gets_stop_name_db, gets_route_id_db, gets_stop_db
-
+from model import connect_to_db, gets_stop_name_db, gets_route_id_db, gets_stop_db
 
 GOOGLE_MAP_API_KEY = os.environ.get("GOOGLE_MAP_API_KEY")
 
 TOKEN_511 = os.environ.get("TOKEN_511")
-
-# Connects to the public transit API
-transit_firebase = firebase.FirebaseApplication("https://publicdata-transit.firebaseio.com/", None)
-
-# these are for I am working in python -i to play with my functions
-
-raw_user_phone_num = 8052525094
-agency = 'BART'
-route_code = 77
-destination_stop = 15
-user_lat = 37.7937552
-user_lon = -122.271049
 
 
 def convert_to_e164(raw_phone):
@@ -91,7 +76,8 @@ def gets_stops_from_route(route):
     return zip(i, u)
 
 
-def parse_route_stop_for_user(route_stops, user_inital_stop, destination_stop, count=0):
+def parse_route_stop_for_user(route_stops, user_inital_stop,
+                                    destination_stop, count=0):
     start = False
     itinerary = ""
 
@@ -111,17 +97,20 @@ def parse_route_stop_for_user(route_stops, user_inital_stop, destination_stop, c
     if count == 1:
         return itinerary
 
-    return parse_route_stop_for_user(route_stops, user_inital_stop, destination_stop, 1)
+    return parse_route_stop_for_user(route_stops, user_inital_stop,
+                                                destination_stop, 1)
 
 
-def gets_user_itinerary(agency, route_code, destination_stop, user_inital_stop):
+def gets_user_itinerary(agency, route_code, destination_stop,
+                                                    user_inital_stop):
     """returns a list of the user's stops from inital to destination"""
 
     route = gets_route_id_db(route_code)
 
     route_stops = gets_stops_from_route(route)
 
-    itinerary = parse_route_stop_for_user(route_stops, user_inital_stop, destination_stop)
+    itinerary = parse_route_stop_for_user(route_stops, user_inital_stop,
+                                                        destination_stop)
 
     return itinerary
 
@@ -151,12 +140,8 @@ def gets_user_stop_id(user_lat, user_lon, route_code):
     return user_stop[0][1]
 
 
-# user_trip = gets_user_itinerary(agency, route, direction, destination, user_inital_stop)
-
-
 #############################################################
 
-#TODO: destination lat/lon doesn't exsit, need to get it through the stop_code
 def process_lat_lng_get_arrival_datetime(user_lat, user_lon, destination_stop):
     """takes in geolocations and returns the arrival time as a datatime object of when the
     transit is completed"""
@@ -204,6 +189,7 @@ def process_lat_lng_get_arrival_datetime(user_lat, user_lon, destination_stop):
 
 
 def gets_stop_times_by_stop(stop):
+    """returns the time and routes of a stop"""
 
     url = 'http://services.my511.org/Transit2.0/GetNextDeparturesByStopCode.aspx?token=' + TOKEN_511 + '&stopcode=' + stop
 

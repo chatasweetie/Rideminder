@@ -276,7 +276,7 @@ def adds_routestop_to_db(stop_routes_agencies_info_bart):
                                             )
                     db.session.add(route_stop)
                     db.session.commit()
-        else: 
+        else:
             route_db = gets_route_db(route_code, direction)
 
             for stop in stop_routes_agencies_info_bart[route]['stop_list']:

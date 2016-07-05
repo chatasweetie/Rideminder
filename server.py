@@ -28,6 +28,7 @@ def favicon():
     return send_from_directory(os.path.join(app.root_path, 'static', 'img'),
                                'logo.png', mimetype='image/png')
 
+
 @app.route("/")
 def index():
     """Homepage"""
@@ -92,32 +93,35 @@ def process_user_info():
         user_inital_stop = gets_user_stop_id(user_lat, user_lon, route_code)
 
     print 'user_inital_stop:', user_inital_stop
-    user_itinerary = gets_user_itinerary(agency, route_code, destination_stop, user_inital_stop)
+    user_itinerary = gets_user_itinerary(agency, route_code, destination_stop,
+                                                                user_inital_stop)
 
     if not user_itinerary:
         flash("You are too far away from your transit stop, try again when your closer")
         return redirect("/")
 
-    arrival_time_datetime = process_lat_lng_get_arrival_datetime(user_lat, user_lon, destination_stop)
-    print 'arrival time:', arrival_time_datetime
+    arrival_time_datetime = process_lat_lng_get_arrival_datetime(user_lat, user_lon,
+                                                                destination_stop)
+
     user_phone = convert_to_e164(raw_user_phone_num)
-    print 'user phone:', user_phone
+
     user_db = checks_user_db(user_name, user_phone)
-    print 'user:', user_db
+
     route = gets_route_id_db(route_code)
-    print 'route', route
-    adds_transit_request(user_inital_stop, destination_stop, agency, route.name, route.route_code, user_itinerary, arrival_time_datetime, user_db)
-    print 'added to queue'
+
+    adds_transit_request(user_inital_stop, destination_stop, agency, route.name,
+                        route.route_code, user_itinerary, arrival_time_datetime, user_db)
+
     user_inital_stop = gets_stop_db(user_inital_stop)
     destination_stop = gets_stop_db(destination_stop)
 
-    return render_template("/thank_you.html", user_fname=user_name, user_phone=user_phone, route=route, user_inital_stop=user_inital_stop, destination_stop=destination_stop)
+    return render_template("/thank_you.html", user_fname=user_name, user_phone=user_phone,
+            route=route, user_inital_stop=user_inital_stop, destination_stop=destination_stop)
 
 
 
 ############################################################################
 # Error Pages
-
 @app.errorhandler(404)
 def page_not_found(error):
     """404 Page Not Found handling"""

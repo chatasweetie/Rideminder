@@ -1,4 +1,4 @@
-"""Class for my database to store user request"""
+"""Class for my database to store user, transit request & transit info"""
 import os
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
@@ -184,32 +184,33 @@ def list_of_is_finished_to_process():
 
 
 def gets_agency_db(name):
-    """returns the db object of A agency"""
+    """returns the db object of an agency"""
 
     return Agency.query.filter_by(name=name).first()
 
 
 def gets_route_db(route_code, direction=False):
-    """"""
+    """returns the db object of a route"""
     if direction is False:
         return Route.query.filter_by(name=route_code).first()
 
     return Route.query.filter_by(route_code=route_code, direction=direction).first()
 
+
 def gets_route_id_db(route_id):
-    """"""
+    """returns the db object of a route"""
 
     return Route.query.filter_by(route_id=route_id).first()
 
 
-
 def gets_stop_db(stop_id):
-    """"""
+    """returns the db object of a stop"""
 
     return Stop.query.filter_by(stop_code=stop_id).first()
 
 
 def gets_stop_name_db(stop_name):
+    """returns the db object of a stop"""
 
     return Stop.query.filter_by(name=stop_name).all()
 

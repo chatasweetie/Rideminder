@@ -9,7 +9,6 @@ TWILIO_AUTH_TOKEN=os.environ.get("TWILIO_AUTH_TOKEN", ['TWILIO_AUTH_TOKEN'])
 TWILIO_NUMBER=str(os.environ.get("TWILIO_NUMBER", ['TWILIO_NUMBER']))
 
 
-
 def send_text_message(phone):
     """sends the text message to the user once the destination is within WALK_RADIUS"""
 

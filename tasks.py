@@ -1,11 +1,9 @@
 # Celery task to be processed request every mintue
 
-from geopy.distance import vincenty
 from process_data import gets_stop_times_by_stop
-from twilio_process import send_text_message, send_text_message
-from model import connect_to_db, list_of_is_finished_to_process, records_request_complete_db, records_request_vehicle_id_db, update_request
+from twilio_process import send_text_message
+from model import connect_to_db, list_of_is_finished_to_process, records_request_complete_db, update_request
 from server import app, celery
-from firebase import firebase
 import datetime
 
 TIME_RADIUS = 2
