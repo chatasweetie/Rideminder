@@ -86,17 +86,16 @@ def process_user_info():
     route_code = request.form.get("route")
     user_inital_stop = request.form.get("user_stop")
     destination_stop = request.form.get("destination_stop")
-    # user_lat = request.form.get("lat")
-    # user_lon = request.form.get("lng")
-    print "AGNECY:", agency
-    print "route_code:", route_code
-    print "user_inital_stop:", user_inital_stop
-    print "destination_stop:", destination_stop
-    # print "USER LAT:", user_lat
-    # print "USER LON:", user_lon
+    user_lat = request.form.get("lat")
+    user_lon = request.form.get("lng")
 
-    # if user_lat:
-    #     user_inital_stop = gets_user_stop_id(user_lat, user_lon, route_code)
+    if user_lat:
+        user_inital_stop = gets_user_stop_id(user_lat, user_lon, route_code)
+
+    else:
+        user_inital_stop = gets_stop_db(user_inital_stop)
+        user_lat = user_inital_stop.lat
+        user_lon = user_inital_stop.lon
 
     print 'user_inital_stop:', user_inital_stop
     user_itinerary = gets_user_itinerary(agency, route_code, destination_stop,
