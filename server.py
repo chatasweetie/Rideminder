@@ -89,7 +89,7 @@ def process_user_info():
     user_lat = request.form.get("lat")
     user_lon = request.form.get("lng")
     print "AGNECY:", agency
-    print "route_code:" route_code
+    print "route_code:", route_code
     print "user_inital_stop:", user_inital_stop
     print "destination_stop:", destination_stop
     print "USER LAT:", user_lat
