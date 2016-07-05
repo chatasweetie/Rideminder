@@ -108,11 +108,11 @@ def process_user_info():
 
     arrival_time_datetime = process_lat_lng_get_arrival_datetime(user_lat, user_lon,
                                                                 destination_stop)
-    print "ARRIVAL TIME:" arrival_time_datetime
+    print "ARRIVAL TIME:", arrival_time_datetime
     user_phone = convert_to_e164(raw_user_phone_num)
 
     user_db = checks_user_db(user_name, user_phone)
-    print "USER" user_db
+    print "USER", user_db
     route = gets_route_id_db(route_code)
 
     adds_transit_request(user_inital_stop, destination_stop, agency, route.name,
