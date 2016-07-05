@@ -88,6 +88,12 @@ def process_user_info():
     destination_stop = request.form.get("destination_stop")
     user_lat = request.form.get("lat")
     user_lon = request.form.get("lng")
+    print "AGNECY:", agency
+    print "route_code:" route_code
+    print "user_inital_stop:", user_inital_stop
+    print "destination_stop:", destination_stop
+    print "USER LAT:", user_lat
+    print "USER LON:", user_lon
 
     if user_lat:
         user_inital_stop = gets_user_stop_id(user_lat, user_lon, route_code)
