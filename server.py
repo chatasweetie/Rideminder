@@ -98,6 +98,9 @@ def process_user_info():
         user_lon = user_inital_stop.lon
 
     print 'user_inital_stop:', user_inital_stop
+    print 'A', agency
+    print 'route_code', route_code
+    print 'destin', destination_stop
     user_itinerary = gets_user_itinerary(agency, route_code, destination_stop,
                                                                 user_inital_stop)
     print "ITINERARY", user_itinerary
