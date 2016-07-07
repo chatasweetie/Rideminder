@@ -101,8 +101,9 @@ def process_user_info():
     print 'A', agency
     print 'route_code', route_code
     print 'destin', destination_stop
-    user_itinerary = gets_user_itinerary(agency, route_code, destination_stop,
-                                                                user_inital_stop)
+    user_itinerary = '12, 24, 42'
+    # user_itinerary = gets_user_itinerary(agency, route_code, destination_stop,
+    #                                                             user_inital_stop)
     print "ITINERARY", user_itinerary
     if not user_itinerary:
         flash("You are too far away from your transit stop, try again when your closer")
