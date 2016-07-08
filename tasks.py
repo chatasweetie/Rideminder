@@ -6,16 +6,14 @@ from model import connect_to_db, list_of_is_finished_to_process, records_request
 from server import app, celery
 import datetime
 
-TIME_RADIUS = 2
-
 app.debug = True
 connect_to_db(app)
 
 
 @celery.task()
 def process_transit_request():
-    """Gets requests from database to be process and checks if Walk Radius or Time Radius
-    are satified, then sends the text and records the transation"""
+    """Gets requests from database to be process and checks if Time Radius
+    is satified, then sends the text and records the transation"""
 
     #from the database, gets all the request that need to be processed
     request_to_process = list_of_is_finished_to_process()

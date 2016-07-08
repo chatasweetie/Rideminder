@@ -101,11 +101,9 @@ def parse_route_stop_for_user(route_stops, user_inital_stop,
                                                 destination_stop, 1)
 
 
-def gets_user_itinerary(agency, route_code, destination_stop,
+def gets_user_itinerary(agency, route, destination_stop,
                                                     user_inital_stop):
     """returns a list of the user's stops from inital to destination"""
-
-    route = gets_route_id_db(route_code)
 
     route_stops = gets_stops_from_route(route)
 
@@ -115,14 +113,12 @@ def gets_user_itinerary(agency, route_code, destination_stop,
     return itinerary
 
 
-def gets_user_stop_id(user_lat, user_lon, route_code):
+def gets_user_stop_id(user_lat, user_lon, route):
     """processes the lat/lon of user to find closest stop for their route
 
     returns stop.stop_code
 
     """
-
-    route_stop = gets_route_id_db(route_code)
 
     user_geolocation = (user_lat,user_lon)
     stops_vincenty_diff = []

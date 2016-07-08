@@ -89,8 +89,10 @@ def process_user_info():
     user_lat = request.form.get("lat")
     user_lon = request.form.get("lng")
 
+    route = gets_route_id_db(route_code)
+
     if user_lat:
-        user_inital_stop = gets_user_stop_id(user_lat, user_lon, route_code)
+        user_inital_stop = gets_user_stop_id(user_lat, user_lon, route)
 
     else:
         user_inital_stop = gets_stop_db(user_inital_stop)
@@ -99,11 +101,9 @@ def process_user_info():
 
     print 'user_inital_stop:', user_inital_stop
     print 'A', agency
-    print 'route_code', route_code
     print 'destin', destination_stop
-    user_itinerary = '12, 24, 42'
-    # user_itinerary = gets_user_itinerary(agency, route_code, destination_stop,
-    #                                                             user_inital_stop)
+    user_itinerary = gets_user_itinerary(agency, route, destination_stop,
+                                                                user_inital_stop)
     print "ITINERARY", user_itinerary
     if not user_itinerary:
         flash("You are too far away from your transit stop, try again when your closer")
@@ -116,7 +116,6 @@ def process_user_info():
 
     user_db = checks_user_db(user_name, user_phone)
     print "USER", user_db
-    route = gets_route_id_db(route_code)
 
     adds_transit_request(user_inital_stop, destination_stop, agency, route.name,
                         route.route_code, user_itinerary, arrival_time_datetime, user_db)
