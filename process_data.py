@@ -5,7 +5,7 @@ import os
 import datetime
 import requests
 from xml.etree import ElementTree
-from model import connect_to_db, gets_stop_name_db, gets_route_id_db, gets_stop_db
+from model import connect_to_db, gets_stop_name_db, gets_route_id_db, gets_stop_db, gets_route_db
 
 GOOGLE_MAP_API_KEY = os.environ.get("GOOGLE_MAP_API_KEY")
 
@@ -40,9 +40,6 @@ def convert_to_e164(raw_phone):
 
 # New Data processing
 #############################################################
-def gets_id_for_stops(stop_name):
-    """with the stop_name, returns the stop id"""
-
 
 def gets_stops_from_route(route):
     """reformats stop_list to be useable"""
@@ -76,13 +73,10 @@ def gets_stops_from_route(route):
     return zip(i, u)
 
 
-def parse_route_stop_for_user(route_stops, user_inital_stop,
-                                    destination_stop, count=0):
+def parse_route_stop_for_user(route_stops, user_inital_stop_db,
+                                    destination_stop_db, count=0):
     start = False
     itinerary = ""
-
-    user_inital_stop_db = gets_stop_db(user_inital_stop)
-    destination_stop_db = gets_stop_db(destination_stop)
 
     for stop in route_stops:
         if stop == str(user_inital_stop_db.name):
@@ -101,9 +95,13 @@ def parse_route_stop_for_user(route_stops, user_inital_stop,
                                                 destination_stop, 1)
 
 
-def gets_user_itinerary(agency, route, destination_stop,
+def gets_user_itinerary(agency, route_code, destination_stop,
                                                     user_inital_stop):
     """returns a list of the user's stops from inital to destination"""
+
+    route = gets_route_db(route_code)
+    destination_stop = gets_stop_db(destination_stop)
+    user_inital_stop = gets_stop_db(user_inital_stop)
 
     route_stops = gets_stops_from_route(route)
 
@@ -123,7 +121,7 @@ def gets_user_stop_id(user_lat, user_lon, route):
     user_geolocation = (user_lat,user_lon)
     stops_vincenty_diff = []
 
-    for stop in route_stop.stops:
+    for stop in route.stops:
         stop_lat = stop.lat
         stop_lon = stop.lon
         stop_code = stop.stop_code
@@ -142,10 +140,8 @@ def process_lat_lng_get_arrival_datetime(user_lat, user_lon, destination_stop):
     """takes in geolocations and returns the arrival time as a datatime object of when the
     transit is completed"""
 
-    stop = gets_stop_db(destination_stop)
-
-    destination_lat = stop.lat
-    destination_lon = stop.lon
+    destination_lat = destination_stop.lat
+    destination_lon = destination_stop.lon
 
     # this is to activate the Fixie proxy, so google direction api has the same ip address call
     proxyDict = {

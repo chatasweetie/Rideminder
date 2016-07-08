@@ -90,39 +90,30 @@ def process_user_info():
     user_lon = request.form.get("lng")
 
     route = gets_route_id_db(route_code)
+    print route
 
     if user_lat:
         user_inital_stop = gets_user_stop_id(user_lat, user_lon, route)
 
-    else:
-        user_inital_stop = gets_stop_db(user_inital_stop)
+    user_inital_stop = gets_stop_db(user_inital_stop)
+    print user_inital_stop
+    if not user_lat:
         user_lat = user_inital_stop.lat
         user_lon = user_inital_stop.lon
 
-    print 'user_inital_stop:', user_inital_stop
-    print 'A', agency
-    print 'destin', destination_stop
-    user_itinerary = '34, 53, 23'
-    # user_itinerary = gets_user_itinerary(agency, route, destination_stop,
-                                                                # user_inital_stop)
-    print "ITINERARY", user_itinerary
-    if not user_itinerary:
-        flash("You are too far away from your transit stop, try again when your closer")
-        return redirect("/")
-
+    destination_stop = gets_stop_db(destination_stop)
+    print destination_stop
     arrival_time_datetime = process_lat_lng_get_arrival_datetime(user_lat, user_lon,
                                                                 destination_stop)
-    print "ARRIVAL TIME:", arrival_time_datetime
-    user_phone = convert_to_e164(raw_user_phone_num)
 
+    user_phone = convert_to_e164(raw_user_phone_num)
+    print arrival_time_datetime
     user_db = checks_user_db(user_name, user_phone)
     print "USER", user_db
 
-    adds_transit_request(user_inital_stop, destination_stop, agency, route.name,
-                        route.route_code, user_itinerary, arrival_time_datetime, user_db)
+    adds_transit_request(user_inital_stop.stop_code, destination_stop.stop_code, agency, route.name,
+                        route.route_code, arrival_time_datetime, user_db)
     print "added to db"
-    user_inital_stop = gets_stop_db(user_inital_stop)
-    destination_stop = gets_stop_db(destination_stop)
 
     return render_template("/thank_you.html", user_fname=user_name, user_phone=user_phone,
             route=route, user_inital_stop=user_inital_stop, destination_stop=destination_stop)
