@@ -102,7 +102,8 @@ def process_user_info():
     print 'user_inital_stop:', user_inital_stop
     print 'A', agency
     print 'destin', destination_stop
-    user_itinerary = gets_user_itinerary(agency, route, destination_stop,
+    user_itinerary = '34, 53, 23'
+    # user_itinerary = gets_user_itinerary(agency, route, destination_stop,
                                                                 user_inital_stop)
     print "ITINERARY", user_itinerary
     if not user_itinerary:
