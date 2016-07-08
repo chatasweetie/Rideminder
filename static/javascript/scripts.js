@@ -120,8 +120,10 @@ if (navigator.geolocation) {
 function handleLocationError(browserHasGeolocation, infoWindow, pos) {
   infoWindow.setPosition(pos);
   infoWindow.setContent(browserHasGeolocation ?
-                        'Error: The Geolocation service failed. \n You must provide your stop location' :
+                        'Don\'t forget to provide your stop info' :
                         'Error: Your browser doesn\'t support geolocation.');
+  infowindow.close()
+  $("#user-stop").addClass("hidden");
 }
 
 
