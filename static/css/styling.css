@@ -126,8 +126,8 @@ body {
     margin-left: 0;
 }
 
-/*@media all and (max-width: 840px) { 
+@media (max-width: 765px) { 
     #transitmap {
         height: 250px;
     }
-}*/
+}
