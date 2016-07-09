@@ -9,6 +9,7 @@ import datetime
 app.debug = True
 connect_to_db(app)
 
+TIME_RADIUS = 3
 
 @celery.task()
 def process_transit_request():
