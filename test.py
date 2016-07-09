@@ -2,15 +2,10 @@
 import unittest
 from unittest import TestCase
 import doctest
-from process_data import convert_to_e164, gets_a_list_of_available_line, selects_closest_vehicle, gets_a_dic_of_vehicle, validates_bound_direction_of_vehicles_in_line, gets_geolocation_of_a_vehicle, sorts_vehicles_dic_by_distance, selects_closest_vehicle, process_lat_lng_get_arrival_datetime
-from firebase import firebase
-import process_data
-import tasks
+from process_data import convert_to_e164, process_lat_lng_get_arrival_datetime
 from tasks import process_transit_request
 from server import app
-import server
 from model import Transit_Request
-import model
 from flask_sqlalchemy import SQLAlchemy
 from twilio_process import send_text_message_walk
 from nose.tools import eq_ #to test Celery
@@ -19,7 +14,6 @@ from nose.tools import eq_ #to test Celery
 # python test.py
 # coverage:
 # coverage run --omit=env/* test.py
-# coverage run --source=. test.py
 # for report:
 # coverage report -m
 
@@ -52,9 +46,6 @@ class UnitTestTwillioTestCase(unittest.TestCase):
 
 ########################################################
 class UnitTestTransitData(unittest.TestCase):
-    def test_gets_a_list_of_available_line(self):
-        self.assertTrue(gets_a_list_of_available_line() > 64)
-        print "complete gets a list of aviable lines test"
 
     def test_selects_closest_vehicle(self):
         user_lat = 37.785152

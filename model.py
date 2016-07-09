@@ -163,12 +163,13 @@ def checks_user_db(user_name, user_phone):
 
 def adds_transit_request(user_inital_stop, destination_stop, agency, route,
     route_code, arrival_time_datetime, user_db):
-    """"""
+    """adds a transit request to the database"""
+
     now = datetime.utcnow()
     new_transit_request = Transit_Request(inital_stop_code=user_inital_stop,
                 destination_stop_code=destination_stop, agency=agency, route=route,
-                route_code=route_code, arrival_time=arrival_time_datetime, 
-                start_time_stamp=now, current_stop=user_inital_stop, 
+                route_code=route_code, arrival_time=arrival_time_datetime,
+                start_time_stamp=now, current_stop=user_inital_stop,
                 user_id=user_db.user_id)
 
     db.session.add(new_transit_request)
@@ -220,7 +221,7 @@ def records_request_vehicle_id_db(request, vehicle_id):
     """Sets the transit_request vehicle_id"""
 
     request.vehicle_id = int(vehicle_id)
-    db.session.commit()
+    update_request(request)
 
 
 def update_request(request):
@@ -233,7 +234,7 @@ def records_request_complete_db(request):
     """Changes the transit_request is_finished to True (request is complete)"""
 
     request.is_finished = True
-    db.session.commit()
+    update_request(request)
 
 
 def connect_to_db(app):

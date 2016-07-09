@@ -5,7 +5,7 @@ import os
 import datetime
 import requests
 from xml.etree import ElementTree
-from model import connect_to_db, gets_stop_name_db, gets_route_id_db, gets_stop_db, gets_route_db
+from model import connect_to_db, gets_stop_name_db, gets_stop_db, gets_route_db
 
 GOOGLE_MAP_API_KEY = os.environ.get("GOOGLE_MAP_API_KEY")
 
@@ -75,6 +75,7 @@ def gets_stops_from_route(route):
 
 def parse_route_stop_for_user(route_stops, user_inital_stop_db,
                                     destination_stop_db, count=0):
+    """creates an itinerary from the user's inital stop to their destination"""
     start = False
     itinerary = ""
 
