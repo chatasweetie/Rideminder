@@ -84,6 +84,8 @@ def parse_route_stop_for_user(route_stops, user_inital_stop_db,
             start = True
         if start:
             stop_db = gets_stop_name_db(stop)
+            if stop_db == []:
+                continue
             itinerary = itinerary + str(stop_db[0].stop_code) + ', '
             if stop == str(destination_stop_db.name):
                 return itinerary[:-2]

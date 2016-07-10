@@ -194,7 +194,7 @@ def gets_route_db(route_code, direction=False):
     """returns the db object of a route"""
 
     if direction is False:
-        return Route.query.filter_by(name=route_code).first()
+        return Route.query.filter_by(route_code=route_code).first()
 
     return Route.query.filter_by(route_code=route_code, direction=direction).first()
 
