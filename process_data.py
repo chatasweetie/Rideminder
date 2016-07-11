@@ -106,7 +106,7 @@ def gets_user_itinerary(agency, route_code, destination_stop,
     destination_stop = gets_stop_db(destination_stop)
     user_inital_stop = gets_stop_db(user_inital_stop)
 
-    route_stops = gets_stops_from_route(route)
+    route_stops = gets_stops_from_route(route[0])
 
     itinerary = parse_route_stop_for_user(route_stops, user_inital_stop,
                                                         destination_stop)
