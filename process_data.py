@@ -41,19 +41,18 @@ def convert_to_e164(raw_phone):
 # New Data processing
 #############################################################
 
-def gets_stops_from_route(route):
+def gets_stops_from_route(stop_list, agency_id):
     """reformats stop_list to be useable"""
 
-    raw_stop_list =str(route.stop_list)
     # bart stops are handled differently
-    if route.agency_id == 3:
+    if agency_id == 3:
         # do something else with BART
-        s = raw_stop_list[2:-2]
+        stop_list = raw_stop_list[2:-2]
         stop_list = s.split("', '")
 
         return stop_list
 
-    s = raw_stop_list[1:-2]
+    s = stop_list[1:-2]
     t = s.split(')')
     d = ''.join(t)
     c = d.split('(')
@@ -106,7 +105,7 @@ def gets_user_itinerary(agency, route_code, destination_stop,
     destination_stop = gets_stop_db(destination_stop)
     user_inital_stop = gets_stop_db(user_inital_stop)
 
-    route_stops = gets_stops_from_route(route[0])
+    route_stops = gets_stops_from_route(str(route.stop_list), route.agency)
 
     itinerary = parse_route_stop_for_user(route_stops, user_inital_stop,
                                                         destination_stop)
