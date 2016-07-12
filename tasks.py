@@ -29,7 +29,7 @@ def process_transit_request():
         print request.inital_stop_code
 
         if not request.user_itinerary:
-            user_itinerary = gets_user_itinerary(request.agency, request.route,
+            user_itinerary = gets_user_itinerary(request.agency, request.route_code,
                                                     request.destination_stop_code,
                                                     request.inital_stop_code)
 
