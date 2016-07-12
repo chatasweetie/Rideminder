@@ -33,6 +33,7 @@ def process_transit_request():
                                                     request.destination_stop_code,
                                                     request.inital_stop_code)
             request.user_itinerary = user_itinerary
+            update_request(request)
 
         departures_times = gets_stop_times_by_stop(request.current_stop)
 
