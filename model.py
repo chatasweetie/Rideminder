@@ -229,10 +229,16 @@ def update_request(request):
 
     db.session.commit()
 
+def update_itinerary(request, user_itinerary):
+    """updates the request's user_itinerary"""
 
-def records_request_complete_db(request):
+    request.user_itinerary = user_itinerary
+    update_request(request)
+
+def records_request_complete_db(request, now):
     """Changes the transit_request is_finished to True (request is complete)"""
 
+    request.end_time_stamp = now
     request.is_finished = True
     update_request(request)
 

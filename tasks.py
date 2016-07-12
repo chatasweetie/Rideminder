@@ -2,7 +2,7 @@
 
 from process_data import gets_stop_times_by_stop, gets_user_itinerary
 from twilio_process import send_text_message
-from model import connect_to_db, list_of_is_finished_to_process, records_request_complete_db, update_request
+from model import connect_to_db, list_of_is_finished_to_process, records_request_complete_db, update_request, update_itinerary
 from server import app, celery
 import datetime
 
@@ -32,8 +32,7 @@ def process_transit_request():
             user_itinerary = gets_user_itinerary(request.agency, request.route_code,
                                                     request.destination_stop_code,
                                                     request.inital_stop_code)
-            request.user_itinerary = user_itinerary
-            update_request(request)
+            update_itinerary(request, user_itinerary)
 
         departures_times = gets_stop_times_by_stop(request.current_stop)
 
@@ -84,6 +83,6 @@ def process_transit_request():
                 print "within time radius"
                 send_text_message(request.user.user_phone)
                 #is_finished to True
-                records_request_complete_db(request)
+                records_request_complete_db(request, now)
 
         update_request(request)
