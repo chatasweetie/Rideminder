@@ -93,8 +93,8 @@ def parse_route_stop_for_user(route_stops, user_inital_stop_db,
     if count == 1:
         return itinerary
 
-    return parse_route_stop_for_user(route_stops, user_inital_stop,
-                                                destination_stop, 1)
+    return parse_route_stop_for_user(route_stops, user_inital_stop_db,
+                                    destination_stop_db, 1)
 
 
 def gets_user_itinerary(agency, route_code, destination_stop,
