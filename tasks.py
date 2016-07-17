@@ -32,7 +32,8 @@ def process_transit_request():
             user_itinerary = gets_user_itinerary(request.agency, request.route_code,
                                                     request.destination_stop_code,
                                                     request.inital_stop_code)
-            update_itinerary(request, user_itinerary)
+            update_itinerary.user_itinerary = user_itinerary
+            update_request(request)
 
         departures_times = gets_stop_times_by_stop(request.current_stop)
 
@@ -54,10 +55,12 @@ def process_transit_request():
         if not routes_time:
             continue
 
+        now = datetime.datetime.utcnow()
+
         if int(routes_time[0]) < 3:
             if request.current_stop == request.destination_stop_code:
                 send_text_message(request.user.user_phone)
-                records_request_complete_db(request)
+                records_request_complete_db(request, now)
                 break
 
             user_itinerary = request.user_itinerary.split(', ')
@@ -66,9 +69,9 @@ def process_transit_request():
                 if user_itinerary[i] == request.current_stop:
                     request.current_stop = str(user_itinerary[i + 1])
                     print 'changed current stop', request.current_stop
+                    update_request(request)
                     break
         # checking google estimated time
-        now = datetime.datetime.utcnow()
         min_difference = request.arrival_time.minute - now.minute
         print "this is the time difference: ", min_difference
 

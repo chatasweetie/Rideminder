@@ -217,13 +217,6 @@ def gets_stop_name_db(stop_name):
     return Stop.query.filter_by(name=stop_name).all()
 
 
-def records_request_vehicle_id_db(request, vehicle_id):
-    """Sets the transit_request vehicle_id"""
-
-    request.vehicle_id = int(vehicle_id)
-    update_request(request)
-
-
 def update_request(request):
     """Updates the request's information into the db"""
 
