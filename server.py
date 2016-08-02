@@ -78,7 +78,7 @@ def stops():
 
 @app.route("/thank-you", methods=["POST"])
 def process_user_info():
-    """recieves the user data and sends data to appropiate processes"""
+    """recieves the user data and processes data"""
 
     user_name = request.form.get("name")
     raw_user_phone_num = request.form.get("phone")
@@ -108,11 +108,16 @@ def process_user_info():
     user_phone = convert_to_e164(raw_user_phone_num)
     user_db = checks_user_db(user_name, user_phone)
 
-    adds_transit_request(user_inital_stop.stop_code, destination_stop.stop_code, agency, route.name,
-                        route.route_code, arrival_time_datetime, user_db)
+    adds_transit_request(user_inital_stop.stop_code, destination_stop.stop_code,
+                        agency, route.name, route.route_code, arrival_time_datetime,
+                        user_db)
 
-    return render_template("/thank_you.html", user_fname=user_name, user_phone=user_phone,
-            route=route, user_inital_stop=user_inital_stop, destination_stop=destination_stop)
+    return render_template("/thank_you.html",
+                                            user_fname=user_name,
+                                            user_phone=user_phone,
+                                            route=route,
+                                            user_inital_stop=user_inital_stop,
+                                            destination_stop=destination_stop)
 
 
 ############################################################################

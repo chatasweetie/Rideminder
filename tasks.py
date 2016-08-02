@@ -2,7 +2,7 @@
 
 from process_data import gets_stop_times_by_stop, gets_user_itinerary
 from twilio_process import send_text_message
-from model import connect_to_db, list_of_is_finished_to_process, records_request_complete_db, update_request, update_itinerary
+from model import connect_to_db, list_of_is_finished_to_process, records_request_complete_db, update_request
 from server import app, celery
 import datetime
 
@@ -31,8 +31,9 @@ def process_transit_request():
         if not request.user_itinerary:
             user_itinerary = gets_user_itinerary(request.agency, request.route_code,
                                                     request.destination_stop_code,
-                                                    request.inital_stop_code)
-            update_itinerary.user_itinerary = user_itinerary
+                                                    request.inital_stop_code,
+                                                    request.route)
+            request.user_itinerary = user_itinerary
             update_request(request)
 
         departures_times = gets_stop_times_by_stop(request.current_stop)

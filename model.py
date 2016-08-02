@@ -149,6 +149,7 @@ class Route_Stop(db.Model):
 
 def checks_user_db(user_name, user_phone):
     """checks the db if the user is in the db and returns user object"""
+    
     user = User.query.filter_by(user_phone=user_phone).first()
 
     if user:
@@ -222,11 +223,6 @@ def update_request(request):
 
     db.session.commit()
 
-def update_itinerary(request, user_itinerary):
-    """updates the request's user_itinerary"""
-
-    request.user_itinerary = user_itinerary
-    update_request(request)
 
 def records_request_complete_db(request, now):
     """Changes the transit_request is_finished to True (request is complete)"""
@@ -247,9 +243,9 @@ def connect_to_db(app):
 
 if __name__ == "__main__":
     """will connect to the db"""
-    import os
-    os.system("dropdb rideminder")
-    os.system("createdb rideminder")
+    # import os
+    # os.system("dropdb rideminder")
+    # os.system("createdb rideminder")
     from server import app
     connect_to_db(app)
     db.create_all()

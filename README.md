@@ -4,20 +4,13 @@ Rideminder
 
 **Description**
 
-Rideminder is a messaging system that notifies user when they are either within 1/4 a mile or within 3 mins of their destination via text message. 
+Rideminder is a messaging system that notifies user when they are within 2 mins of their destination via text message. 
+
+For full details on the process of creating this web app: [Rideminder](https://chatasweetie.wordpress.com/category/rideminder/)    
 
 **How it works**
 
-Designed to be used at transit stop and requires user’s transit line, transit stop and phone number. It makes 2 API calls for transit information:   
-
-   *Firebase - gets realtime data of transit vehicles   
-   *Google Map Direction - gets direction information    
-
-<img src="static/img/firebase-deprecated.png" height="250">
-
-[Updates on new Dataset](https://chatasweetie.wordpress.com/category/rideminder/)    
-
-Rideminder analyses and processes two types of data - gets the closest transit vehicle number in realtime and creates a datetime object using the estimated arrival time. It places the information into my Postgres database.
+User inputs their information, trainsit agency, line and stops and they reiceve a confirmation page. The server takes this data and makes an API call to Google Map Direction to get an estimated time of arrival. It then puts the provided information into a Postgres Database.
 
 The Celery worker (celery is an asynchronous task queue/job queue based on distributed message passing) pulls request that have not been completed from my database every minute. It checks the transit vehicle's current location if it is within ½ a mile of the user’s destination. It also checks the datetime object if the estimated time is within 3 mins. If either of these conditions are satisfied, it sends a text message to the user using Twilio.  
 

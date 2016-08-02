@@ -5,11 +5,20 @@ import os
 import datetime
 import requests
 from xml.etree import ElementTree
-from model import connect_to_db, gets_stop_name_db, gets_stop_db, gets_route_db
+from model import connect_to_db, gets_stop_name_db, gets_stop_db, gets_route_db, gets_route_id_db
 
 GOOGLE_MAP_API_KEY = os.environ.get("GOOGLE_MAP_API_KEY")
 
 TOKEN_511 = os.environ.get("TOKEN_511")
+
+# user_name = 'jessica'
+# raw_user_phone_num = '(760)2522077'
+# agency = 'BART'
+# route_code = '153'
+# user_inital_stop = '14'
+# destination_stop = '32'
+# # user_lat = 
+# # user_lon = 
 
 
 def convert_to_e164(raw_phone):
@@ -41,14 +50,22 @@ def convert_to_e164(raw_phone):
 # New Data processing
 #############################################################
 
+
 def gets_stops_from_route(stop_list, agency_id):
-    """reformats stop_list to be useable"""
+    """reformats stop_list to be useable
+
+        >>> stop_list = u"['Daly City', 'Balboa Park (SF)', 'Glen Park (SF)', '24th St. Mission (SF)', '16th St. Mission (SF)', 'Civic Center (SF)', 'Powell St. (SF)', 'Montgomery St. (SF)', 'Embarcadero (SF)', 'West Oakland', 'Lake Merritt (Oakland)', 'Fruitvale (Oakland)', 'Coliseum/Oakland Airport', 'San Leandro', 'Bayfair (San Leandro)', 'Castro Valley', 'West Dublin', 'Dublin/Pleasanton']"
+        >>> agency_id = 3
+        >>> gets_stops_from_route(stop_list, agency_id)
+        [u'Daly City', u'Balboa Park (SF)', u'Glen Park (SF)', u'24th St. Mission (SF)', u'16th St. Mission (SF)', u'Civic Center (SF)', u'Powell St. (SF)', u'Montgomery St. (SF)', u'Embarcadero (SF)', u'West Oakland', u'Lake Merritt (Oakland)', u'Fruitvale (Oakland)', u'Coliseum/Oakland Airport', u'San Leandro', u'Bayfair (San Leandro)', u'Castro Valley', u'West Dublin', u'Dublin/Pleasanton']
+
+    """
 
     # bart stops are handled differently
     if agency_id == 3:
         # do something else with BART
-        stop_list = raw_stop_list[2:-2]
-        stop_list = s.split("', '")
+        stop_list = stop_list[2:-2]
+        stop_list = stop_list.split("', '")
 
         return stop_list
 
@@ -74,7 +91,19 @@ def gets_stops_from_route(stop_list, agency_id):
 
 def parse_route_stop_for_user(route_stops, user_inital_stop_db,
                                     destination_stop_db, count=0):
-    """creates an itinerary from the user's inital stop to their destination"""
+    """creates an itinerary from the user's inital stop to their destination
+
+        >>> route_stops = ['Daly City', 'Balboa Park (SF)', 'Glen Park (SF)', '24th St. Mission (SF)', '16th St. Mission (SF)', 'Civic Center (SF)', 'Powell St. (SF)', 'Montgomery St. (SF)', 'Embarcadero (SF)', 'West Oakland', 'Lake Merritt (Oakland)', 'Fruitvale (Oakland)', 'Coliseum/Oakland Airport', 'San Leandro', 'Bayfair (San Leandro)', 'Castro Valley', 'West Dublin', 'Dublin/Pleasanton']
+        >>> user_inital_stop = u'14'
+        >>> destination_stop = u'32'
+        >>> destination_stop = gets_stop_db(destination_stop)
+        >>> user_inital_stop = gets_stop_db(user_inital_stop)
+        >>> itinerary = parse_route_stop_for_user(route_stops, user_inital_stop,destination_stop)
+        >>> itinerary
+        '14, 15, 17, 19, 38, 36, 34, 32'
+
+    """
+
     start = False
     itinerary = ""
 
@@ -98,14 +127,27 @@ def parse_route_stop_for_user(route_stops, user_inital_stop_db,
 
 
 def gets_user_itinerary(agency, route_code, destination_stop,
-                                                    user_inital_stop):
-    """returns a list of the user's stops from inital to destination"""
+                                            user_inital_stop, route_name):
+    """returns a list of the user's stops from inital to destination
 
-    route = gets_route_db(route_code)
+        >>> agency = u'BART'
+        >>> route_code = u'920'
+        >>> destination_stop = u'32'
+        >>> user_inital_stop = u'14'
+        >>> route_name = u'Daly City - Dublin/Pleasanton'
+        >>> user_itinerary = gets_user_itinerary(agency, route_code, destination_stop, user_inital_stop, route_name)
+        >>> user_itinerary
+        '14, 15, 17, 19, 38, 36, 34, 32'
+
+    """
+
+    route = gets_route_id_db(route_code)
+    if not route:
+        route = gets_route_db(route_code)
     destination_stop = gets_stop_db(destination_stop)
     user_inital_stop = gets_stop_db(user_inital_stop)
 
-    route_stops = gets_stops_from_route(str(route.stop_list), route.agency)
+    route_stops = gets_stops_from_route(str(route.stop_list), route.agency.agency_id)
 
     itinerary = parse_route_stop_for_user(route_stops, user_inital_stop,
                                                         destination_stop)
@@ -116,8 +158,13 @@ def gets_user_itinerary(agency, route_code, destination_stop,
 def gets_user_stop_id(user_lat, user_lon, route):
     """processes the lat/lon of user to find closest stop for their route
 
-    returns stop.stop_code
-
+        >>> user_lat = 37.785152
+        >>> user_lon = -122.406581
+        >>> from model import gets_route_id_db
+        >>> route_code = '153'
+        >>> route = gets_route_id_db(route_code)
+        >>> gets_user_stop_id(user_lat, user_lon, route)
+        14
     """
 
     user_geolocation = (user_lat,user_lon)
@@ -135,12 +182,21 @@ def gets_user_stop_id(user_lat, user_lon, route):
 
     return user_stop[0][1]
 
-
+# Estimated time
 #############################################################
 
 def process_lat_lng_get_arrival_datetime(user_lat, user_lon, destination_stop):
     """takes in geolocations and returns the arrival time as a datatime object of when the
-    transit is completed"""
+    transit is completed
+
+        >>> user_lat = 37.784991
+        >>> user_lon = -122.406857
+        destination_stop = '32'
+        >>> destination_stop = gets_stop_db(destination_stop)
+        >>> arrival_time_datetime = process_lat_lng_get_arrival_datetime(user_lat, user_lon, destination_stop)
+        >>> type(arrival_time_datetime)
+        <type 'datetime.datetime'>
+    """
 
     destination_lat = destination_stop.lat
     destination_lon = destination_stop.lon
@@ -183,7 +239,12 @@ def process_lat_lng_get_arrival_datetime(user_lat, user_lon, destination_stop):
 
 
 def gets_stop_times_by_stop(stop):
-    """returns the time and routes of a stop"""
+    """returns the time and routes of a stop
+
+        >>> times = gets_stop_times_by_stop('32')
+        >>> type(times)
+        <type 'dict'>
+    """
 
     url = 'http://services.my511.org/Transit2.0/GetNextDeparturesByStopCode.aspx?token=' + TOKEN_511 + '&stopcode=' + stop
 
