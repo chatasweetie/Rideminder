@@ -20,15 +20,15 @@ The Celery worker (celery is an asynchronous task queue/job queue based on distr
 
 **Submit Request**
 
-<img src="static/img/Ridminder.jpg">
+<img src="static/img/Rideminder.png">
 
 **Markers**
 
-<img src="static/img/rideminder_markers.jpg" height="300">
+<img src="static/img/rideminder_markers.png" height="300">
 
 **Thank You**
 
-<img src="static/img/thank-you.jpg" >
+<img src="static/img/thank-you.png" >
 
 
 ### Technology Stack
