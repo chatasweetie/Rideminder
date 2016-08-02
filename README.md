@@ -20,31 +20,27 @@ The Celery worker (celery is an asynchronous task queue/job queue based on distr
 
 **Submit Request**
 
-<img src="static/img/rideminder_new_color.jpg">
+<img src="static/img/Ridminder.jpg">
 
-**Submit Request Cell**
+**Markers**
 
-<img src="static/img/rideminder-cell.jpg" height="300">
+<img src="static/img/rideminder_markers.jpg" height="300">
 
-**Thank You for Submission**
+**Thank You**
 
 <img src="static/img/thank-you.jpg" >
-
-**Thank You for Submission Cell**
-
-<img src="static/img/thankyou-cell.jpg" height="300">
 
 
 ### Technology Stack
 
 **Application:** Python, Flask, Jinja, SQLAlchemy, Celery, RabbitMQ, PostgreSQL    
-**APIs:** Firebase, Google Map, Twilio, Google Map Direction  
+**APIs:** Google Map, Twilio, Google Map Direction  
 **Front-End**: HTML/CSS, Bootstrap, JQuery, JavaScript, AJAX    
 
 
 ### Testing Coverage
 
-<img src="static/img/coveragereportrideminder.png" height="250">
+<img src="static/img/test.png" height="250">
 
 
 ### How to run Rideminder locally
