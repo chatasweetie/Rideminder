@@ -24,7 +24,7 @@ The Celery worker (celery is an asynchronous task queue/job queue based on distr
 
 **Markers**
 
-<img src="static/img/rideminder_markers.png" height="300">
+<img src="static/img/rideminder_markers.png">
 
 **Thank You**
 
@@ -40,7 +40,7 @@ The Celery worker (celery is an asynchronous task queue/job queue based on distr
 
 ### Testing Coverage
 
-<img src="static/img/test.png" height="250">
+<img src="static/img/test.png" height="350">
 
 
 ### How to run Rideminder locally
@@ -94,9 +94,6 @@ TWILIO_AUTH_TOKEN
 TWILIO_NUMBER
 ```
 
-Note: Rideminder can be modified to provide service for many large cities that Firebase support. For the complete list go to:
-
-Firebase Data Sets: [Transit](https://publicdata-transit.firebaseio.com/)
 
 
 ### About the Developer    
