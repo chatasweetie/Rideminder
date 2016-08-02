@@ -11,15 +11,6 @@ GOOGLE_MAP_API_KEY = os.environ.get("GOOGLE_MAP_API_KEY")
 
 TOKEN_511 = os.environ.get("TOKEN_511")
 
-# user_name = 'jessica'
-# raw_user_phone_num = '(760)2522077'
-# agency = 'BART'
-# route_code = '153'
-# user_inital_stop = '14'
-# destination_stop = '32'
-# # user_lat = 
-# # user_lon = 
-
 
 def convert_to_e164(raw_phone):
     """formats phone numbers to twilio format

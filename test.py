@@ -18,14 +18,7 @@ from nose.tools import eq_ #to test Celery
 # coverage run --omit=env/* test.py
 # for report:
 # coverage report -m
-
-# user_name = 'jessica'
-# raw_user_phone_num = '(760)2522077'
-# agency = 'BART'
-# route_code = '153'
-# user_inital_stop = '14'
-# destination_stop = '32'
-
+# coverage html
 
 mock_db = SQLAlchemy()
 
